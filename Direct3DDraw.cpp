@@ -10,7 +10,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ int       nCmdShow)
 {
 	Window w1(800, 600, L"Window1");
-	Window w2(800, 600, L"Window2");
 
     MSG msg;
 
@@ -19,6 +18,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
+
+        w1.Gfx().DrawTestTriangle();
+		w1.Gfx().EndFrame();
     }
 
     return (int) msg.wParam;

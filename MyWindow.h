@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Windows.h>
+#include <memory>
+#include "MyGraphics.h"
 
 class Window {
 private:
@@ -25,10 +27,12 @@ public:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+	Graphics& Gfx();
 private:
 	int width;
 	int height;
 	HWND hWnd;
-
 	const wchar_t* name;
+
+	std::unique_ptr<Graphics> pGfx;
 };

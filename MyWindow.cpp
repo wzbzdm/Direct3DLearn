@@ -16,6 +16,7 @@ Window::Window(int width, int height, const wchar_t* name): width(width), height
 	);
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	pGfx = std::make_unique<Graphics>(hWnd);
 }
 
 Window::~Window() {
@@ -49,6 +50,10 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		return 0;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+Graphics& Window::Gfx() {
+	return *pGfx;
 }
 
 Window::WindowClass::WindowClass() noexcept : hInst(GetModuleHandle(nullptr)) {
