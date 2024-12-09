@@ -99,12 +99,15 @@ void Graphics::DrawTestTriangle() {
     struct Vertex {
 		float x;
 		float y;
+		float r;
+		float g;
+		float b;
     };
 
     const Vertex vertices[] = {
-		{ 0.0f, 0.5f },
-		{ 0.5f, -0.5f },
-		{ -0.5f, -0.5f }
+		{ 0.0f, 0.5f, 1.0f, 0.0f, 0.0f },
+		{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f },
+		{ -0.5f, -0.5f, 0.0f, 0.0f, 1.0f }
 	};
 
 	D3D11_BUFFER_DESC bd = {};
@@ -133,7 +136,10 @@ void Graphics::DrawTestTriangle() {
 	context->VSSetShader(pVertexShader, nullptr, 0u);
 
 	const D3D11_INPUT_ELEMENT_DESC ied[] = {
-		{ "Position", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u }
+		// 位置数据
+		{ "Position", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u },
+		// 颜色数据										相对上一个数据的偏移
+		{ "Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 8u, D3D11_INPUT_PER_VERTEX_DATA, 0u }
 	};
 
 	ID3D11InputLayout* pInputLayout;
