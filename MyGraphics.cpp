@@ -191,11 +191,11 @@ void Graphics::DrawTestTriangle() {
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	D3D11_VIEWPORT vp = {};
-	vp.Width = 800;
-	vp.Height = 600;
+	vp.Width = 600;
+	vp.Height = 400;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
+	vp.TopLeftX = 100;
 	vp.TopLeftY = 0;
 	context->RSSetViewports(1u, &vp);	
 
