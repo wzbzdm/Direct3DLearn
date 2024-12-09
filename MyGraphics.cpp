@@ -97,17 +97,25 @@ HRESULT Graphics::CompileShaderFromFile(
 
 void Graphics::DrawTestTriangle() {
     struct Vertex {
-		float x;
-		float y;
-		float r;
-		float g;
-		float b;
+		struct {
+			float x;
+			float y;
+		} pos;
+		struct {
+			float r;
+			float g;
+			float b;
+			float a;
+		} color;
     };
 
     const Vertex vertices[] = {
-		{ 0.0f, 0.5f, 1.0f, 0.0f, 0.0f },
-		{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f },
-		{ -0.5f, -0.5f, 0.0f, 0.0f, 1.0f }
+		{ 0.0f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f },
+		{ -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f },
+		{ 0.0f, -1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+		{ -1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f},
+		{ 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f}
 	};
 
 	D3D11_BUFFER_DESC bd = {};
@@ -128,6 +136,28 @@ void Graphics::DrawTestTriangle() {
 	const UINT offset = 0u;
 	context->IASetVertexBuffers(0u, 1u, &pVertexBuffer, &stride, &offset);
 
+	const unsigned short indexs[] = {
+		0,1,2,
+		2,1,3,
+		2,3,4,
+		3,1,5
+	};
+
+	D3D11_BUFFER_DESC idb = {};
+	idb.Usage = D3D11_USAGE_DEFAULT;
+	idb.ByteWidth = sizeof(indexs);
+	idb.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	idb.CPUAccessFlags = 0u;
+	idb.MiscFlags = 0u;
+	idb.StructureByteStride = sizeof(unsigned short);
+
+	D3D11_SUBRESOURCE_DATA isd = {};
+	isd.pSysMem = indexs;
+	ID3D11Buffer* pIndexBuffer;
+	device->CreateBuffer(&idb, &isd, &pIndexBuffer);
+
+	context->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
+
 	// 顶点着色器
 	ID3DBlob* pBlob;
 	D3DReadFileToBlob(L"VertexShader.cso", &pBlob);
@@ -139,7 +169,7 @@ void Graphics::DrawTestTriangle() {
 		// 位置数据
 		{ "Position", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, 0u, D3D11_INPUT_PER_VERTEX_DATA, 0u },
 		// 颜色数据										相对上一个数据的偏移
-		{ "Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 8u, D3D11_INPUT_PER_VERTEX_DATA, 0u }
+		{ "Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, 8u, D3D11_INPUT_PER_VERTEX_DATA, 0u }
 	};
 
 	ID3D11InputLayout* pInputLayout;
@@ -169,10 +199,11 @@ void Graphics::DrawTestTriangle() {
 	vp.TopLeftY = 0;
 	context->RSSetViewports(1u, &vp);	
 
-	context->Draw((UINT)std::size(vertices), 0u);
+	context->DrawIndexed((UINT)std::size(indexs), 0u, 0u);
 
 	// 回收内存
 	pVertexBuffer->Release();
+	pIndexBuffer->Release();
 	pVertexShader->Release();
 	pInputLayout->Release();
 	pPixelShader->Release();
