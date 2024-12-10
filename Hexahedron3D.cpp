@@ -43,7 +43,7 @@ void Hexahedron3D::Zoom(const XMFLOAT3& scale)
     size.z *= scale.z;  // 缩放操作，根据传入的比例因子来调整尺寸
 }
 
-XMMATRIX Hexahedron3D::GetTransformXM() const noexcept
+XMMATRIX Hexahedron3D::GetTransformMatrix() const noexcept
 {
     // 获取平移矩阵
     XMMATRIX translation = XMMatrixTranslation(pos.x, pos.y, pos.z);

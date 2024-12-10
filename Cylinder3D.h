@@ -1,7 +1,6 @@
-#include "Drawable.h"
-#include "Transformable.h"
+#include "Shape3D.h"
 
-class Cylinder3D : public Drawable, public Transformable
+class Cylinder3D : public Shape3D
 {
 public:
     Cylinder3D() = default;
@@ -12,7 +11,7 @@ public:
     void Rotate(const DirectX::XMFLOAT3& delta) noexcept override;
     void SetDimensions(float baseRadius, float height);
     void ScaleDimensions(const DirectX::XMFLOAT2& factors); // 单独缩放半径和高度
-    DirectX::XMMATRIX GetTransformXM() const noexcept override;
+    DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 
 private:
     DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };

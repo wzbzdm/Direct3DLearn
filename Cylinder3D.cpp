@@ -36,7 +36,7 @@ void Cylinder3D::ScaleDimensions(const DirectX::XMFLOAT2& factors)
     height *= factors.y;     // 按 Y 比例缩放高度
 }
 
-DirectX::XMMATRIX Cylinder3D::GetTransformXM() const noexcept
+DirectX::XMMATRIX Cylinder3D::GetTransformMatrix() const noexcept
 {
     DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(baseRadius, height, baseRadius);
     DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationX(rotation.x) *

@@ -32,7 +32,7 @@ void Sphere3D::ScaleRadius(float factor)
     radius *= factor;
 }
 
-DirectX::XMMATRIX Sphere3D::GetTransformXM() const noexcept
+DirectX::XMMATRIX Sphere3D::GetTransformMatrix() const noexcept
 {
     // 平移 + 缩放 (球体只需要用同一个比例因子缩放所有方向)
     DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(radius, radius, radius);
