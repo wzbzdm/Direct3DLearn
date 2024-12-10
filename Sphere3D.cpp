@@ -1,4 +1,10 @@
 #include "Sphere3D.h"
+#include "BindableBase.h"
+
+Sphere3D::Sphere3D(Graphics& gfx)
+{
+
+}
 
 void Sphere3D::SetPosition(const DirectX::XMFLOAT3& position) noexcept
 {

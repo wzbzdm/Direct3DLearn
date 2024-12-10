@@ -1,4 +1,10 @@
 #include "Cylinder3D.h"
+#include "BindableBase.h"
+
+Cylinder3D::Cylinder3D(Graphics& gfx)
+{
+
+}
 
 void Cylinder3D::SetPosition(const DirectX::XMFLOAT3& position) noexcept
 {

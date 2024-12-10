@@ -146,6 +146,9 @@
     <ClCompile Include="Sphere3D.cpp">
       <Filter>源文件\Image</Filter>
     </ClCompile>
+    <ClCompile Include="Drawable.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Direct3DDraw.rc">

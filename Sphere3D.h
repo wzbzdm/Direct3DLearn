@@ -6,6 +6,7 @@ class Sphere3D : public Shape3D
 {
 public:
     Sphere3D() = default;
+	Sphere3D(Graphics& gfx);
 
     void SetPosition(const DirectX::XMFLOAT3& position) noexcept override;
     void Translate(const DirectX::XMFLOAT3& offset) noexcept override;

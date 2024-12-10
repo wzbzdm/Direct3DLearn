@@ -4,6 +4,7 @@ class Cylinder3D : public Shape3D
 {
 public:
     Cylinder3D() = default;
+    Cylinder3D(Graphics& gfx);
 
     void SetPosition(const DirectX::XMFLOAT3& position) noexcept override;
     void Translate(const DirectX::XMFLOAT3& offset) noexcept override;

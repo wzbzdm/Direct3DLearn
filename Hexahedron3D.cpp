@@ -1,11 +1,83 @@
 #include "Hexahedron3D.h"
+#include "BindableBase.h"
 
 using namespace DirectX;
 
-Hexahedron3D::Hexahedron3D()
+Hexahedron3D::Hexahedron3D(Graphics& gfx)
 {
-    // 默认构造器，pos 和 size 已在声明时初始化
+    struct Vertex
+    {
+        DirectX::XMFLOAT3 pos;
+    };
+
+    // 根据初始大小生成顶点
+    const std::vector<Vertex> vertices =
+    {
+        { {-size.x, -size.y, -size.z} },
+        { { size.x, -size.y, -size.z} },
+        { {-size.x,  size.y, -size.z} },
+        { { size.x,  size.y, -size.z} },
+        { {-size.x, -size.y,  size.z} },
+        { { size.x, -size.y,  size.z} },
+        { {-size.x,  size.y,  size.z} },
+        { { size.x,  size.y,  size.z} },
+    };
+
+    AddBind(std::make_unique<VertexBuffer>(gfx, vertices));
+
+    // 添加着色器
+    auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
+    auto pvsbc = pvs->GetBytecode();
+    AddBind(std::move(pvs));
+    AddBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
+
+    // 添加索引缓冲区
+    const std::vector<unsigned short> indices =
+    {
+        0,2,1, 2,3,1,
+        1,3,5, 3,7,5,
+        2,6,3, 3,6,7,
+        4,5,7, 4,7,6,
+        0,4,2, 2,4,6,
+        0,1,4, 1,5,4
+    };
+    AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
+
+    // 添加颜色常量缓冲区
+    struct ConstantBuffer2
+    {
+        struct
+        {
+            float r, g, b, a;
+        } face_colors[6];
+    };
+    const ConstantBuffer2 cb2 =
+    {
+        {
+            { 1.0f, 0.0f, 1.0f, 1.0f },
+            { 1.0f, 0.0f, 0.0f, 1.0f },
+            { 0.0f, 1.0f, 0.0f, 1.0f },
+            { 0.0f, 0.0f, 1.0f, 1.0f },
+            { 1.0f, 1.0f, 0.0f, 1.0f },
+            { 0.0f, 1.0f, 1.0f, 1.0f },
+        }
+    };
+    AddBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
+
+    // 添加输入布局
+    const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
+    {
+        { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
+    AddBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
+
+    // 添加拓扑
+    AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+    // 添加变换常量缓冲区
+    AddBind(std::make_unique<TransformCbuf>(gfx, *this));
 }
+
 
 void Hexahedron3D::SetPosition(const XMFLOAT3& position) noexcept
 {

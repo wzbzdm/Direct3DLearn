@@ -6,6 +6,7 @@ class Hexahedron3D : public Shape3D
 {
 public:
 	Hexahedron3D() = default;
+	Hexahedron3D(Graphics&);
 	void SetPosition(const DirectX::XMFLOAT3& position) noexcept override;
 	void Translate(const DirectX::XMFLOAT3& offset) noexcept override;
 	void SetRotation(const DirectX::XMFLOAT3& rotation) noexcept override;

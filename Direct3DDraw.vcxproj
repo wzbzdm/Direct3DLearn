@@ -156,6 +156,7 @@
     <ClCompile Include="Cylinder3D.cpp" />
     <ClCompile Include="Cylinder3D.h" />
     <ClCompile Include="Direct3DDraw.cpp" />
+    <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="Hexahedron3D.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
