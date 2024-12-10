@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <memory>
 #include "MyGraphics.h"
+#include "MyMouse.h"
 
 class Window {
 private:
@@ -28,6 +29,8 @@ public:
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	Graphics& Gfx();
+public:
+	Mouse mouse;
 private:
 	int width;
 	int height;

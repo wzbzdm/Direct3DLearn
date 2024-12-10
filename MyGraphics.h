@@ -1,14 +1,17 @@
 #pragma once
 
+#include "MyWindow.h"
 #include <iostream>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <random>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
 class Graphics {
+	friend class Bindable;
 public:
 	Graphics(HWND hWnd);
 	~Graphics();
@@ -16,14 +19,12 @@ public:
 	Graphics& operator = (const Graphics&) = delete;
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void DrawTestTriangle();
-	static HRESULT CompileShaderFromFile(
-		LPCWSTR srcFile,        // 着色器文件路径
-		LPCSTR entryPoint,      // 着色器入口点，例如 "VSMain"
-		LPCSTR profile,         // 着色器版本，例如 "vs_5_0"
-		ID3DBlob** blobOut      // 输出着色器字节码
-	);
+	void DrawIndexed(UINT count) noexcept;
+	void DrawTestTriangle(float angle);
+	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
+	DirectX::XMMATRIX GetProjection() const noexcept;
 private:
+	DirectX::XMMATRIX projection;
 	IDXGISwapChain* swapChain = nullptr;
 	ID3D11Device* device = nullptr;
 	ID3D11DeviceContext* context = nullptr;

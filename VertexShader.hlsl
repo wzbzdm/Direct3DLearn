@@ -8,9 +8,13 @@ struct PSInput {
     float4 color : Color;
 };
 
+cbuffer CBuf{
+    row_major matrix transform;
+};
+
 PSInput main(VSInput input) {
     PSInput output;
-    output.pos = float4(input.pos, 0.0f, 1.0f);
+    output.pos = mul(float4(input.pos, 0.0f, 1.0f), transform);
     output.color = input.color;
     return output;
 }

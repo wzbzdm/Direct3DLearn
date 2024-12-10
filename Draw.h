@@ -1,13 +1,14 @@
 #pragma once
 
-#include "MyGraphics.h"	
+#include "MyWindow.h"
+#include "MyTimer.h"
 
 class Draw {
 public:
 	Draw();
-	~Draw();
 	Draw(const Draw&) = delete;
 	Draw& operator = (const Draw&) = delete;
 private:
-	Graphics grp;
+	Window window;
+	Timer timer;
 };

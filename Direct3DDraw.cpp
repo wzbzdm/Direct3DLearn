@@ -2,25 +2,30 @@
 //
 
 #include "framework.h"
-#include "MyWindow.h"
+#include "Draw.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-	Window w1(800, 600, L"Window1");
+    Draw draw1;
 
     MSG msg;
 
     // 主消息循环:
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+	// 使用 PeekMessage 代替 GetMessage, 使程序一直运行， 不被阻塞
+    while (true) {
+        MSG msg = {};
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            if (msg.message == WM_QUIT) {
+                return (int)msg.wParam;
+            }
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
 
-        w1.Gfx().DrawTestTriangle();
-		w1.Gfx().EndFrame();
+        
     }
 
     return (int) msg.wParam;

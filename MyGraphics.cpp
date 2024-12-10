@@ -62,40 +62,11 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept {
 	context->ClearRenderTargetView(renderTargetView, color);
 }
 
-
-HRESULT Graphics::CompileShaderFromFile(
-	LPCWSTR srcFile,        // 着色器文件路径
-	LPCSTR entryPoint,      // 着色器入口点，例如 "VSMain"
-	LPCSTR profile,         // 着色器版本，例如 "vs_5_0"
-	ID3DBlob** blobOut      // 输出着色器字节码
-) {
-	DWORD shaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if defined(DEBUG) || defined(_DEBUG)
-	shaderFlags |= D3DCOMPILE_DEBUG; // 启用调试标志
-#endif
-
-	ID3DBlob* errorBlob = nullptr;
-	HRESULT hr = D3DCompileFromFile(
-		srcFile,            // 着色器文件
-		nullptr,            // 宏定义（可选）
-		nullptr,            // 包含者接口（可选）
-		entryPoint,         // 入口点函数
-		profile,            // 着色器模型
-		shaderFlags,        // 编译标志
-		0,                  // 效率标志
-		blobOut,            // 输出着色器字节码
-		&errorBlob          // 错误信息（可选）
-	);
-
-	if (errorBlob) {
-		OutputDebugStringA((char*)errorBlob->GetBufferPointer()); // 输出错误信息
-		errorBlob->Release();
-	}
-
-	return hr;
+void Graphics::DrawIndexed(UINT count) noexcept {
+	context->DrawIndexed(count, 0u, 0u);
 }
 
-void Graphics::DrawTestTriangle() {
+void Graphics::DrawTestTriangle(float angle) {
     struct Vertex {
 		struct {
 			float x;
@@ -109,6 +80,7 @@ void Graphics::DrawTestTriangle() {
 		} color;
     };
 
+	// 顶点缓冲区
     const Vertex vertices[] = {
 		{ 0.0f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f },
 		{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f },
@@ -136,6 +108,7 @@ void Graphics::DrawTestTriangle() {
 	const UINT offset = 0u;
 	context->IASetVertexBuffers(0u, 1u, &pVertexBuffer, &stride, &offset);
 
+	// 索引缓冲区
 	const unsigned short indexs[] = {
 		0,1,2,
 		2,1,3,
@@ -157,6 +130,39 @@ void Graphics::DrawTestTriangle() {
 	device->CreateBuffer(&idb, &isd, &pIndexBuffer);
 
 	context->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
+
+	// 常数缓冲区
+	struct ConstantBuffer {
+		struct {
+			float element[4][4];
+		} transformation;
+	};
+
+	const ConstantBuffer cb = {
+		{
+			{
+				(3.0f / 4.0f) * std::cos(angle), std::sin(angle), 0.0f, 0.0f,
+				(3.0f / 4.0f) * - std::sin(angle), std::cos(angle), 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f
+			}
+		}
+	};
+
+	ID3D11Buffer* pConstantBuffer;
+	D3D11_BUFFER_DESC cbd = {};
+	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbd.Usage = D3D11_USAGE_DYNAMIC;
+	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbd.MiscFlags = 0u;
+	cbd.ByteWidth = sizeof(cb);
+	cbd.StructureByteStride = 0u;
+
+	D3D11_SUBRESOURCE_DATA csd = {};
+	csd.pSysMem = &cb;
+	device->CreateBuffer(&cbd, &csd, &pConstantBuffer);
+
+	context->VSSetConstantBuffers(0u, 1u, &pConstantBuffer);
 
 	// 顶点着色器
 	ID3DBlob* pBlob;
@@ -191,11 +197,11 @@ void Graphics::DrawTestTriangle() {
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	D3D11_VIEWPORT vp = {};
-	vp.Width = 600;
-	vp.Height = 400;
+	vp.Width = 800;
+	vp.Height = 600;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 100;
+	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	context->RSSetViewports(1u, &vp);	
 
@@ -207,4 +213,12 @@ void Graphics::DrawTestTriangle() {
 	pVertexShader->Release();
 	pInputLayout->Release();
 	pPixelShader->Release();
+}
+
+void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept {
+	projection = proj;
+}
+
+DirectX::XMMATRIX Graphics::GetProjection() const noexcept {
+	return projection;
 }
