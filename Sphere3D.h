@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Drawable.h"
-#include "Transformable.h"
+#include "Shape3D.h"
 
-class Sphere3D : public Drawable, public Transformable
+class Sphere3D : public Shape3D
 {
 public:
     Sphere3D() = default;
@@ -14,7 +13,7 @@ public:
     void Rotate(const DirectX::XMFLOAT3& delta) noexcept override;
     void SetRadius(float radius);
     void ScaleRadius(float factor);
-    DirectX::XMMATRIX GetTransformXM() const noexcept override;
+    DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 
 private:
     DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };

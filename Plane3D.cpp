@@ -35,7 +35,7 @@ void Plane3D::ScaleDimensions(const DirectX::XMFLOAT2& factors)
     dimensions.y *= factors.y;
 }
 
-DirectX::XMMATRIX Plane3D::GetTransformXM() const noexcept
+DirectX::XMMATRIX Plane3D::GetTransformMatrix() const noexcept
 {
     DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(dimensions.x, 1.0f, dimensions.y);
     DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationX(rotation.x) *

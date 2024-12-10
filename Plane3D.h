@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Drawable.h"
-#include "Transformable.h"
+#include "Shape3D.h"
 
-class Plane3D : public Drawable, public Transformable
+class Plane3D : public Shape3D
 {
 public:
     Plane3D() = default;
@@ -14,7 +13,7 @@ public:
     void Rotate(const DirectX::XMFLOAT3& delta) noexcept override;
     void SetDimensions(const DirectX::XMFLOAT2& dimensions);
     void ScaleDimensions(const DirectX::XMFLOAT2& factors);
-    DirectX::XMMATRIX GetTransformXM() const noexcept override;
+    DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 
 private:
     DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
