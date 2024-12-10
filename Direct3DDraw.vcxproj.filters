@@ -16,6 +16,18 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{954374d6-79ad-4fa5-b609-4c05d6b22457}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Bindable">
+      <UniqueIdentifier>{22a4cb45-4465-47f0-a524-83a50e439ddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Image">
+      <UniqueIdentifier>{2f5769b6-eee2-420a-acc5-0a8b52881e09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Bindable">
+      <UniqueIdentifier>{e134fadb-cc13-4d02-b904-2a288e8f14e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Image">
+      <UniqueIdentifier>{e535f85e-52a7-4b4c-b811-9f297097821f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -27,62 +39,62 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Direct3DDraw.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Shape3D.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MyWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MyGraphics.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Draw.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MyMouse.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Bindable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstantBuffers.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="InputLayout.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MyTimer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Bindable.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffers.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
     <ClInclude Include="PixelShader.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Topology.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="TransformCbuf.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="VertexBuffer.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>头文件\Image</Filter>
     </ClInclude>
     <ClInclude Include="Hexahedron3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct3DDraw.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Transformable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Sphere3D.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,35 +107,44 @@
     <ClCompile Include="MyGraphics.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Draw.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Bindable.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="InputLayout.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="MyMouse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyTimer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Cylinder3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Bindable.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
     <ClCompile Include="PixelShader.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Topology.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="TransformCbuf.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder3D.cpp">
+      <Filter>源文件\Image</Filter>
     </ClCompile>
     <ClCompile Include="Hexahedron3D.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane3D.cpp">
+      <Filter>源文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere3D.cpp">
+      <Filter>源文件\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
