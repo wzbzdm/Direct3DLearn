@@ -3,7 +3,7 @@
 
 SimpleDraw::SimpleDraw() : window(800, 600, L"Test") {
 	boxes.push_back(std::make_unique<Hexahedron3D>(window.Gfx()));
-	window.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f));
+	window.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
 
 int SimpleDraw::Draw() {

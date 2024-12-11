@@ -13,7 +13,7 @@ public:
 	void Rotate(const DirectX::XMFLOAT3& delta) noexcept override;
 	void SetSize(const DirectX::XMFLOAT3& size);
 	void Zoom(const DirectX::XMFLOAT3& scale);
-	void Update(float dt) noexcept;
+	void Update(float dt) noexcept override;
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 private:
 	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };

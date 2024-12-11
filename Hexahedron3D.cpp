@@ -43,14 +43,15 @@ Hexahedron3D::Hexahedron3D(Graphics& gfx)
         AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
 
         // 添加颜色常量缓冲区
-        struct ConstantBuffer2
+        struct ConstantBuffer
         {
             struct
             {
                 float r, g, b, a;
             } face_colors[6];
         };
-        const ConstantBuffer2 cb2 =
+
+        const ConstantBuffer cb =
         {
             {
                 { 1.0f, 0.0f, 1.0f, 1.0f },
@@ -61,7 +62,7 @@ Hexahedron3D::Hexahedron3D(Graphics& gfx)
                 { 0.0f, 1.0f, 1.0f, 1.0f },
             }
         };
-        AddStaticBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
+        AddStaticBind(std::make_unique<PixelConstantBuffer<ConstantBuffer>>(gfx, cb));
 
         // 添加输入布局
         const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
