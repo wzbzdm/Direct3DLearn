@@ -1,6 +1,5 @@
 #pragma once
 
-#include "MyWindow.h"
 #include "Shape3D.h"
 #include <iostream>
 #include <d3d11.h>
@@ -13,7 +12,7 @@
 
 class Graphics {
 	friend class Bindable;
-	friend class Shape3D;
+	friend class Shape3DBase;
 public:
 	Graphics(HWND hWnd);
 	~Graphics();

@@ -16,9 +16,6 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{954374d6-79ad-4fa5-b609-4c05d6b22457}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Bindable">
-      <UniqueIdentifier>{22a4cb45-4465-47f0-a524-83a50e439ddb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\Image">
       <UniqueIdentifier>{2f5769b6-eee2-420a-acc5-0a8b52881e09}</UniqueIdentifier>
     </Filter>
@@ -27,6 +24,9 @@
     </Filter>
     <Filter Include="源文件\Image">
       <UniqueIdentifier>{e535f85e-52a7-4b4c-b811-9f297097821f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Bindable">
+      <UniqueIdentifier>{22a4cb45-4465-47f0-a524-83a50e439ddb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +96,15 @@
     <ClInclude Include="Transformable.h">
       <Filter>头文件\Image</Filter>
     </ClInclude>
+    <ClInclude Include="BindableBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleDraw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3DDraw.cpp">
@@ -148,6 +157,15 @@
     </ClCompile>
     <ClCompile Include="Drawable.cpp">
       <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleDraw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

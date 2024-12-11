@@ -25,6 +25,7 @@ public:
 	Window(const Window&) = delete;
 	Window& operator = (const Window&) = delete;
 	void SetTitle(const char* title);
+	static std::optional<int> ProcessMessages() noexcept;
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;

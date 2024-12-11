@@ -3,6 +3,9 @@
 #include "MyGraphics.h"
 #include "IndexBuffer.h"
 #include <DirectXMath.h>
+#include <vector>
+#include <memory>
+#include <utility>
 
 class Bindable;
 

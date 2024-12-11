@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Bindable.h" />
+    <ClInclude Include="BindableBase.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="Direct3DDraw.h" />
     <ClInclude Include="Drawable.h" />
@@ -144,12 +145,14 @@
     <ClInclude Include="Plane3D.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shape3D.h" />
+    <ClInclude Include="SimpleDraw.h" />
     <ClInclude Include="Sphere3D.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Topology.h" />
     <ClInclude Include="Transformable.h" />
     <ClInclude Include="TransformCbuf.h" />
     <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bindable.cpp" />
@@ -166,9 +169,12 @@
     <ClCompile Include="MyWindow.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Plane3D.cpp" />
+    <ClCompile Include="SimpleDraw.cpp" />
     <ClCompile Include="Sphere3D.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformCbuf.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Direct3DDraw.rc" />
