@@ -1,6 +1,5 @@
 #pragma once
 
-#pragma once
 #include <DirectXMath.h>
 
 class Transformable

@@ -6,15 +6,12 @@ template<typename T>
 class ConstantBuffer : public Bindable {
 public:
 	void Update(Graphics& gtx, const T& data) {
-		INFOMAN(gtx);
 		D3D11_MAPPED_SUBRESOURCE msr;
-		GFX_THROW_INFO(GetContext(gtx)->Map(pConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr));
+		GetContext(gtx)->Map(pConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr);
 		memcpy(msr.pData, &data, sizeof(data));
 		GetContext(gtx)->Unmap(pConstantBuffer.Get(), 0u);
 	}
 	ConstantBuffer(Graphics& gtx, const T& data) {
-		INFOMAN(gtx);
-
 		D3D11_BUFFER_DESC cbd = {};
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		cbd.Usage = D3D11_USAGE_DYNAMIC;
@@ -26,12 +23,10 @@ public:
 		D3D11_SUBRESOURCE_DATA csd = {};
 		csd.pSysMem = &data;
 
-		GFX_THROW_INFO(GetDevice(gtx)->CreateBuffer(&cbd, &csd, &pConstantBuffer));
+		GetDevice(gtx)->CreateBuffer(&cbd, &csd, &pConstantBuffer);
 	}
 	ConstantBuffer(Graphics& gfx)
 	{
-		INFOMAN(gfx);
-
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		cbd.Usage = D3D11_USAGE_DYNAMIC;
@@ -39,7 +34,7 @@ public:
 		cbd.MiscFlags = 0u;
 		cbd.ByteWidth = sizeof(C);
 		cbd.StructureByteStride = 0u;
-		GFX_THROW_INFO(GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &pConstantBuffer));
+		GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &pConstantBuffer);
 	}
 
 protected:

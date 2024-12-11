@@ -20,7 +20,7 @@ public:
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void DrawIndexed(UINT count) noexcept;
-	void DrawTestTriangle(float angle);
+	void DrawTestTriangle(float angle);		//  测试
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 private:
