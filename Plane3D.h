@@ -2,7 +2,7 @@
 
 #include "Shape3D.h"
 
-class Plane3D : public Shape3D
+class Plane3D : public Shape3D<Plane3D>
 {
 public:
     Plane3D() = default;

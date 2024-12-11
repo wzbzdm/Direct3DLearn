@@ -1,6 +1,6 @@
 #include "Shape3D.h"
 
-class Cylinder3D : public Shape3D
+class Cylinder3D : public Shape3D<Cylinder3D>
 {
 public:
     Cylinder3D() = default;

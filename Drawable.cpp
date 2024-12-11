@@ -5,6 +5,11 @@ void Drawable::Draw(Graphics& gfx) const noexcept {
 	for (auto& b : binds) {
 		b->Bind(gfx);
 	}
+	// 绑定不同类别的静态资源
+	for (auto& b : GetStaticBinds())
+	{
+		b->Bind(gfx);
+	}
 	gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 

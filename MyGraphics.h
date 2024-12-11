@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MyWindow.h"
+#include "Shape3D.h"
 #include <iostream>
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -12,6 +13,7 @@
 
 class Graphics {
 	friend class Bindable;
+	friend class Shape3D;
 public:
 	Graphics(HWND hWnd);
 	~Graphics();
@@ -20,6 +22,7 @@ public:
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void DrawIndexed(UINT count) noexcept;
+	void RenderObject();
 	void DrawTestTriangle(float angle);		//  测试
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;

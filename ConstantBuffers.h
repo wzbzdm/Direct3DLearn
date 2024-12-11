@@ -36,6 +36,12 @@ public:
 		cbd.StructureByteStride = 0u;
 		GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &pConstantBuffer);
 	}
+	~ConstantBuffer() {
+		if (pConstantBuffer != nullptr) {
+			pConstantBuffer->Release();
+			pConstantBuffer = nullptr;
+		}
+	}
 
 protected:
 	ID3D11Buffer* pConstantBuffer;
@@ -48,7 +54,7 @@ class VertexConstantBuffer : public ConstantBuffer<C> {
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gtx) noexcept override {
-		GetContext(gtx)->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+		GetContext(gtx)->VSSetConstantBuffers(0u, 1u, &pConstantBuffer);
 	}
 };
 
@@ -59,6 +65,6 @@ class PixelConstantBuffer : public ConstantBuffer<C> {
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gtx) noexcept override {
-		GetContext(gtx)->PSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+		GetContext(gtx)->PSSetConstantBuffers(0u, 1u, &pConstantBuffer & pConstantBuffer);
 	}
 };

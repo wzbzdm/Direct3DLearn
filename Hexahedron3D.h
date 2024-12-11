@@ -2,7 +2,7 @@
 
 #include "Shape3D.h"
 
-class Hexahedron3D : public Shape3D
+class Hexahedron3D : public Shape3D<Hexahedron3D>
 {
 public:
 	Hexahedron3D() = default;

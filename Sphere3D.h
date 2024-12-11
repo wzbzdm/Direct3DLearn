@@ -2,7 +2,7 @@
 
 #include "Shape3D.h"
 
-class Sphere3D : public Shape3D
+class Sphere3D : public Shape3D<Sphere3D>
 {
 public:
     Sphere3D() = default;

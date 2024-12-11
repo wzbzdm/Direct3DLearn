@@ -1,11 +1,12 @@
 #include "TransformCbuf.h"
 
-TransformCbuf::TransformCbuf(Graphics& gtx, const Drawable& parent) :
+TransformCbuf::TransformCbuf(Graphics& gtx, const Shape3DBase& parent) :
 	vcbuf(gtx),
 	parent(parent) {
 }
 
 void TransformCbuf::Bind(Graphics& gtx) noexcept {
-	vcbuf.Update(gtx, DirectX::XMMatrixTranspose(parent.GetTransformXM() * gtx.GetProjection()));
+	// 当前图形所需的变换 及 所有图形都有的变换
+	vcbuf.Update(gtx, DirectX::XMMatrixTranspose(parent.GetTransformMatrix() * gtx.GetProjection()));
 	vcbuf.Bind(gtx);
 }
