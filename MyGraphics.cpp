@@ -1,6 +1,7 @@
 #include "MyGraphics.h"
 
 Graphics::Graphics(HWND hWnd) {
+<<<<<<< HEAD
 	DXGI_SWAP_CHAIN_DESC scDesc = {};
 	scDesc.BufferCount = 1;
 	scDesc.BufferDesc.Width = 0;
@@ -33,6 +34,40 @@ Graphics::Graphics(HWND hWnd) {
 
 	FAILED(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer));
 	FAILED(device->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView));
+=======
+    DXGI_SWAP_CHAIN_DESC scDesc = {};
+    scDesc.BufferCount = 1;
+    scDesc.BufferDesc.Width = 0;
+    scDesc.BufferDesc.Height = 0;
+    scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    scDesc.BufferDesc.RefreshRate.Numerator = 0;
+    scDesc.BufferDesc.RefreshRate.Denominator = 0;
+    scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    scDesc.OutputWindow = hWnd;
+    scDesc.SampleDesc.Count = 1;
+    scDesc.SampleDesc.Quality = 0;
+    scDesc.Windowed = TRUE;
+    scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    scDesc.Flags = 0;
+
+    D3D11CreateDeviceAndSwapChain(
+        nullptr,
+        D3D_DRIVER_TYPE_HARDWARE,
+        nullptr,
+        0,
+        nullptr,
+        0,
+        D3D11_SDK_VERSION,
+        &scDesc,
+        &swapChain,
+        &device,
+        nullptr,
+        &context
+    );
+
+	FAILED(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer));
+    FAILED(device->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView));
+>>>>>>> origin/main
 }
 
 Graphics::~Graphics() {
@@ -67,7 +102,11 @@ void Graphics::DrawIndexed(UINT count) noexcept {
 }
 
 void Graphics::DrawTestTriangle(float angle) {
+<<<<<<< HEAD
 	struct Vertex {
+=======
+    struct Vertex {
+>>>>>>> origin/main
 		struct {
 			float x;
 			float y;
@@ -78,10 +117,17 @@ void Graphics::DrawTestTriangle(float angle) {
 			float b;
 			float a;
 		} color;
+<<<<<<< HEAD
 	};
 
 	// 顶点缓冲区
 	const Vertex vertices[] = {
+=======
+    };
+
+	// 顶点缓冲区
+    const Vertex vertices[] = {
+>>>>>>> origin/main
 		{ 0.0f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f },
 		{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f },
 		{ -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f },
@@ -142,7 +188,11 @@ void Graphics::DrawTestTriangle(float angle) {
 		{
 			{
 				(3.0f / 4.0f) * std::cos(angle), std::sin(angle), 0.0f, 0.0f,
+<<<<<<< HEAD
 				(3.0f / 4.0f) * -std::sin(angle), std::cos(angle), 0.0f, 0.0f,
+=======
+				(3.0f / 4.0f) * - std::sin(angle), std::cos(angle), 0.0f, 0.0f,
+>>>>>>> origin/main
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 			}
@@ -203,7 +253,11 @@ void Graphics::DrawTestTriangle(float angle) {
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
+<<<<<<< HEAD
 	context->RSSetViewports(1u, &vp);
+=======
+	context->RSSetViewports(1u, &vp);	
+>>>>>>> origin/main
 
 	context->DrawIndexed((UINT)std::size(indexs), 0u, 0u);
 

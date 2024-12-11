@@ -3,7 +3,7 @@
 
 Plane3D::Plane3D(Graphics& gfx)
 {
-
+    
 }
 
 void Plane3D::SetPosition(const DirectX::XMFLOAT3& position) noexcept

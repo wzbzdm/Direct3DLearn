@@ -1,6 +1,10 @@
 #include "MyWindow.h"
 
+<<<<<<< HEAD
 Window::Window(int width, int height, const wchar_t* name) : width(width), height(height), name(name) {
+=======
+Window::Window(int width, int height, const wchar_t* name): width(width), height(height), name(name) {
+>>>>>>> origin/main
 	RECT wr;
 	wr.left = 100;
 	wr.right = width + wr.left;

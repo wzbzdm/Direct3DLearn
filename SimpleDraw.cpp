@@ -23,7 +23,11 @@ SimpleDraw::~SimpleDraw() {
 
 void SimpleDraw::Update() {
 	auto dt = timer.Mark();
+<<<<<<< HEAD
 	window.Gfx().ClearBuffer(1.0f, 1.0f, 1.0f);
+=======
+	window.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
+>>>>>>> origin/main
 	for (auto& b : boxes)
 	{
 		b->Update(dt);

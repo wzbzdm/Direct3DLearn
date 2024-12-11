@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{954374d6-79ad-4fa5-b609-4c05d6b22457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Image">
+      <UniqueIdentifier>{2f5769b6-eee2-420a-acc5-0a8b52881e09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Bindable">
+      <UniqueIdentifier>{e134fadb-cc13-4d02-b904-2a288e8f14e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Image">
+      <UniqueIdentifier>{e535f85e-52a7-4b4c-b811-9f297097821f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Bindable">
+      <UniqueIdentifier>{22a4cb45-4465-47f0-a524-83a50e439ddb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyGraphics.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMouse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyTimer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Bindable.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffers.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Topology.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformCbuf.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>头文件\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Hexahedron3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct3DDraw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Transformable.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="BindableBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleDraw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Direct3DDraw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyGraphics.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMouse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyTimer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder3D.h">
+      <Filter>头文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Bindable.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Topology.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformCbuf.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder3D.cpp">
+      <Filter>源文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Hexahedron3D.cpp">
+      <Filter>源文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane3D.cpp">
+      <Filter>源文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere3D.cpp">
+      <Filter>源文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawable.cpp">
+      <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleDraw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Direct3DDraw.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Direct3DDraw.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

@@ -14,7 +14,6 @@ public:
 	void SetSize(const DirectX::XMFLOAT3& size);
 	void Zoom(const DirectX::XMFLOAT3& scale);
 	void Update(float dt) noexcept;
-	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 private:
 	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT3 rotation = { 0.0f, 0.0f, 0.0f };
