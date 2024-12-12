@@ -39,7 +39,7 @@ Graphics::Graphics(HWND hWnd) {
 	);
 
 	swapChain->GetBuffer(0, __uuidof(ID3D11Resource), (void**)&backBuffer);
-	device->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView);
+	device->CreateRenderTargetView(backBuffer.Get(), nullptr, &renderTargetView);
 
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
 	dsDesc.DepthEnable = TRUE;
@@ -47,7 +47,7 @@ Graphics::Graphics(HWND hWnd) {
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	device->CreateDepthStencilState(&dsDesc, &pDSState);
 
-	context->OMSetDepthStencilState(pDSState, 1u);
+	context->OMSetDepthStencilState(pDSState.Get(), 1u);
 
 	D3D11_TEXTURE2D_DESC descDepth = {};
 	descDepth.Width = 800u;
@@ -65,9 +65,9 @@ Graphics::Graphics(HWND hWnd) {
 	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0u;
-	device->CreateDepthStencilView(pDepthStencil, &descDSV, &depthStencilView);
+	device->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &depthStencilView);
 
-	context->OMSetRenderTargets(1u, &renderTargetView, depthStencilView);
+	context->OMSetRenderTargets(1u, renderTargetView.GetAddressOf(), depthStencilView.Get());
 
 	D3D11_VIEWPORT vp;
 	vp.Width = 800.0f;
@@ -79,41 +79,14 @@ Graphics::Graphics(HWND hWnd) {
 	context->RSSetViewports(1u, &vp);
 }
 
-Graphics::~Graphics() {
-	if (swapChain != nullptr) {
-		swapChain->Release();
-		swapChain = nullptr;
-	}
-	if (context != nullptr) {
-		context->Release();
-		context = nullptr;
-	}
-	if (device != nullptr) {
-		device->Release();
-		device = nullptr;
-	}
-	if (renderTargetView != nullptr) {
-		renderTargetView->Release();
-		renderTargetView = nullptr;
-	}
-	if (depthStencilView != nullptr) {
-		depthStencilView->Release();
-		depthStencilView = nullptr;
-	}
-	if (pDSState != nullptr) {
-		pDSState->Release();
-		pDSState = nullptr;
-	}
-}
-
 void Graphics::EndFrame() {
 	swapChain->Present(1u, 0u);
 }
 
 void Graphics::ClearBuffer(float red, float green, float blue) noexcept {
 	const float color[] = { red, green, blue, 1.0f };
-	context->ClearRenderTargetView(renderTargetView, color);
-	context->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	context->ClearRenderTargetView(renderTargetView.Get(), color);
+	context->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
 void Graphics::DrawIndexed(UINT count) noexcept {

@@ -7,9 +7,9 @@ class ConstantBuffer : public Bindable {
 public:
 	void Update(Graphics& gtx, const T& data) {
 		D3D11_MAPPED_SUBRESOURCE msr;
-		GetContext(gtx)->Map(pConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr);
+		GetContext(gtx)->Map(pConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr);
 		memcpy(msr.pData, &data, sizeof(data));
-		GetContext(gtx)->Unmap(pConstantBuffer, 0u);
+		GetContext(gtx)->Unmap(pConstantBuffer.Get(), 0u);
 	}
 	ConstantBuffer(Graphics& gtx, const T& data) {
 		D3D11_BUFFER_DESC cbd = {};
@@ -36,15 +36,9 @@ public:
 		cbd.StructureByteStride = 0u;
 		GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &pConstantBuffer);
 	}
-	~ConstantBuffer() {
-		if (pConstantBuffer != nullptr) {
-			pConstantBuffer->Release();
-			pConstantBuffer = nullptr;
-		}
-	}
 
 protected:
-	ID3D11Buffer* pConstantBuffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;
 };
 
 template<typename C>
@@ -54,7 +48,7 @@ class VertexConstantBuffer : public ConstantBuffer<C> {
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gtx) noexcept override {
-		GetContext(gtx)->VSSetConstantBuffers(0u, 1u, &pConstantBuffer);
+		GetContext(gtx)->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
 	}
 };
 
@@ -65,6 +59,6 @@ class PixelConstantBuffer : public ConstantBuffer<C> {
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gtx) noexcept override {
-		GetContext(gtx)->PSSetConstantBuffers(0u, 1u, &pConstantBuffer);
+		GetContext(gtx)->PSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
 	}
 };

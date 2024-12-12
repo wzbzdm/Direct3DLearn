@@ -2,6 +2,7 @@
 
 #include "DirectXD.h"
 #include <iostream>
+#include <wrl.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -13,12 +14,13 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+namespace wrl = Microsoft::WRL;
+
 class Graphics {
 	friend class Bindable;
 	friend class Shape3DBase;
 public:
 	Graphics(HWND hWnd);
-	~Graphics();
 	Graphics(const Graphics&) = delete;
 	Graphics& operator = (const Graphics&) = delete;
 	void EndFrame();
@@ -30,12 +32,12 @@ public:
 	DirectX::XMMATRIX GetProjection() const noexcept;
 private:
 	DirectX::XMMATRIX projection;
-	IDXGISwapChain* swapChain = nullptr;
-	ID3D11Device* device = nullptr;
-	ID3D11DeviceContext* context = nullptr;
-	ID3D11RenderTargetView* renderTargetView = nullptr;
-	ID3D11DepthStencilView* depthStencilView = nullptr;
-	ID3D11Resource* backBuffer = nullptr;
-	ID3D11Texture2D* pDepthStencil = nullptr;
-	ID3D11DepthStencilState* pDSState = nullptr;
+	wrl::ComPtr<IDXGISwapChain> swapChain;
+	wrl::ComPtr<ID3D11Device> device;
+	wrl::ComPtr<ID3D11DeviceContext> context;
+	wrl::ComPtr<ID3D11RenderTargetView> renderTargetView;
+	wrl::ComPtr<ID3D11DepthStencilView> depthStencilView;
+	wrl::ComPtr<ID3D11Resource> backBuffer;
+	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
+	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
 };

@@ -5,7 +5,6 @@
 class VertexBuffer : public Bindable
 {
 public:
-	~VertexBuffer();
 	template<class V>
 	VertexBuffer(Graphics& gfx, const std::vector<V>& vertices) {
 		D3D11_BUFFER_DESC bd = {};
@@ -22,5 +21,5 @@ public:
 	void Bind(Graphics& gfx) noexcept override;
 protected:
 	UINT stride;
-	ID3D11Buffer* pVertexBuffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
 };

@@ -8,6 +8,6 @@ public:
 	TransformCbuf(Graphics& gtx, const Shape3DBase& parent);
 	void Bind(Graphics& gtx) noexcept override;
 protected:
-	VertexConstantBuffer<DirectX::XMMATRIX> vcbuf;
+	static std::unique_ptr<VertexConstantBuffer<DirectX::XMMATRIX>> vcbuf;
 	const Shape3DBase& parent;
 };

@@ -9,13 +9,6 @@ InputLayout::InputLayout(Graphics& gfx, const std::vector<D3D11_INPUT_ELEMENT_DE
 	);
 }
 
-InputLayout::~InputLayout() {
-	if (pInputLayout != nullptr) {
-		pInputLayout->Release();
-		pInputLayout = nullptr;
-	}
-}
-
 void InputLayout::Bind(Graphics& gfx) noexcept {
-	GetContext(gfx)->IASetInputLayout(pInputLayout);
+	GetContext(gfx)->IASetInputLayout(pInputLayout.Get());
 }

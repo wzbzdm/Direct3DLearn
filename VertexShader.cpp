@@ -7,20 +7,9 @@ VertexShader::VertexShader(Graphics& gfx, const std::wstring& path) {
 }
 
 void VertexShader::Bind(Graphics& gfx) noexcept {
-	GetContext(gfx)->VSSetShader(pVertexShader, nullptr, 0u);
-}
-
-VertexShader::~VertexShader() {
-	if (pVertexShader != nullptr) {
-		pVertexShader->Release();
-		pVertexShader = nullptr;
-	}
-	if (pBytecodeBlob != nullptr) {
-		pBytecodeBlob->Release();
-		pBytecodeBlob = nullptr;
-	}
+	GetContext(gfx)->VSSetShader(pVertexShader.Get(), nullptr, 0u);
 }
 
 ID3DBlob* VertexShader::GetBytecode() const noexcept {
-	return pBytecodeBlob;
+	return pBytecodeBlob.Get();
 }
