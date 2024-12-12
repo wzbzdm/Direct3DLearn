@@ -5,8 +5,6 @@
 class Transformable
 {
 public:
-    virtual ~Transformable() = default;
-
     // 平移操作
     virtual void SetPosition(const DirectX::XMFLOAT3& position) = 0;
     virtual void Translate(const DirectX::XMFLOAT3& offset) = 0;
