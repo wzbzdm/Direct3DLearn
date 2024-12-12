@@ -2,23 +2,20 @@
 
 #include "Shape3D.h"
 
+// 圆柱体
 class Cylinder3D : public Shape3D<Cylinder3D>
 {
+    static DirectX::XMFLOAT3 conf;
 public:
     Cylinder3D() = default;
     Cylinder3D(Graphics& gfx);
 
-    void SetPosition(const DirectX::XMFLOAT3& position) noexcept override;
-    void Translate(const DirectX::XMFLOAT3& offset) noexcept override;
-    void SetRotation(const DirectX::XMFLOAT3& rotation) noexcept override;
-    void Rotate(const DirectX::XMFLOAT3& delta) noexcept override;
-    void SetDimensions(float baseRadius, float height);
-    void ScaleDimensions(const DirectX::XMFLOAT2& factors); // 单独缩放半径和高度
+    void SetSize(const DirectX::XMFLOAT3& size);
+    void ScaleSize(const DirectX::XMFLOAT3& radio);
     DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 
 private:
-    DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
-    DirectX::XMFLOAT3 rotation = { 0.0f, 0.0f, 0.0f };
-    float baseRadius = 1.0f;
-    float height = 1.0f;
+    DirectX::XMFLOAT3 size = { 1, 1, 1 }; // 顶部半径、底部半径、高度的缩放比例
+    int numSegments = 36;
+    int numRings = 36;
 };

@@ -28,6 +28,15 @@
     <Filter Include="DrawUnitSource">
       <UniqueIdentifier>{d2e50f66-e406-4a7b-828b-fbd783dd7dcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Conf">
+      <UniqueIdentifier>{a2cec03c-2839-4c0c-a75c-45183ae24cf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{ac3ed1a3-3f6f-4f4b-9d36-7e654a513465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GeometrySource">
+      <UniqueIdentifier>{3684b16d-4342-47db-8bf2-6b574867a55f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -111,6 +120,27 @@
     <ClInclude Include="BoxTest.h">
       <Filter>DrawUnitHeader</Filter>
     </ClInclude>
+    <ClInclude Include="DrawUnitBase.h">
+      <Filter>DrawUnitHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Hexahedron.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -173,6 +203,15 @@
     <ClCompile Include="BoxTest.cpp">
       <Filter>DrawUnitSource</Filter>
     </ClCompile>
+    <ClCompile Include="Transformable.cpp">
+      <Filter>DrawUnitSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>GeometrySource</Filter>
+    </ClCompile>
+    <ClCompile Include="Hexahedron.cpp">
+      <Filter>GeometrySource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXD.rc">
@@ -194,5 +233,22 @@
     <FxCompile Include="VertexShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="VertexShaderColor.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShaderColor.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SphereColor.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SphereVertex.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore">
+      <Filter>Conf</Filter>
+    </None>
   </ItemGroup>
 </Project>

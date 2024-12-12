@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+*.cso
 
 x64/
 .vs/

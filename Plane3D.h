@@ -2,22 +2,19 @@
 
 #include "Shape3D.h"
 
+// 平面
 class Plane3D : public Shape3D<Plane3D>
 {
+	static DirectX::XMFLOAT2 defaultSize;
 public:
     Plane3D() = default;
     Plane3D(Graphics& gfx);
 
-    void SetPosition(const DirectX::XMFLOAT3& position) noexcept override;
-    void Translate(const DirectX::XMFLOAT3& offset) noexcept override;
-    void SetRotation(const DirectX::XMFLOAT3& rotation) noexcept override;
-    void Rotate(const DirectX::XMFLOAT3& delta) noexcept override;
-    void SetDimensions(const DirectX::XMFLOAT2& dimensions);
+	//void Update(float dt) noexcept;
+    void SetDimensions(const DirectX::XMFLOAT2& size);
     void ScaleDimensions(const DirectX::XMFLOAT2& factors);
     DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 
 private:
-    DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
-    DirectX::XMFLOAT3 rotation = { 0.0f, 0.0f, 0.0f };
-    DirectX::XMFLOAT2 dimensions = { 1.0f, 1.0f }; // 长和宽
+    DirectX::XMFLOAT2 size = defaultSize; // 长和宽的放大比例
 };

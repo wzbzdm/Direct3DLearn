@@ -1,5 +1,8 @@
+#include "Hexahedron.h"
 #include "Hexahedron3D.h"
 #include "BindableBase.h"
+
+DirectX::XMFLOAT3 Hexahedron3D::defaultSize = { 1.0f, 0.8f, 0.7f };
 
 Hexahedron3D::Hexahedron3D(Graphics& gfx)
 {
@@ -9,20 +12,9 @@ Hexahedron3D::Hexahedron3D(Graphics& gfx)
             DirectX::XMFLOAT3 pos;
         };
 
-        // 根据初始大小生成顶点
-        const std::vector<Vertex> vertices =
-        {
-            { {-size.x, -size.y, -size.z} },
-            { { size.x, -size.y, -size.z} },
-            { {-size.x,  size.y, -size.z} },
-            { { size.x,  size.y, -size.z} },
-            { {-size.x, -size.y,  size.z} },
-            { { size.x, -size.y,  size.z} },
-            { {-size.x,  size.y,  size.z} },
-            { { size.x,  size.y,  size.z} },
-        };
+		auto model = Hexahedron().Create<Vertex>();
 
-        AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
+        AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
         // 添加着色器
         auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
@@ -30,17 +22,7 @@ Hexahedron3D::Hexahedron3D(Graphics& gfx)
         AddStaticBind(std::move(pvs));
         AddStaticBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
 
-        // 添加索引缓冲区
-        const std::vector<unsigned short> indices =
-        {
-            0,2,1, 2,3,1,
-            1,3,5, 3,7,5,
-            2,6,3, 3,6,7,
-            4,5,7, 4,7,6,
-            0,4,2, 2,4,6,
-            0,1,4, 1,5,4
-        };
-        AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
+        AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
 
         // 添加颜色常量缓冲区
         struct ConstantBuffer
@@ -82,31 +64,6 @@ Hexahedron3D::Hexahedron3D(Graphics& gfx)
     AddBind(std::make_unique<TransformCbuf>(gfx, *this));
 }
 
-
-void Hexahedron3D::SetPosition(const DirectX::XMFLOAT3& position) noexcept
-{
-    pos = position;  // 设置位置
-}
-
-void Hexahedron3D::Translate(const DirectX::XMFLOAT3& offset) noexcept
-{
-    pos.x += offset.x;
-    pos.y += offset.y;
-    pos.z += offset.z;
-}
-
-void Hexahedron3D::SetRotation(const DirectX::XMFLOAT3& rotation) noexcept
-{
-    this->rotation = rotation;  // 设置旋转（欧拉角）
-}
-
-void Hexahedron3D::Rotate(const DirectX::XMFLOAT3& delta) noexcept
-{
-    rotation.x += delta.x;
-    rotation.y += delta.y;
-    rotation.z += delta.z;
-}
-
 void Hexahedron3D::SetSize(const DirectX::XMFLOAT3& size)
 {
     this->size = size;  // 设置大小（长宽高）
@@ -139,5 +96,8 @@ DirectX::XMMATRIX Hexahedron3D::GetTransformMatrix() const noexcept
 
 void Hexahedron3D::Update(float dt) noexcept
 {
-	// 什么也不做
+    // 自定义 Update
+	rotation.x += 2.0f * dt;
+    rotation.y += 1.6f * dt;
+    rotation.z += 1.2f * dt;
 }

@@ -13,7 +13,6 @@ public:
 	Drawable() = default;
 	Drawable(const Drawable&) = delete;
 	void Draw(Graphics& gfx) const noexcept;
-	virtual void Update(float dt) noexcept = 0;
 	virtual ~Drawable() = default;
 protected:
 	void AddBind(std::unique_ptr<Bindable> bind) noexcept;

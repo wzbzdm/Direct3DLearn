@@ -19,8 +19,7 @@ Box::Box(Graphics& gfx,
 	theta(adist(rng)),
 	phi(adist(rng))
 {
-	if (!IsStaticInitialized())
-	{
+	if (!IsStaticInitialized()) {
 		struct Vertex
 		{
 			struct
@@ -91,8 +90,7 @@ Box::Box(Graphics& gfx,
 
 		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	}
-	else
-	{
+	else {
 		SetIndexFromStatic();
 	}
 
@@ -115,22 +113,6 @@ DirectX::XMMATRIX Box::GetTransformMatrix() const noexcept
 		DirectX::XMMatrixTranslation(r, 0.0f, 0.0f) *
 		DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
-}
-
-void Box::SetPosition(const DirectX::XMFLOAT3& position) noexcept {
-
-}
-
-void Box::Translate(const DirectX::XMFLOAT3& offset) noexcept {
-
-}
-
-void Box::SetRotation(const DirectX::XMFLOAT3& rotation) noexcept {
-
-}
-
-void Box::Rotate(const DirectX::XMFLOAT3& delta) noexcept {
-
 }
 
 void Box::SetSize(const DirectX::XMFLOAT3& size) {

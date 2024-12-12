@@ -9,13 +9,9 @@ public:
 		std::uniform_real_distribution<float>& ddist,
 		std::uniform_real_distribution<float>& odist,
 		std::uniform_real_distribution<float>& rdist);
-	void SetPosition(const DirectX::XMFLOAT3& position) noexcept override;
-	void Translate(const DirectX::XMFLOAT3& offset) noexcept override;
-	void SetRotation(const DirectX::XMFLOAT3& rotation) noexcept override;
-	void Rotate(const DirectX::XMFLOAT3& delta) noexcept override;
 	void SetSize(const DirectX::XMFLOAT3& size);
 	void Zoom(const DirectX::XMFLOAT3& scale);
-	void Update(float dt) noexcept override;
+	void Update(float dt) noexcept;
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 private:
 	// positional

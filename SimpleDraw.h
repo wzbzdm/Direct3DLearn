@@ -13,5 +13,5 @@ private:
 private:
 	Window window;
 	Timer timer;
-	std::vector<std::unique_ptr<class Box>> boxes;
+	std::vector<std::unique_ptr<class Shape3DBase>> boxes;
 };
