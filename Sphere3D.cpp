@@ -11,11 +11,11 @@ Sphere3D::Sphere3D(Graphics& gfx)
             int colorIndex; // 用于索引颜色
         };
 
-		auto model = Sphere::Create<Vertex>(1.0f, numSegments, numRings);
+		auto model = Sphere::Create<Vertex>(1.0f, numC, numH);
 
         // 添加颜色索引
         for (int i = 0; i < model.vertices.size(); i++) {
-            model.vertices[i].colorIndex = (i / numSegments) % 3;
+            model.vertices[i].colorIndex = (i / numC) % 3;
         }
 
         // 添加静态绑定：顶点缓冲区
@@ -68,6 +68,12 @@ Sphere3D::Sphere3D(Graphics& gfx)
 
     // 添加变换常量缓冲区
     AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+}
+
+void Sphere3D::SetConf(int numC, int numH)
+{
+	this->numC = numC;
+	this->numH = numH;
 }
 
 void Sphere3D::SetRadius(float r)

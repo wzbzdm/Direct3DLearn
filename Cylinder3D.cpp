@@ -2,7 +2,7 @@
 #include "Cylinder3D.h"
 #include "BindableBase.h"
 
-DirectX::XMFLOAT3 Cylinder3D::conf = { 1.0f, 1.0f, 2.0 };
+DirectX::XMFLOAT3 Cylinder3D::conf = { 1.0f, 1.0f, 1.0 };
 
 Cylinder3D::Cylinder3D(Graphics& gfx)
 {
@@ -19,18 +19,18 @@ Cylinder3D::Cylinder3D(Graphics& gfx)
             DirectX::XMFLOAT3 pos;
         };
 
-		auto model = Cylinder::Create<Vertex>(1, 1, 2, 36, 18);
-		model.vertices[36 * 19].color = { 0.0, 1.0, 0, 1.0 };  // 顶部
-		model.vertices[36 * 19 + 1].color = { 1.0, 0.0, 0, 1.0 };  // 底部
+		auto model = Cylinder::Create<Vertex>(1, 1, 2, numC, numH);
+		model.vertices[numC * (numH + 1)].color = { 0.0, 1.0, 0, 1.0 };  // 顶部
+		model.vertices[numC * (numH + 1) + 1].color = { 1.0, 0.0, 0, 1.0 };  // 底部
         // 填充颜色
         for (int i = 0; i < model.vertices.size(); i++) {
-            if (i >= 0 && i < 36) {
+            if (i >= 0 && i < numC) {
 				model.vertices[i].color = { 0, 1.0, 0, 1.0 };  // 顶部
 			}
-			else if (i >= 36 && i < 36 * 18) {
+			else if (i >= numC && i < numC * numH) {
 				model.vertices[i].color = { 0, 0, 1.0, 1.0 };  // 侧面
 			}
-            else if (i >= 36 * 18 && i < 36 * 19) {
+            else if (i >= numC * numH && i < numC * (numH + 1)) {
                 model.vertices[i].color = { 1.0, 0, 0, 1.0 };  // 底部
             }
 		}
@@ -84,6 +84,11 @@ Cylinder3D::Cylinder3D(Graphics& gfx)
 
     // 添加变换常量缓冲区
     AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+}
+
+void Cylinder3D::SetConf(int numC, int numH) {
+	this->numC = numC;
+	this->numH = numH;
 }
 
 void Cylinder3D::SetSize(const DirectX::XMFLOAT3& size)

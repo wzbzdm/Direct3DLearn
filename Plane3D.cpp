@@ -38,7 +38,7 @@ Plane3D::Plane3D(Graphics& gfx)
         const ConstantBuffer cb =
         {
             {
-                { 1.0f, 0.5f, 0.5f, 1.0f },
+                { 0.5f, 1.0f, 0.5f, 1.0f },
                 { 0.5f, 1.0f, 0.5f, 1.0f }  // 设置平面颜色
             }
         };

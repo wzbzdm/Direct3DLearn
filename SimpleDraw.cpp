@@ -3,7 +3,10 @@
 #include "BoxTest.h"
 
 SimpleDraw::SimpleDraw() : window(800, 600, L"Test") {
-	boxes.push_back(std::make_unique<Hexahedron3D>(window.Gfx()));
+	// boxes.push_back(std::make_unique<Cylinder3D>(window.Gfx()));
+	// boxes.push_back(std::make_unique<Hexahedron3D>(window.Gfx()));
+	// boxes.push_back(std::make_unique<Plane3D>(window.Gfx()));
+	boxes.push_back(std::make_unique<Sphere3D>(window.Gfx()));
 	
 	window.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 1.0f, 20.0f));
 }
@@ -25,7 +28,7 @@ SimpleDraw::~SimpleDraw() {
 
 void SimpleDraw::Update() {
 	auto dt = timer.Mark();
-	window.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
+	window.Gfx().ClearBuffer(1.0f, 0.5f, 0.5f);
 	for (auto& b : boxes)
 	{
 		b->Update(dt);
