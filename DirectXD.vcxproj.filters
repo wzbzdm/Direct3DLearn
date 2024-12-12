@@ -108,6 +108,9 @@
     <ClInclude Include="BindableBase.h">
       <Filter>BindableHeader</Filter>
     </ClInclude>
+    <ClInclude Include="BoxTest.h">
+      <Filter>DrawUnitHeader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="SimpleDraw.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxTest.cpp">
+      <Filter>DrawUnitSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

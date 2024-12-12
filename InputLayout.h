@@ -8,5 +8,5 @@ public:
 	InputLayout(Graphics& gtx, const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout, ID3DBlob* pVertexShaderBytecode);
 	void Bind(Graphics& gtx) noexcept override;
 protected:
-	ID3D11InputLayout* pInputLayout;
+	ID3D11InputLayout* pInputLayout = nullptr;
 };

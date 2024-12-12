@@ -34,5 +34,8 @@ private:
 	ID3D11Device* device = nullptr;
 	ID3D11DeviceContext* context = nullptr;
 	ID3D11RenderTargetView* renderTargetView = nullptr;
-	ID3D11Texture2D* backBuffer = nullptr;
+	ID3D11DepthStencilView* depthStencilView = nullptr;
+	ID3D11Resource* backBuffer = nullptr;
+	ID3D11Texture2D* pDepthStencil = nullptr;
+	ID3D11DepthStencilState* pDSState = nullptr;
 };

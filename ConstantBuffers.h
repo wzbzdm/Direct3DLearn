@@ -44,7 +44,7 @@ public:
 	}
 
 protected:
-	ID3D11Buffer* pConstantBuffer;
+	ID3D11Buffer* pConstantBuffer = nullptr;
 };
 
 template<typename C>

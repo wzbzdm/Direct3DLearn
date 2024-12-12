@@ -8,5 +8,5 @@ public:
 	PixelShader(Graphics& gtx, const std::wstring& path);
 	void Bind(Graphics& gtx) noexcept override;
 protected:
-	ID3D11PixelShader* pPixelShader;
+	ID3D11PixelShader* pPixelShader = nullptr;
 };

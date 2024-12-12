@@ -22,5 +22,5 @@ public:
 	void Bind(Graphics& gfx) noexcept override;
 protected:
 	UINT stride;
-	ID3D11Buffer* pVertexBuffer;
+	ID3D11Buffer* pVertexBuffer = nullptr;
 };

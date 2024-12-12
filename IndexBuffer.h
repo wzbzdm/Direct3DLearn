@@ -10,5 +10,5 @@ public:
 	UINT GetCount() const noexcept;
 protected:
 	UINT count;
-	ID3D11Buffer* pIndexBuffer;
+	ID3D11Buffer* pIndexBuffer = nullptr;
 };
