@@ -37,6 +37,7 @@ struct VertexIn
 {
     float3 position : POSITION; // 顶点位置
     float3 normal : NORMAL; // 顶点法线
+    float2 texCoord : TEXCOORD0; // 顶点的纹理坐标
     float4 color : COLOR; // 顶点颜色
 };
 
@@ -47,4 +48,5 @@ struct VertexOut
     float3 normal : NORMAL; // 传递法线给像素着色器
     float4 worldPosition : TEXCOORD0; // 传递物体世界空间位置
     float4 color : TEXCOORD1; // 传递颜色信息
+    float2 texCoord : TEXCOORD2; // 传递纹理坐标
 };

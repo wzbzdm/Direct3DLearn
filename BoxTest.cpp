@@ -102,7 +102,7 @@ Box::Box(Graphics& gfx,
 	// 动态绑定数据包括，灯光，相机
 	BindDefault(gfx);
 
-	// 材质
+	// 材质, 插槽2
 	AddBind(std::make_unique<MaterialCbuf>(gfx, *this), 2, 1);
 	// 世界变换, 插槽3
 	AddBind(std::make_unique<TransformCbuf>(gfx, *this), 3, 1);

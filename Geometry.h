@@ -3,6 +3,13 @@
 #include <vector>
 #include <DirectXMath.h>
 
+typedef struct {
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 tex;
+	DirectX::XMFLOAT4 color;
+} DefaultVertice;
+
 template <class T>
 class Geometry {
 public:

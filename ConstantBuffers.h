@@ -11,6 +11,14 @@ public:
 		memcpy(msr.pData, &data, sizeof(data));
 		GetContext(gtx)->Unmap(pConstantBuffer.Get(), 0u);
 	}
+
+	void Update(Graphics& gtx, const std::vector<T>& data) {
+		D3D11_MAPPED_SUBRESOURCE msr;
+		GetContext(gtx)->Map(pConstantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr);
+		memcpy(msr.pData, data.data(), sizeof(T) * data.size());
+		GetContext(gtx)->Unmap(pConstantBuffer.Get(), 0u);
+	}
+
 	ConstantBuffer(Graphics& gtx, const T& data) {
 		D3D11_BUFFER_DESC cbd = {};
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;

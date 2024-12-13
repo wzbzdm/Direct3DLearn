@@ -108,4 +108,9 @@ public:
 	Geometry<T> CreateT() {
 		return CreateT<T>(2, 2, 2);
 	}
+
+    // 生成默认结构
+    Geometry<DefaultVertice> CreateD() {
+
+    }
 };

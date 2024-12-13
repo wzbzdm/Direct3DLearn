@@ -10,5 +10,5 @@ public:
 	void Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept override;
 
 private:
-	static std::unique_ptr<PixelConstantBuffer<std::vector<LightBuffer>>> lightsbuf;
+	static std::unique_ptr<PixelConstantBuffer<LightBuffer>> lightsbuf;
 };
