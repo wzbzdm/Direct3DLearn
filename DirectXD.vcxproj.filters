@@ -37,6 +37,15 @@
     <Filter Include="GeometrySource">
       <UniqueIdentifier>{3684b16d-4342-47db-8bf2-6b574867a55f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="资源文件\TextureImg">
+      <UniqueIdentifier>{4338e800-e2e2-4337-82d3-f31d67fcbf96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TextureData">
+      <UniqueIdentifier>{c2f398b2-09fb-4c4d-9248-f0c6f584a062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TexDataSource">
+      <UniqueIdentifier>{4bce2ab9-9862-4cb0-b35b-776b5807adf2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -141,6 +150,21 @@
     <ClInclude Include="Sphere.h">
       <Filter>Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageLoader.h">
+      <Filter>TextureData</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureGenerators.h">
+      <Filter>TextureData</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureData.h">
+      <Filter>TextureData</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureGeneratorBase.h">
+      <Filter>TextureData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -212,6 +236,12 @@
     <ClCompile Include="Hexahedron.cpp">
       <Filter>GeometrySource</Filter>
     </ClCompile>
+    <ClCompile Include="TextureGenerators.cpp">
+      <Filter>TexDataSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageLoader.cpp">
+      <Filter>TexDataSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXD.rc">
@@ -224,6 +254,9 @@
     </Image>
     <Image Include="DirectXD.ico">
       <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="TextureImg\test.png">
+      <Filter>资源文件\TextureImg</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +276,18 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="SphereVertex.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TexVertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TexPixelShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BoxVertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BoxPixelShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

@@ -47,8 +47,8 @@ class VertexConstantBuffer : public ConstantBuffer<C> {
 	using Bindable::GetContext;
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
-	void Bind(Graphics& gtx) noexcept override {
-		GetContext(gtx)->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+	void Bind(Graphics& gtx, unsigned int start, unsigned int len) noexcept override {
+		GetContext(gtx)->VSSetConstantBuffers(start, len, pConstantBuffer.GetAddressOf());
 	}
 };
 
@@ -58,7 +58,7 @@ class PixelConstantBuffer : public ConstantBuffer<C> {
 	using Bindable::GetContext;
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
-	void Bind(Graphics& gtx) noexcept override {
-		GetContext(gtx)->PSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+	void Bind(Graphics& gtx, unsigned int start, unsigned int len) noexcept override {
+		GetContext(gtx)->PSSetConstantBuffers(start, len, pConstantBuffer.GetAddressOf());
 	}
 };

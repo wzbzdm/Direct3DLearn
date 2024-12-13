@@ -6,7 +6,7 @@ class VertexShader : public Bindable
 {
 public:
 	VertexShader(Graphics& gfx, const std::wstring& path);
-	void Bind(Graphics& gfx) noexcept override;
+	void Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept override;
 	ID3DBlob* GetBytecode() const noexcept;
 protected:
 	Microsoft::WRL::ComPtr<ID3DBlob> pBytecodeBlob;

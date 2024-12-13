@@ -1,5 +1,9 @@
+#include "Hexahedron.h"
 #include "BoxTest.h"
 #include "BindableBase.h"
+#include "TextureGenerators.h"
+#include "ImageLoader.h"
+#include "Texture.h"
 
 Box::Box(Graphics& gfx,
 	std::mt19937& rng,
@@ -22,42 +26,22 @@ Box::Box(Graphics& gfx,
 	if (!IsStaticInitialized()) {
 		struct Vertex
 		{
-			struct
-			{
-				float x;
-				float y;
-				float z;
-			} pos;
+			DirectX::XMFLOAT3 pos;
+			DirectX::XMFLOAT2 tex;
+			UINT index;
 		};
-		const std::vector<Vertex> vertices =
-		{
-			{ -1.0f,-1.0f,-1.0f },
-			{ 1.0f,-1.0f,-1.0f },
-			{ -1.0f,1.0f,-1.0f },
-			{ 1.0f,1.0f,-1.0f },
-			{ -1.0f,-1.0f,1.0f },
-			{ 1.0f,-1.0f,1.0f },
-			{ -1.0f,1.0f,1.0f },
-			{ 1.0f,1.0f,1.0f },
-		};
-		AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
+		auto model = Hexahedron().CreateT<Vertex>();
+
+		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+
+		auto pvs = std::make_unique<VertexShader>(gfx, L"TexVertexShader.cso");
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, L"TexPixelShader.cso"));
 
-		const std::vector<unsigned short> indices =
-		{
-			0,2,1, 2,3,1,
-			1,3,5, 3,7,5,
-			2,6,3, 3,6,7,
-			4,5,7, 4,7,6,
-			0,4,2, 2,4,6,
-			0,1,4, 1,5,4
-		};
-		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
+		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
 
 		struct ConstantBuffer2
 		{
@@ -80,15 +64,38 @@ Box::Box(Graphics& gfx,
 				{ 0.0f,1.0f,1.0f },
 			}
 		};
+
 		AddStaticBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "TexCoord",0,DXGI_FORMAT_R32G32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Index",0,DXGI_FORMAT_R32_UINT,0,20,D3D11_INPUT_PER_VERTEX_DATA,0}
 		};
+
 		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
 
 		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+		// 纹理生成与绑定
+		TextureGenerator3D textureGen3D(256, 256, 256, [](size_t x, size_t y, size_t z, uint8_t* pOut)
+			{
+				// 根据坐标生成纹理数据，简单处理为单一颜色值（可根据需求修改）
+				pOut[0] = static_cast<uint8_t>((x + y + z) % 256);
+				pOut[1] = static_cast<uint8_t>((x * y + z) % 256);
+				pOut[2] = static_cast<uint8_t>((y + z) % 256);
+				pOut[3] = 255; // alpha值设为255（不透明）
+			});
+
+		//TextureData textureData = textureGen3D.Generate();
+		//auto pTexture = std::make_unique<Texture3D>(gfx, textureData);
+		//AddStaticBind(std::move(pTexture));
+		for (int i = 0; i < 6; i++) {
+			TextureData data = ImageLoader::Load2D(TESTIMG);
+			auto pTexture = std::make_unique<Texture2D>(gfx, data);
+			AddStaticBind(std::move(pTexture), i, 1);
+		}
 	}
 	else {
 		SetIndexFromStatic();

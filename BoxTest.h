@@ -11,7 +11,7 @@ public:
 		std::uniform_real_distribution<float>& rdist);
 	void SetSize(const DirectX::XMFLOAT3& size);
 	void Zoom(const DirectX::XMFLOAT3& scale);
-	void Update(float dt) noexcept;
+	void Update(float dt) noexcept override;
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 private:
 	// positional

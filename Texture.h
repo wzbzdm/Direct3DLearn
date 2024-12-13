@@ -63,8 +63,8 @@ public:
         CreateShaderResourceView(gfx, textureData.format, D3D11_SRV_DIMENSION_TEXTURE1D, pTexture.Get());
     }
 
-    void Bind(Graphics& gfx) noexcept override {
-        GetContext(gfx)->PSSetShaderResources(0u, 1u, pShaderResourceView.GetAddressOf());
+    void Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept override {
+        GetContext(gfx)->PSSetShaderResources(start, len, pShaderResourceView.GetAddressOf());
     }
 };
 
@@ -96,8 +96,8 @@ public:
         CreateShaderResourceView(gfx, textureData.format, D3D11_SRV_DIMENSION_TEXTURE2D, pTexture.Get());
     }
 
-    void Bind(Graphics& gfx) noexcept override {
-        GetContext(gfx)->PSSetShaderResources(0u, 1u, pShaderResourceView.GetAddressOf());
+    void Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept override {
+        GetContext(gfx)->PSSetShaderResources(start, len, pShaderResourceView.GetAddressOf());
     }
 };
 
@@ -128,7 +128,7 @@ public:
         CreateShaderResourceView(gfx, textureData.format, D3D11_SRV_DIMENSION_TEXTURE3D, pTexture.Get());
     }
 
-    void Bind(Graphics& gfx) noexcept override {
-        GetContext(gfx)->PSSetShaderResources(0u, 1u, pShaderResourceView.GetAddressOf());
+    void Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept override {
+        GetContext(gfx)->PSSetShaderResources(start, len, pShaderResourceView.GetAddressOf());
     }
 };

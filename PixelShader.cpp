@@ -7,6 +7,6 @@ PixelShader::PixelShader(Graphics& gtx, const std::wstring& path) {
 	GetDevice(gtx)->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
 }
 
-void PixelShader::Bind(Graphics& gtx) noexcept {
+void PixelShader::Bind(Graphics& gtx, unsigned int start, unsigned int len) noexcept {
 	GetContext(gtx)->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 }

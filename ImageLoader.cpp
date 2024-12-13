@@ -13,7 +13,7 @@ void ImageLoader::WICInitialize() {
     }
 }
 
-TextureData ImageLoader::Load1D(const std::string& filePath) {
+TextureData ImageLoader::Load1D(const std::wstring& filePath) {
     WICInitialize();
 
     TextureData textureData(256);
@@ -31,7 +31,7 @@ TextureData ImageLoader::Load1D(const std::string& filePath) {
     return textureData;
 }
 
-TextureData ImageLoader::Load2D(const std::string& filePath) {
+TextureData ImageLoader::Load2D(const std::wstring& filePath) {
     WICInitialize();
 
     IWICImagingFactory* pFactory = nullptr;
@@ -42,7 +42,7 @@ TextureData ImageLoader::Load2D(const std::string& filePath) {
     HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFactory));
     if (FAILED(hr)) throw std::runtime_error("Failed to create WIC Imaging Factory");
 
-    hr = pFactory->CreateDecoderFromFilename(std::wstring(filePath.begin(), filePath.end()).c_str(), nullptr, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
+    hr = pFactory->CreateDecoderFromFilename(filePath.c_str(), nullptr, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &pDecoder);
     if (FAILED(hr)) throw std::runtime_error("Failed to load image");
 
     hr = pDecoder->GetFrame(0, &pFrame);
@@ -72,7 +72,7 @@ TextureData ImageLoader::Load2D(const std::string& filePath) {
     return textureData;
 }
 
-TextureData ImageLoader::Load3D(const std::vector<std::string>& filePaths) {
+TextureData ImageLoader::Load3D(const std::vector<std::wstring>& filePaths) {
     WICInitialize();
 
     if (filePaths.empty()) throw std::runtime_error("No file paths provided for 3D texture");
@@ -106,4 +106,15 @@ TextureData ImageLoader::Load3D(const std::vector<std::string>& filePaths) {
     }
 
     return textureData;
+}
+
+TextureData ImageLoader::Load3D(const std::wstring filePath, int num) {
+	WICInitialize();
+
+	std::vector<std::wstring> filePaths;
+	for (int i = 0; i < num; ++i) {
+		filePaths.push_back(filePath);
+	}
+
+	return Load3D(filePaths);
 }

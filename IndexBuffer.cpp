@@ -13,7 +13,7 @@ IndexBuffer::IndexBuffer(Graphics& gfx, const std::vector<unsigned short>& indic
 	GetDevice(gfx)->CreateBuffer(&ibd, &isd, &pIndexBuffer);
 }
 
-void IndexBuffer::Bind(Graphics& gfx) noexcept
+void IndexBuffer::Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept
 {
 	GetContext(gfx)->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 }

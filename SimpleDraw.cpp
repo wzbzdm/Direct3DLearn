@@ -1,13 +1,20 @@
 #include "SimpleDraw.h"
 #include "DrawUnitBase.h"
 
+constexpr float PI = 3.14159265f;
+
 SimpleDraw::SimpleDraw() : window(800, 600, L"Test") {
 	// boxes.push_back(std::make_unique<Cylinder3D>(window.Gfx()));
 	// boxes.push_back(std::make_unique<Hexahedron3D>(window.Gfx()));
 	// boxes.push_back(std::make_unique<Plane3D>(window.Gfx()));
-	boxes.push_back(std::make_unique<Sphere3D>(window.Gfx()));
+	std::mt19937 rng{ std::random_device{}() };
+	std::uniform_real_distribution<float> adist{ 2.0f,PI * 2.0f };
+	std::uniform_real_distribution<float> ddist{ 1.0f,PI * 0.5f };
+	std::uniform_real_distribution<float> odist{ 1.0f,PI * 0.5f };
+	std::uniform_real_distribution<float> rdist{ 3.0f,6.0f };
+	boxes.push_back(std::make_unique<Box>(window.Gfx(), rng, adist, ddist, odist, rdist));
 	
-	window.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 1.0f, 20.0f));
+	window.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
 
 int SimpleDraw::Draw() {

@@ -4,7 +4,7 @@
 
 class Bindable {
 public:
-	virtual void Bind(Graphics& gtx) noexcept = 0;
+	virtual void Bind(Graphics& gtx, unsigned int start, unsigned int len) noexcept = 0;
 	virtual ~Bindable() = default;
 protected:
 	static ID3D11DeviceContext* GetContext(Graphics& gtx) noexcept;

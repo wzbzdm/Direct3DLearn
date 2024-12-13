@@ -13,7 +13,7 @@ public:
     void SetRotation(const DirectX::XMFLOAT3& rotation);
     void Rotate(const DirectX::XMFLOAT3& delta);
 
-    void Update(float dt) noexcept;
+    virtual void Update(float dt) noexcept;
 
     // 获取当前变换矩阵
     virtual DirectX::XMMATRIX GetTransformMatrix() const noexcept = 0;

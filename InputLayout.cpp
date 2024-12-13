@@ -9,6 +9,6 @@ InputLayout::InputLayout(Graphics& gfx, const std::vector<D3D11_INPUT_ELEMENT_DE
 	);
 }
 
-void InputLayout::Bind(Graphics& gfx) noexcept {
+void InputLayout::Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept {
 	GetContext(gfx)->IASetInputLayout(pInputLayout.Get());
 }
