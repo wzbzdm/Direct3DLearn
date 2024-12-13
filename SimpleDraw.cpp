@@ -1,6 +1,5 @@
 #include "SimpleDraw.h"
 #include "DrawUnitBase.h"
-#include "BoxTest.h"
 
 SimpleDraw::SimpleDraw() : window(800, 600, L"Test") {
 	// boxes.push_back(std::make_unique<Cylinder3D>(window.Gfx()));
