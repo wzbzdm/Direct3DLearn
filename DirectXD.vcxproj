@@ -145,7 +145,11 @@
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
+    <ClInclude Include="LightCbuf.h" />
+    <ClInclude Include="MaterialCbuf.h" />
+    <ClInclude Include="MyCamera.h" />
     <ClInclude Include="MyGraphics.h" />
+    <ClInclude Include="MyLightManager.h" />
     <ClInclude Include="MyMouse.h" />
     <ClInclude Include="MyTimer.h" />
     <ClInclude Include="MyWindow.h" />

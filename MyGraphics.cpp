@@ -83,6 +83,22 @@ void Graphics::EndFrame() {
 	swapChain->Present(1u, 0u);
 }
 
+void Graphics::SetCamera(std::shared_ptr<CameraManager> camera) noexcept {
+	cameras = camera;
+}
+
+void Graphics::SetLight(std::shared_ptr<LightManager> light) noexcept {
+	lights = light;
+}
+
+CameraBuffer Graphics::GetCameraBuffer() noexcept {
+	return cameras->GetCurrentCamera().GetCameraBufferData();
+}
+
+std::vector<LightBuffer> Graphics::GetLightBuffer() noexcept {
+	return lights->GetLightBufferData();
+}
+
 void Graphics::ClearBuffer(float red, float green, float blue) noexcept {
 	const float color[] = { red, green, blue, 1.0f };
 	context->ClearRenderTargetView(renderTargetView.Get(), color);
@@ -91,6 +107,10 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept {
 
 void Graphics::DrawIndexed(UINT count) noexcept {
 	context->DrawIndexed(count, 0u, 0u);
+}
+
+DirectX::XMMATRIX Graphics::GetCameraMatrix() const noexcept {
+	return cameras->GetCameraMatrix();
 }
 
 void Graphics::DrawTestTriangle(float angle) {
@@ -240,12 +260,4 @@ void Graphics::DrawTestTriangle(float angle) {
 	pVertexShader->Release();
 	pInputLayout->Release();
 	pPixelShader->Release();
-}
-
-void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept {
-	projection = proj;
-}
-
-DirectX::XMMATRIX Graphics::GetProjection() const noexcept {
-	return projection;
 }

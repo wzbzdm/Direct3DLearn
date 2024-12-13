@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MyCameraManager.h"
+#include "MyLightManager.h"
 #include "DirectXD.h"
 #include <iostream>
 #include <wrl.h>
@@ -16,6 +18,8 @@
 
 namespace wrl = Microsoft::WRL;
 
+class Window;
+
 class Graphics {
 	friend class Bindable;
 	friend class Shape3DBase;
@@ -24,14 +28,17 @@ public:
 	Graphics(const Graphics&) = delete;
 	Graphics& operator = (const Graphics&) = delete;
 	void EndFrame();
+	void SetCamera(std::shared_ptr<CameraManager> camera) noexcept;
+	void SetLight(std::shared_ptr<LightManager> light) noexcept;
+	CameraBuffer GetCameraBuffer() noexcept;
+	std::vector<LightBuffer> GetLightBuffer() noexcept;
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void DrawIndexed(UINT count) noexcept;
-	void RenderObject();
+	DirectX::XMMATRIX GetCameraMatrix() const noexcept;
 	void DrawTestTriangle(float angle);		//  测试
-	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
-	DirectX::XMMATRIX GetProjection() const noexcept;
 private:
-	DirectX::XMMATRIX projection;
+	std::shared_ptr<CameraManager> cameras;          // 相机对象
+	std::shared_ptr<LightManager> lights;		// 灯光管理对象
 	wrl::ComPtr<IDXGISwapChain> swapChain;
 	wrl::ComPtr<ID3D11Device> device;
 	wrl::ComPtr<ID3D11DeviceContext> context;

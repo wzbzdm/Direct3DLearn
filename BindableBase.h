@@ -8,3 +8,7 @@
 #include "TransformCbuf.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
+#include "MaterialCbuf.h"
+#include "Texture.h"
+#include "CameraCbuf.h"
+#include "LightCbuf.h"

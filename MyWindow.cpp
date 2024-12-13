@@ -17,6 +17,10 @@ Window::Window(int width, int height, const wchar_t* name) : width(width), heigh
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 	pGfx = std::make_unique<Graphics>(hWnd);
+	
+	// 设置 Camera 和 Light 对象到 Graphics 中
+	pGfx->SetCamera(std::make_shared<CameraManager>(cameras)); // 将相机传递给Graphics
+	pGfx->SetLight(std::make_shared<LightManager>(lights));   // 将灯光管理器传递给Graphics
 }
 
 Window::~Window() {

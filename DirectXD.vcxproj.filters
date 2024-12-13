@@ -165,6 +165,18 @@
     <ClInclude Include="TextureGeneratorBase.h">
       <Filter>TextureData</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialCbuf.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="LightCbuf.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLightManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyCamera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">

@@ -6,6 +6,7 @@
 #include <memory>
 
 class Window {
+	friend class Graphics;
 private:
 	class WindowClass {
 	public:
@@ -32,6 +33,8 @@ public:
 	Graphics& Gfx();
 public:
 	Mouse mouse;
+	LightManager lights;
+	CameraManager cameras;
 private:
 	int width;
 	int height;
