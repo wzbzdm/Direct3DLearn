@@ -183,6 +183,9 @@
     <ClInclude Include="CameraCbuf.h">
       <Filter>BindableHeader</Filter>
     </ClInclude>
+    <ClInclude Include="MyKeyboard.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -268,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="LightCbuf.cpp">
       <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="MyKeyboard.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

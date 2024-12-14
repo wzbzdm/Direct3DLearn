@@ -151,6 +151,7 @@
     <ClInclude Include="MaterialCbuf.h" />
     <ClInclude Include="MyCamera.h" />
     <ClInclude Include="MyGraphics.h" />
+    <ClInclude Include="MyKeyboard.h" />
     <ClInclude Include="MyLightManager.h" />
     <ClInclude Include="MyMouse.h" />
     <ClInclude Include="MyTimer.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="LightCbuf.cpp" />
     <ClCompile Include="MaterialCbuf.cpp" />
     <ClCompile Include="MyGraphics.cpp" />
+    <ClCompile Include="MyKeyboard.cpp" />
     <ClCompile Include="MyMouse.cpp" />
     <ClCompile Include="MyTimer.cpp" />
     <ClCompile Include="MyWindow.cpp" />

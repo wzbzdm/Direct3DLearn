@@ -2,6 +2,7 @@
 
 #include "MyGraphics.h"
 #include "MyMouse.h"
+#include "MyKeyboard.h"
 #include <optional>
 #include <memory>
 
@@ -33,6 +34,7 @@ public:
 	Graphics& Gfx();
 public:
 	Mouse mouse;
+	Keyboard kbd;
 	LightManager lights;
 	CameraManager cameras;
 private:
