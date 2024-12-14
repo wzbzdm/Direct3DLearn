@@ -5,17 +5,7 @@ cbuffer CameraData : register(b0)
     CameraBuffer camera; // 摄像头相关数据
 };
 
-cbuffer LightData : register(b1)
-{
-    Light lights[10]; // 光源数组（最多支持10个光源）
-};
-
-cbuffer MaterialData : register(b2)
-{
-    Material material; // 材质数据
-};
-
-cbuffer TransformData : register(b3)
+cbuffer TransformData : register(b1)
 {
    TransformBuffer transform; // 变换数据
 };
@@ -41,10 +31,16 @@ VertexOut main(VertexIn vin)
     vout.worldPosition = mul(worldPos, transform.worldMatrix);
 
     // 世界空间转视图空间：乘以摄像机的视图矩阵
-    vout.position = mul(worldPos, camera.viewMatrix);
+    vout.position = mul(vout.worldPosition, camera.viewMatrix);
     
     // 视图空间转屏幕空间：乘以摄像机的投影矩阵
     vout.position = mul(vout.position, camera.projectionMatrix);
+    
+    // vout.position = vout.worldPosition;
+    
+    // 由于 矩阵乘积的转置 等于 每个矩阵的转置
+    // float4x4 matrixA = mul(mul(camera.projectionMatrix, camera.viewMatrix), transform.worldMatrix);
+    // vout.position = mul(worldPos, matrixA);
 
     // 传递法线给像素着色器
     // vout.normal = mul(vin.normal, (float3x3) camera.viewMatrix);
@@ -52,7 +48,7 @@ VertexOut main(VertexIn vin)
     vout.normal = normalize(mul(vin.normal, normalMatrix));
 
     // 传递顶点颜色（可以根据材质计算色值）
-    vout.color = vin.color * material.ambientColor;
+    vout.color = vin.color;
     
     vout.texCoord = vin.texCoord;
 

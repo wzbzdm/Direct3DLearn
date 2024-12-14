@@ -177,11 +177,11 @@
     <ClInclude Include="MyCamera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CameraCbuf.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MyCameraManager.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraCbuf.h">
+      <Filter>BindableHeader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

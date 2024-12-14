@@ -1,5 +1,9 @@
-// PixelShader.hlsl
 #include "Light.hlsli"
+
+SamplerState sampleState
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+};
 
 cbuffer CameraData : register(b0)
 {
@@ -16,20 +20,17 @@ cbuffer MaterialData : register(b2)
     Material material; // 材质数据
 };
 
-cbuffer TransformData : register(b3)
-{
-    TransformBuffer transform; // 变换数据
-};
-
 Texture2D diffuseTexture : register(t0); // 漫反射纹理
-SamplerState sampleState : register(s0); // 纹理采样器
 
 float4 main(VertexOut pin) : SV_Target
 {
     float3 viewDir = normalize(camera.cameraPosition - pin.worldPosition.xyz); // 观察方向
     
+    // 环境光
+    float4 envLight = float4(1, 1, 1, 0.1);
+    
     // Phong 光照计算：环境光、漫反射光和高光反射
-    float4 finalColor = material.ambientColor * pin.color; // 环境光
+    float4 finalColor = material.ambientColor * envLight; // 环境光
     
     // 漫反射与高光反射计算
     float3 lightColor = float3(0, 0, 0);

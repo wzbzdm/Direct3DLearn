@@ -18,6 +18,6 @@ public:
     // 获取当前变换矩阵
     virtual DirectX::XMMATRIX GetTransformMatrix() const noexcept = 0;
 protected:
-	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 5.0f };
+	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 10.0f };
 	DirectX::XMFLOAT3 rotation = { 0.0f, 0.0f, 0.0f };
 };

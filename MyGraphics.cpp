@@ -113,6 +113,10 @@ DirectX::XMMATRIX Graphics::GetCameraMatrix() const noexcept {
 	return cameras->GetCameraMatrix();
 }
 
+DirectX::XMMATRIX Graphics::GetProjectionMatrix() const noexcept {
+	return cameras->GetProjectionMatrix();
+}
+
 void Graphics::DrawTestTriangle(float angle) {
 	struct Vertex {
 		struct {

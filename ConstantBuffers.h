@@ -70,3 +70,16 @@ public:
 		GetContext(gtx)->PSSetConstantBuffers(start, len, pConstantBuffer.GetAddressOf());
 	}
 };
+
+// 同时绑定到顶点着色器和像素着色器
+template<typename C>
+class SharedConstantBuffer : public ConstantBuffer<C> {
+	using ConstantBuffer<C>::pConstantBuffer;
+	using Bindable::GetContext;
+public:
+	using ConstantBuffer<C>::ConstantBuffer;
+	void Bind(Graphics& gtx, unsigned int start, unsigned int len) noexcept override {
+		GetContext(gtx)->VSSetConstantBuffers(start, len, pConstantBuffer.GetAddressOf());
+		GetContext(gtx)->PSSetConstantBuffers(start, len, pConstantBuffer.GetAddressOf());
+	}
+};

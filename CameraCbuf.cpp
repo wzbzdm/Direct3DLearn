@@ -2,7 +2,7 @@
 
 CameraCbuf::CameraCbuf(Graphics& gfx) noexcept {
 	if (!cameraBuffer) {
-		cameraBuffer = std::make_unique<PixelConstantBuffer<CameraBuffer>>(gfx);
+		cameraBuffer = std::make_unique<SharedConstantBuffer<CameraBuffer>>(gfx);
 	}
 }
 
@@ -12,4 +12,4 @@ void CameraCbuf::Bind(Graphics& gfx, unsigned int start, unsigned int len) noexc
 	cameraBuffer->Bind(gfx, start, len);
 }
 
-std::unique_ptr<PixelConstantBuffer<CameraBuffer>> CameraCbuf::cameraBuffer;
+std::unique_ptr<SharedConstantBuffer<CameraBuffer>> CameraCbuf::cameraBuffer;

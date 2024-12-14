@@ -19,7 +19,9 @@ protected:
 
 	static void BindDefault(Graphics& gfx, Shape3DBase& base) noexcept
 	{
+		// 同时绑定到顶点着色器和像素着色器插槽0
 		base.AddBind(std::make_unique<CameraCbuf>(gfx), 0, 1);
+		// 绑定到像素着色器插槽1
 		base.AddBind(std::make_unique<LightCbuf>(gfx), 1, 1);
 	}
 

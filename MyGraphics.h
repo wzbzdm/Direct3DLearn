@@ -35,6 +35,7 @@ public:
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void DrawIndexed(UINT count) noexcept;
 	DirectX::XMMATRIX GetCameraMatrix() const noexcept;
+	DirectX::XMMATRIX GetProjectionMatrix() const noexcept;
 	void DrawTestTriangle(float angle);		//  测试
 private:
 	std::shared_ptr<CameraManager> cameras;          // 相机对象

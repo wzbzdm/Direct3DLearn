@@ -68,6 +68,13 @@ Box::Box(Graphics& gfx,
 
 		AddStaticBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));*/
 
+		//const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
+		//{
+		//	{ "Position",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//	{ "TexCoord",  0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//	{ "Index",     0, DXGI_FORMAT_R32_UINT,        0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//};
+
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -106,13 +113,16 @@ Box::Box(Graphics& gfx,
 	else {
 		SetIndexFromStatic();
 	}
+	// AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+
 	// 动态绑定数据包括，灯光，相机
 	BindDefault(gfx, *this);
 
 	// 材质, 插槽2
 	AddBind(std::make_unique<MaterialCbuf>(gfx, *this), 2, 1);
-	// 世界变换, 插槽3
-	AddBind(std::make_unique<TransformCbuf>(gfx, *this), 3, 1);
+
+	// 世界变换, 顶点插槽1
+	AddBind(std::make_unique<TransformCbuf>(gfx, *this), 1, 1);
 }
 
 void Box::Update(float dt) noexcept
@@ -130,7 +140,7 @@ DirectX::XMMATRIX Box::GetTransformMatrix() const noexcept
 	return DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
 		DirectX::XMMatrixTranslation(r, 0.0f, 0.0f) *
 		DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
-		DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+		DirectX::XMMatrixTranslation(0.0f, 0.0f, 10.0f);
 }
 
 void Box::SetSize(const DirectX::XMFLOAT3& size) {

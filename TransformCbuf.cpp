@@ -8,7 +8,9 @@ TransformCbuf::TransformCbuf(Graphics& gtx, const Shape3DBase& parent) : parent(
 
 void TransformCbuf::Bind(Graphics& gtx, unsigned int start, unsigned int len) noexcept {
 	// 当前图形所需的变换 及 所有图形都有的变换
-	vcbuf->Update(gtx, DirectX::XMMatrixTranspose(parent.GetTransformMatrix() * gtx.GetCameraMatrix()));
+	// vcbuf->Update(gtx, DirectX::XMMatrixTranspose(parent.GetTransformMatrix() * gtx.GetCameraMatrix()));
+
+	vcbuf->Update(gtx, DirectX::XMMatrixTranspose(parent.GetTransformMatrix()));	// 测试将投影矩阵放在着色器中
 	vcbuf->Bind(gtx, start, len);
 }
 

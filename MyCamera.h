@@ -25,13 +25,13 @@ public:
     Camera() {
         // 初始化CameraData并设置默认参数
         data = {
-            DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f),  // 默认位置 (在Z轴负方向上)
-            DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),   // 默认目标 (指向原点)
-            DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),   // 默认上向量 (指向Y轴正方向)
-            45.0f,                                  // 默认视野角度 (FOV) 45°
-            0.1f,                                   // 默认近裁剪面距离
-            50.0f,                                // 默认远裁剪面距离
-            4.0 / 3.0                                   // 默认纵横比 (4:3)
+            DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),   // 默认位置 (在Z轴负方向上)
+            DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f),    // 默认目标 (指向原点)
+            DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),    // 默认上向量 (指向Y轴正方向)
+            114.0f,                                   // 
+            0.1f,                                   // 默认近裁剪面距离 
+            100.0f,                                  // 默认远裁剪面距离
+            4.0 / 3.0                               // 默认纵横比 (4:3)
         };
         UpdateMatrices();
     }
@@ -51,7 +51,8 @@ public:
 
     // 获取视图矩阵
     DirectX::XMMATRIX GetViewMatrix() const {
-        return view;
+        return DirectX::XMMatrixIdentity();
+        // return view;
     }
 
     // 获取投影矩阵
@@ -61,7 +62,7 @@ public:
 
     // 获取完整的相机矩阵（视图 + 投影）
     DirectX::XMMATRIX GetCameraMatrix() const {
-        return XMMatrixMultiply(projection, view);  // 先应用投影矩阵，再应用视图矩阵
+        return XMMatrixMultiply(view, projection);  // 先应用视图矩阵，再应用投影矩阵
     }
 
     // 更新相机位置，并重新计算矩阵
@@ -101,8 +102,8 @@ public:
     // 转换为可以传递给GPU的相机数据
     CameraBuffer GetCameraBufferData() const {
         CameraBuffer buffer;
-        buffer.view = view;
-        buffer.projection = projection;
+        buffer.view = DirectX::XMMatrixTranspose(view);
+        buffer.projection = DirectX::XMMatrixTranspose(projection);
         buffer.position = data.position;
         buffer.pad = 0.0f;  // 保持4字节对齐
         return buffer;
