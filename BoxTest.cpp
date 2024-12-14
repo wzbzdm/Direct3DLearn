@@ -30,19 +30,21 @@ Box::Box(Graphics& gfx,
 			UINT index;
 		};
 
-		auto model = Hexahedron().CreateT<Vertex>();
+		// auto model = Hexahedron().CreateT<Vertex>();
+
+		auto model = Hexahedron().CreateD();
 
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"TexVertexShader.cso");
+		auto pvs = std::make_unique<VertexShader>(gfx, L"LightVertexShader.cso");
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"TexPixelShader.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, L"LightPixelShader.cso"));
 
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
 
-		struct ConstantBuffer2
+		/*struct ConstantBuffer2
 		{
 			struct
 			{
@@ -64,18 +66,23 @@ Box::Box(Graphics& gfx,
 			}
 		};
 
-		AddStaticBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
+		AddStaticBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));*/
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
-			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-			{ "TexCoord",0,DXGI_FORMAT_R32G32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
-			{ "Index",0,DXGI_FORMAT_R32_UINT,0,20,D3D11_INPUT_PER_VERTEX_DATA,0}
+			{ "Position",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "Normal",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TexCoord",  0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "Color",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
 		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
 
 		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+		TextureData data = ImageLoader::Load2D(TESTIMG);
+		auto pTexture = std::make_unique<Texture2D>(gfx, data);
+		AddStaticBind(std::move(pTexture));
 
 		// 纹理生成与绑定
 		//TextureGenerator3D textureGen3D(256, 256, 256, [](size_t x, size_t y, size_t z, uint8_t* pOut)
@@ -100,7 +107,7 @@ Box::Box(Graphics& gfx,
 		SetIndexFromStatic();
 	}
 	// 动态绑定数据包括，灯光，相机
-	BindDefault(gfx);
+	BindDefault(gfx, *this);
 
 	// 材质, 插槽2
 	AddBind(std::make_unique<MaterialCbuf>(gfx, *this), 2, 1);

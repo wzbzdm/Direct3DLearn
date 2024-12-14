@@ -20,6 +20,18 @@ cbuffer TransformData : register(b3)
    TransformBuffer transform; // 变换数据
 };
 
+float3x3 SafeInverse3x3(float3x3 m)
+{
+    float3x3 adj =
+    {
+        cross(m[1], m[2]),
+        cross(m[2], m[0]),
+        cross(m[0], m[1])
+    };
+    float det = dot(m[0], adj[0]);
+    return det != 0 ? adj / det : float3x3(1, 0, 0, 0, 1, 0, 0, 0, 1); // 返回单位矩阵作为默认值
+}
+
 VertexOut main(VertexIn vin)
 {
     VertexOut vout;
@@ -35,10 +47,14 @@ VertexOut main(VertexIn vin)
     vout.position = mul(vout.position, camera.projectionMatrix);
 
     // 传递法线给像素着色器
-    vout.normal = mul(vin.normal, (float3x3) camera.viewMatrix); // 法线转到视图空间
+    // vout.normal = mul(vin.normal, (float3x3) camera.viewMatrix);
+    float3x3 normalMatrix = transpose(SafeInverse3x3((float3x3) transform.worldMatrix));
+    vout.normal = normalize(mul(vin.normal, normalMatrix));
 
     // 传递顶点颜色（可以根据材质计算色值）
     vout.color = vin.color * material.ambientColor;
+    
+    vout.texCoord = vin.texCoord;
 
     return vout;
 }

@@ -27,7 +27,22 @@ typedef struct {
 // 完善的 LightManager 管理类
 class LightManager {
 public:
-    LightManager() = default;
+    LightManager() {
+        // 初始化一个默认的点光源
+        defaultLight = {
+            DirectX::XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f),    // 设置点光源位置（假设为 (0, 10, 0)）
+            DirectX::XMFLOAT4(0.0f, -1.0f, 0.0f, 0.0f),   // 点光源的方向，可以设为(0, -1, 0)，代表光向下照射
+            DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),    // 设置光的颜色为白色（RGB 都为 1）
+            1.0f,                                         // 光强度
+            50.0f,                                        // 灯光范围
+            0.0f,                                         // 聚光灯锥衰减设置为 0.0f，因为这里是点光源
+            0.0f,                                         // 聚光灯的锥度设置为 0.0f，因为这里没有聚光灯
+            0,                                            // 设置为点光源（点光源类型是 0）
+            1                                             // 启用光源
+        };
+
+        lights.push_back(defaultLight);
+    }
 
     // 更新灯光数据
     void UpdateLights(const std::vector<LightProperties>& newLights) {
@@ -79,7 +94,19 @@ public:
         return lightBufferData;
     }
 
+    // 添加光源
+    void AddLight(const LightProperties& light) {
+        lights.push_back(light);  // 添加到灯光列表
+    }
+
+    // 删除指定索引的光源
+    void RemoveLight(unsigned int index) {
+        if (index < lights.size()) {
+            lights.erase(lights.begin() + index);
+        }
+    }
 
 private:
+    LightProperties defaultLight;
     std::vector<LightProperties> lights;  // 保存所有活动的灯光
 };

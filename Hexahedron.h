@@ -110,7 +110,63 @@ public:
 	}
 
     // 生成默认结构
-    Geometry<DefaultVertice> CreateD() {
+    Geometry<DefaultVertice> CreateD(float l = 1.0f, float w = 1.0f, float h = 1.0f) {
+        // 默认颜色 (白色)
+        DirectX::XMFLOAT4 defaultColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+        std::vector<DefaultVertice> vertices = {
+            // Front face
+            { { -l / 2.0f, -h / 2.0f,  w / 2.0f }, { 0.0f,  0.0f,  1.0f }, { 0.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f, -h / 2.0f,  w / 2.0f }, { 0.0f,  0.0f,  1.0f }, { 1.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f,  h / 2.0f,  w / 2.0f }, { 0.0f,  0.0f,  1.0f }, { 1.0f, 1.0f }, defaultColor },
+            { { -l / 2.0f,  h / 2.0f,  w / 2.0f }, { 0.0f,  0.0f,  1.0f }, { 0.0f, 1.0f }, defaultColor },
+
+            // Back face
+            { { -l / 2.0f, -h / 2.0f, -w / 2.0f }, { 0.0f,  0.0f, -1.0f }, { 1.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f, -h / 2.0f, -w / 2.0f }, { 0.0f,  0.0f, -1.0f }, { 0.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f,  h / 2.0f, -w / 2.0f }, { 0.0f,  0.0f, -1.0f }, { 0.0f, 1.0f }, defaultColor },
+            { { -l / 2.0f,  h / 2.0f, -w / 2.0f }, { 0.0f,  0.0f, -1.0f }, { 1.0f, 1.0f }, defaultColor },
+
+            // Top face
+            { { -l / 2.0f,  h / 2.0f,  w / 2.0f }, { 0.0f,  1.0f,  0.0f }, { 0.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f,  h / 2.0f,  w / 2.0f }, { 0.0f,  1.0f,  0.0f }, { 1.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f,  h / 2.0f, -w / 2.0f }, { 0.0f,  1.0f,  0.0f }, { 1.0f, 1.0f }, defaultColor },
+            { { -l / 2.0f,  h / 2.0f, -w / 2.0f }, { 0.0f,  1.0f,  0.0f }, { 0.0f, 1.0f }, defaultColor },
+
+            // Bottom face
+            { { -l / 2.0f, -h / 2.0f, -w / 2.0f }, { 0.0f, -1.0f,  0.0f }, { 0.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f, -h / 2.0f, -w / 2.0f }, { 0.0f, -1.0f,  0.0f }, { 1.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f, -h / 2.0f,  w / 2.0f }, { 0.0f, -1.0f,  0.0f }, { 1.0f, 1.0f }, defaultColor },
+            { { -l / 2.0f, -h / 2.0f,  w / 2.0f }, { 0.0f, -1.0f,  0.0f }, { 0.0f, 1.0f }, defaultColor },
+
+            // Left face
+            { { -l / 2.0f, -h / 2.0f,  w / 2.0f }, { -1.0f, 0.0f,  0.0f }, { 1.0f, 0.0f }, defaultColor },
+            { { -l / 2.0f, -h / 2.0f, -w / 2.0f }, { -1.0f, 0.0f,  0.0f }, { 0.0f, 0.0f }, defaultColor },
+            { { -l / 2.0f,  h / 2.0f, -w / 2.0f }, { -1.0f, 0.0f,  0.0f }, { 0.0f, 1.0f }, defaultColor },
+            { { -l / 2.0f,  h / 2.0f,  w / 2.0f }, { -1.0f, 0.0f,  0.0f }, { 1.0f, 1.0f }, defaultColor },
+
+            // Right face
+            { {  l / 2.0f, -h / 2.0f, -w / 2.0f }, {  1.0f, 0.0f,  0.0f }, { 0.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f, -h / 2.0f,  w / 2.0f }, {  1.0f, 0.0f,  0.0f }, { 1.0f, 0.0f }, defaultColor },
+            { {  l / 2.0f,  h / 2.0f,  w / 2.0f }, {  1.0f, 0.0f,  0.0f }, { 1.0f, 1.0f }, defaultColor },
+            { {  l / 2.0f,  h / 2.0f, -w / 2.0f }, {  1.0f, 0.0f,  0.0f }, { 0.0f, 1.0f }, defaultColor }
+        };
+
+        std::vector<unsigned short> indices = {
+            // Front face
+            0, 1, 2, 0, 2, 3,
+            // Back face
+            6, 5, 4, 7, 6, 4,
+            // Top face
+            8, 9, 10, 8, 10, 11,
+            // Bottom face
+            12, 13, 14, 12, 14, 15,
+            // Left face
+            18, 17, 16, 19, 18, 16,
+            // Right face
+            22, 21, 20, 23, 22, 20
+        };
+
+        return Geometry<DefaultVertice>(std::move(vertices), std::move(indices));
     }
 };

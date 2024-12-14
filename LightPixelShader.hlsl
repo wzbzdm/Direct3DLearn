@@ -43,11 +43,12 @@ float4 main(VertexOut pin) : SV_Target
             
             // 计算高光：光的反射方向和观察方向的点积
             float3 reflectDir = reflect(-lightDir, pin.normal);
+            // float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
             float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
 
             // 计算点光源对当前像素的影响
             float dist = length(lights[i].position.xyz - pin.worldPosition.xyz);
-            float attenuation = 1.0f / (1.0f + dist * dist); // 光衰减
+            float attenuation = 1.0f / (1.0f + 0.1f * dist + 0.01f * dist * dist);
             float3 lightIntensity = lights[i].color.rgb * (lights[i].intensity * attenuation);
 
             // 累加光照效果
@@ -55,8 +56,10 @@ float4 main(VertexOut pin) : SV_Target
         }
     }
 
+    float4 texColor = diffuseTexture.Sample(sampleState, pin.texCoord);
+    finalColor *= texColor;
     finalColor.rgb += lightColor; // 加上光照效应
-    finalColor.a = 1.0f; // 不透明度为1
+    finalColor.a = texColor.a * material.diffuseColor.a;
     
     return finalColor;
 }

@@ -17,10 +17,10 @@ protected:
 		return !staticBinds.empty();
 	}
 
-	static void BindDefault(Graphics& gfx) noexcept
+	static void BindDefault(Graphics& gfx, Shape3DBase& base) noexcept
 	{
-		AddBind(std::make_unique<CameraCbuf>(gfx), 0, 1);
-		AddBind(std::make_unique<LightCbuf>(gfx), 1, 1);
+		base.AddBind(std::make_unique<CameraCbuf>(gfx), 0, 1);
+		base.AddBind(std::make_unique<LightCbuf>(gfx), 1, 1);
 	}
 
 	static void AddStaticBind(std::unique_ptr<Bindable> bind, unsigned int start, unsigned int len) noexcept

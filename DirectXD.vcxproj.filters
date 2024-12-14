@@ -177,6 +177,12 @@
     <ClInclude Include="MyCamera.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CameraCbuf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyCameraManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -254,6 +260,15 @@
     <ClCompile Include="ImageLoader.cpp">
       <Filter>TexDataSource</Filter>
     </ClCompile>
+    <ClCompile Include="MaterialCbuf.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraCbuf.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="LightCbuf.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXD.rc">
@@ -302,10 +317,19 @@
     <FxCompile Include="BoxPixelShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="LightPixelShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="LightVertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore">
       <Filter>Conf</Filter>
+    </None>
+    <None Include="Light.hlsli">
+      <Filter>Shader</Filter>
     </None>
   </ItemGroup>
 </Project>

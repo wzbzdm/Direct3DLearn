@@ -22,6 +22,20 @@ typedef struct {
 
 class Camera {
 public:
+    Camera() {
+        // 初始化CameraData并设置默认参数
+        data = {
+            DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f),  // 默认位置 (在Z轴负方向上)
+            DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),   // 默认目标 (指向原点)
+            DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),   // 默认上向量 (指向Y轴正方向)
+            45.0f,                                  // 默认视野角度 (FOV) 45°
+            0.1f,                                   // 默认近裁剪面距离
+            50.0f,                                // 默认远裁剪面距离
+            4.0 / 3.0                                   // 默认纵横比 (4:3)
+        };
+        UpdateMatrices();
+    }
+
     Camera(const CameraData& data)
         : data(data)
     {
@@ -47,12 +61,35 @@ public:
 
     // 获取完整的相机矩阵（视图 + 投影）
     DirectX::XMMATRIX GetCameraMatrix() const {
-        return projection * view;  // 先应用视图矩阵，再应用投影矩阵
+        return XMMatrixMultiply(projection, view);  // 先应用投影矩阵，再应用视图矩阵
     }
 
-    // 更新相机位置、朝向等参数
+    // 更新相机位置，并重新计算矩阵
     void SetPosition(const DirectX::XMFLOAT3& newPos) {
         data.position = newPos;
+        UpdateMatrices();
+    }
+
+    // 更新相机的目标（朝向）
+    void SetTarget(const DirectX::XMFLOAT3& newTarget) {
+        data.target = newTarget;
+        UpdateMatrices();
+    }
+
+    // 根据法向量设置相机的朝向
+    void SetOrientationFromNormal(const DirectX::XMFLOAT3& normal) {
+        using namespace DirectX;
+
+        // 确保法向量是单位向量
+        XMVECTOR normalizedNormal = XMVector3Normalize(XMLoadFloat3(&normal));
+
+        // 更新目标
+        XMVECTOR targetPos = XMLoadFloat3(&data.position) + normalizedNormal;
+
+        // 将目标转换为XMFLOAT3
+        XMStoreFloat3(&data.target, targetPos);
+
+        // 更新矩阵
         UpdateMatrices();
     }
 
@@ -61,12 +98,52 @@ public:
         return data;
     }
 
-    CameraBuffer GetCameraBufferData() {
-		CameraBuffer buffer;
-		buffer.view = view;
-		buffer.projection = projection;
-		buffer.position = data.position;
-		return buffer;
+    // 转换为可以传递给GPU的相机数据
+    CameraBuffer GetCameraBufferData() const {
+        CameraBuffer buffer;
+        buffer.view = view;
+        buffer.projection = projection;
+        buffer.position = data.position;
+        buffer.pad = 0.0f;  // 保持4字节对齐
+        return buffer;
+    }
+
+    // 设置视野角度（FOV）
+    void SetFieldOfView(float fov) {
+        data.fieldOfView = fov;
+        UpdateMatrices();
+    }
+
+    // 设置纵横比
+    void SetAspectRatio(float aspectRatio) {
+        data.aspectRatio = aspectRatio;
+        UpdateMatrices();
+    }
+
+    // 相机的旋转，控制俯仰角、偏航角和滚转角
+    void AdjustRotation(float pitch, float yaw, float roll = 0.0f) {
+        using namespace DirectX;
+        XMVECTOR direction = XMLoadFloat3(&data.target) - XMLoadFloat3(&data.position); // 当前朝向
+        XMMATRIX rotation = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);             // 旋转矩阵
+        direction = XMVector3TransformNormal(direction, rotation);                      // 旋转方向
+        XMStoreFloat3(&data.target, XMLoadFloat3(&data.position) + direction);          // 更新目标
+        UpdateMatrices();
+    }
+
+    // 相机围绕目标点进行绕行旋转
+    void Orbit(float deltaYaw, float deltaPitch) {
+        using namespace DirectX;
+        XMVECTOR targetPos = XMLoadFloat3(&data.target);
+        XMVECTOR cameraPos = XMLoadFloat3(&data.position);
+
+        XMVECTOR offset = cameraPos - targetPos;
+        XMMATRIX yawRotation = XMMatrixRotationY(deltaYaw);
+        XMMATRIX pitchRotation = XMMatrixRotationAxis(XMLoadFloat3(&data.upVector), deltaPitch);
+        offset = XMVector3Transform(offset, yawRotation * pitchRotation);
+
+        cameraPos = targetPos + offset;
+        XMStoreFloat3(&data.position, cameraPos);
+        UpdateMatrices();
     }
 
 private:
