@@ -56,8 +56,14 @@ float4 main(VertexOut pin) : SV_Target
             lightColor += (lightIntensity * (diff + 0.5f * spec) * material.specularColor.rgb);
         }
     }
-
+    
     float4 texColor = diffuseTexture.Sample(sampleState, pin.texCoord);
+    
+    if (texColor.a == 0.0f)
+    {
+        texColor = pin.color;
+    }
+    
     finalColor.rgb = texColor.rgb * (finalColor.rgb + lightColor); // 独立光照影响
     finalColor.a = texColor.a * material.diffuseColor.a;
     

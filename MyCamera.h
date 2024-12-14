@@ -25,10 +25,10 @@ public:
     Camera() {
         // 初始化CameraData并设置默认参数
         data = {
-            DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),   // 默认位置 (在Z轴负方向上)
-            DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f),    // 默认目标 (指向原点)
-            DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),    // 默认上向量 (指向Y轴正方向)
-            114.0f,                                   // 
+            DirectX::XMFLOAT3(0.0f, 5.0f, -5.0f),   // 默认位置 (在Z轴负方向上)
+            DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),    // 默认目标 (指向原点)
+            DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f),    // 默认上向量 (指向Y轴正方向)
+            114.0f,                                 
             0.1f,                                   // 默认近裁剪面距离 
             100.0f,                                  // 默认远裁剪面距离
             4.0 / 3.0                               // 默认纵横比 (4:3)

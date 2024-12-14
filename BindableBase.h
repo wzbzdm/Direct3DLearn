@@ -12,3 +12,4 @@
 #include "Texture.h"
 #include "CameraCbuf.h"
 #include "LightCbuf.h"
+#include "ColorCbuf.h"

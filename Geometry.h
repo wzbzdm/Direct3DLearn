@@ -7,7 +7,7 @@ typedef struct {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT2 tex;
-	DirectX::XMFLOAT4 color;
+	unsigned int index;
 } DefaultVertice;
 
 template <class T>

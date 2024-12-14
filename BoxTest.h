@@ -13,6 +13,7 @@ public:
 	void Zoom(const DirectX::XMFLOAT3& scale);
 	void Update(float dt) noexcept override;
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
+	void InitColor() noexcept override;
 private:
 	// positional
 	float r;

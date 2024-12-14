@@ -25,7 +25,10 @@ class Drawable
 	template<class T>
 	friend class Shape3D;
 public:
-	Drawable() = default;
+	Drawable() {
+		InitColor();
+	}
+
 	Drawable(const Drawable&) = delete;
 	void Draw(Graphics& gfx) const noexcept;
 	// 获取材质属性
@@ -37,6 +40,32 @@ public:
 	void SetMaterialProperties(const MaterialProperties& properties) noexcept {
 		materialProperties = properties;
 	}
+
+	void SetColors(const std::vector<DirectX::XMFLOAT4>& colors) noexcept {
+		this->colors = colors;
+	}
+
+	void SetColor(const DirectX::XMFLOAT4& color, int index) {
+		if (index >= 0 && index < colors.size()) {
+			colors[index] = color;
+		}
+	}
+
+	void AddColor(const DirectX::XMFLOAT4& color) noexcept {
+		colors.push_back(color);
+	}
+
+	void AddColors(const std::vector<DirectX::XMFLOAT4>& colors) noexcept {
+		this->colors.insert(this->colors.end(), colors.begin(), colors.end());
+	}
+
+	void AddColor(const DirectX::XMFLOAT4& color, int num) {
+		for (int i = 0; i < num; i++) {
+			colors.push_back(color);
+		}
+	}
+
+	virtual void InitColor() noexcept = 0;
 	virtual ~Drawable() = default;
 protected:
 	void AddBind(std::unique_ptr<Bindable> bind) noexcept;
@@ -47,6 +76,8 @@ private:
 protected:
 	const class IndexBuffer* pIndexBuffer = nullptr;
 	std::vector<std::unique_ptr<BindableInfo>> binds;
+	// 颜色数据
+	std::vector<DirectX::XMFLOAT4> colors;
 	MaterialProperties materialProperties = {
 	{ 0.2f, 0.2f, 0.2f, 1.0f }, // 默认环境光反射
 	{ 0.8f, 0.8f, 0.8f, 1.0f }, // 默认漫反射

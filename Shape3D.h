@@ -11,18 +11,36 @@ public:
 
 template<class T>
 class Shape3D : public Shape3DBase {
-protected:
-	static bool IsStaticInitialized() noexcept
-	{
-		return !staticBinds.empty();
-	}
-
+private:
 	static void BindDefault(Graphics& gfx, Shape3DBase& base) noexcept
 	{
 		// 同时绑定到顶点着色器和像素着色器插槽0
 		base.AddBind(std::make_unique<CameraCbuf>(gfx), 0, 1);
 		// 绑定到像素着色器插槽1
 		base.AddBind(std::make_unique<LightCbuf>(gfx), 1, 1);
+	}
+
+	static void BindCustom(Graphics& gfx, Shape3DBase& base) noexcept
+	{
+		// 材质, 插槽2
+		AddBind(std::make_unique<MaterialCbuf>(gfx, base), 2, 1);
+		// 颜色，插槽3
+		AddBind(std::make_unique<ColorCbuf>(gfx, base), 3, 1);
+
+		// 世界变换, 顶点插槽1
+		AddBind(std::make_unique<TransformCbuf>(gfx, base), 1, 1);
+	}
+
+protected:
+	static bool IsStaticInitialized() noexcept
+	{
+		return !staticBinds.empty();
+	}
+
+	static void BindAll(Graphics& gfx, Shape3DBase& base) noexcept
+	{
+		BindDefault(gfx, base);
+		BindCustom(gfx, base);
 	}
 
 	static void AddStaticBind(std::unique_ptr<Bindable> bind, unsigned int start, unsigned int len) noexcept
