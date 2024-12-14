@@ -45,7 +45,6 @@ std::optional<int> Window::ProcessMessages() noexcept
 		DispatchMessage(&msg);
 	}
 
-	// return empty optional when not quitting app
 	return {};
 }
 

@@ -48,9 +48,49 @@ protected:
 	const class IndexBuffer* pIndexBuffer = nullptr;
 	std::vector<std::unique_ptr<BindableInfo>> binds;
 	MaterialProperties materialProperties = {
-		{ 0.2f, 0.2f, 0.2f, 1.0f }, // 默认环境光反射
-		{ 0.8f, 0.8f, 0.8f, 1.0f }, // 默认漫反射
-		{ 1.0f, 1.0f, 1.0f, 1.0f }, // 默认镜面反射
-		32.0f                       // 默认高光系数
+	{ 0.2f, 0.2f, 0.2f, 1.0f }, // 默认环境光反射
+	{ 0.8f, 0.8f, 0.8f, 1.0f }, // 默认漫反射
+	{ 1.0f, 1.0f, 1.0f, 1.0f }, // 默认镜面反射
+	32.0f                       // 默认高光系数  [ 16, 64 ]
 	};
+};
+
+// 玻璃
+static constexpr MaterialProperties MATERIAL_GLASS = {
+	{ 0.1f, 0.1f, 0.1f, 1.0f },   // 环境光反射
+	{ 0.05f, 0.05f, 0.05f, 1.0f }, // 漫反射
+	{ 0.9f, 0.9f, 0.9f, 1.0f },    // 镜面反射
+	128.0f                         // 高光系数
+};
+
+// 金属
+static constexpr MaterialProperties MATERIAL_METAL = {
+	{ 0.1f, 0.1f, 0.1f, 1.0f },   // 环境光反射
+	{ 0.8f, 0.8f, 0.8f, 1.0f },   // 漫反射
+	{ 1.0f, 1.0f, 1.0f, 1.0f },   // 镜面反射
+	16.0f                          // 高光系数
+};
+
+// 木材
+static constexpr MaterialProperties MATERIAL_WOOD = {
+	{ 0.2f, 0.2f, 0.2f, 1.0f },   // 环境光反射
+	{ 0.7f, 0.5f, 0.3f, 1.0f },   // 漫反射
+	{ 0.2f, 0.2f, 0.2f, 1.0f },   // 镜面反射
+	16.0f                          // 高光系数
+};
+
+// 陶瓷
+static constexpr MaterialProperties MATERIAL_CERAMIC = {
+	{ 0.1f, 0.1f, 0.1f, 1.0f },   // 环境光反射
+	{ 0.7f, 0.7f, 0.7f, 1.0f },   // 漫反射
+	{ 0.5f, 0.5f, 0.5f, 1.0f },   // 镜面反射
+	32.0f                          // 高光系数
+};
+
+// 皮革
+static constexpr MaterialProperties MATERIAL_LEATHER = {
+	{ 0.2f, 0.2f, 0.2f, 1.0f },   // 环境光反射
+	{ 0.6f, 0.4f, 0.3f, 1.0f },   // 漫反射
+	{ 0.2f, 0.2f, 0.2f, 1.0f },   // 镜面反射
+	8.0f                           // 高光系数
 };

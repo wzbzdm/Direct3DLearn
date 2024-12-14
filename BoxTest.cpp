@@ -70,6 +70,8 @@ Box::Box(Graphics& gfx,
 
 	// 世界变换, 顶点插槽1
 	AddBind(std::make_unique<TransformCbuf>(gfx, *this), 1, 1);
+
+	SetMaterialProperties(MATERIAL_WOOD);
 }
 
 void Box::Update(float dt) noexcept

@@ -27,7 +27,7 @@ float4 main(VertexOut pin) : SV_Target
     float3 viewDir = normalize(camera.cameraPosition - pin.worldPosition.xyz); // 观察方向
     
     // 环境光
-    float4 envLight = float4(1, 1, 1, 0.1);
+    float4 envLight = float4(0.1, 0.1, 0.1, 1.0);
     
     // Phong 光照计算：环境光、漫反射光和高光反射
     float4 finalColor = material.ambientColor * envLight; // 环境光
@@ -44,23 +44,24 @@ float4 main(VertexOut pin) : SV_Target
             
             // 计算高光：光的反射方向和观察方向的点积
             float3 reflectDir = reflect(-lightDir, pin.normal);
-            // float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
             float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
 
             // 计算点光源对当前像素的影响
             float dist = length(lights[i].position.xyz - pin.worldPosition.xyz);
-            float attenuation = 1.0f / (1.0f + 0.1f * dist + 0.01f * dist * dist);
+            float attenuation = 1.0f / (1.0f + 0.05f * dist + 0.005f * dist * dist);
+            
             float3 lightIntensity = lights[i].color.rgb * (lights[i].intensity * attenuation);
 
             // 累加光照效果
-            lightColor += (lightIntensity * diff + spec * material.specularColor.rgb);
+            lightColor += (lightIntensity * (diff + 0.5f * spec) * material.specularColor.rgb);
         }
     }
 
     float4 texColor = diffuseTexture.Sample(sampleState, pin.texCoord);
-    finalColor *= texColor;
-    finalColor.rgb += lightColor; // 加上光照效应
+    finalColor.rgb = texColor.rgb * (finalColor.rgb + lightColor); // 独立光照影响
     finalColor.a = texColor.a * material.diffuseColor.a;
     
+    // Gamma 校正
+    finalColor.rgb = pow(finalColor.rgb, 1.0f / 2.2f);
     return finalColor;
 }
