@@ -36,14 +36,6 @@ VertexOut main(VertexIn vin)
     // 视图空间转屏幕空间：乘以摄像机的投影矩阵
     vout.position = mul(vout.position, camera.projectionMatrix);
     
-    // vout.position = vout.worldPosition;
-    
-    // 由于 矩阵乘积的转置 等于 每个矩阵的转置
-    // float4x4 matrixA = mul(mul(camera.projectionMatrix, camera.viewMatrix), transform.worldMatrix);
-    // vout.position = mul(worldPos, matrixA);
-
-    // 传递法线给像素着色器
-    // vout.normal = mul(vin.normal, (float3x3) camera.viewMatrix);
     float3x3 normalMatrix = transpose(SafeInverse3x3((float3x3) transform.worldMatrix));
     vout.normal = normalize(mul(vin.normal, normalMatrix));
 
