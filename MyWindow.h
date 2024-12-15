@@ -42,6 +42,9 @@ public:
 	void RefreshGlobal();
 	void TestInit();
 
+	// 事件处理程序
+	void Resize(int width, int height) noexcept;
+
 public:
 	Mouse mouse;
 	Keyboard kbd;
@@ -54,7 +57,7 @@ private:
 	const wchar_t* name;
 	Timer timer;
 
-	std::unique_ptr<Graphics> pGfx;
+	std::unique_ptr<Graphics> pGfx = nullptr;
 };
 
 constexpr float PI = 3.14159265f;

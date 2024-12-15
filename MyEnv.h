@@ -14,6 +14,9 @@ public:
 	void AddShape(std::unique_ptr<Shape3DBase> shape) noexcept;
 	void DrawAll();
 	std::vector<std::unique_ptr<Shape3DBase>>& GetShapes() noexcept;
+	std::unique_ptr<LightManager>& Lights() noexcept;
+	Camera& Camera() noexcept;
+
 public:
 	std::unique_ptr<LightManager> lightManager;
 	std::unique_ptr<CameraManager> cameraManager;

@@ -38,6 +38,7 @@ public:
 	DirectX::XMMATRIX GetProjectionMatrix() const noexcept;
 	void DrawTestTriangle(float angle);		//  测试
 	void BindGlobal() const noexcept;
+	void Resize(int width, int height) noexcept;
 
 private:
 	std::shared_ptr<CameraManager> cameras;          // 相机对象

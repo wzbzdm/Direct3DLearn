@@ -276,3 +276,50 @@ void Graphics::BindGlobal() const noexcept {
 	//	this->AddBind(std::make_unique<LightCbuf>(gfx), 1, 1);
 	//}
 }
+
+void Graphics::Resize(int width, int height) noexcept {
+	// 1. 释放旧的资源
+	renderTargetView.Reset();
+	depthStencilView.Reset();
+	pDepthStencil.Reset();
+	backBuffer.Reset();
+
+	// 2. 调整交换链大小
+	swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
+
+	// 3. 重新获取后缓冲区并创建渲染目标视图
+	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+	device->CreateRenderTargetView(backBuffer.Get(), nullptr, &renderTargetView);
+
+	// 4. 创建深度缓冲区和视图
+	D3D11_TEXTURE2D_DESC descDepth = {};
+	descDepth.Width = width;
+	descDepth.Height = height;
+	descDepth.MipLevels = 1;
+	descDepth.ArraySize = 1;
+	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	descDepth.SampleDesc.Count = 1;
+	descDepth.SampleDesc.Quality = 0;
+	descDepth.Usage = D3D11_USAGE_DEFAULT;
+	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	device->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
+	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	descDSV.Texture2D.MipSlice = 0;
+	device->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &depthStencilView);
+
+	// 5. 设置渲染目标和深度缓冲
+	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
+
+	// 6. 更新视口
+	D3D11_VIEWPORT vp;
+	vp.Width = static_cast<float>(width);
+	vp.Height = static_cast<float>(height);
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	context->RSSetViewports(1, &vp);
+}

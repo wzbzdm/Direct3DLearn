@@ -137,8 +137,17 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		mouse.OnWheelDelta(pt.x, pt.y, delta);
 		break;
 	}
-	}
+	//case WM_SIZE:
+	//{
+	//	if (wParam != SIZE_MINIMIZED) {
+	//		width = LOWORD(lParam);
+	//		height = HIWORD(lParam);
+	//		// Resize(width, height);
+	//	}
+	//	break;
+	//}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
+	}
 }
 
 Graphics& Window::Gfx() {
@@ -148,11 +157,10 @@ Graphics& Window::Gfx() {
 void Window::SwitchEnv(int index) noexcept {
 	if (index >= 0 && index < envs.size()) {
 		activeEnv = index;
-		auto& currentEnv = envs[activeEnv];		// 当前活动的环境
 
 		// 设置 Camera 和 Light 对象到 Graphics 中
-		pGfx->SetCamera(std::shared_ptr<CameraManager>(currentEnv->cameraManager.get())); // 将相机传递给Graphics
-		pGfx->SetLight(std::shared_ptr<LightManager>(currentEnv->lightManager.get()));   // 将灯光管理器传递给Graphics
+		pGfx->SetCamera(std::shared_ptr<CameraManager>(ActiveEnv()->cameraManager.get())); // 将相机传递给Graphics
+		pGfx->SetLight(std::shared_ptr<LightManager>(ActiveEnv()->lightManager.get()));   // 将灯光管理器传递给Graphics
 	}
 }
 
@@ -181,7 +189,7 @@ void Window::TestInit() {
 	std::uniform_real_distribution<float> ddist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> odist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> rdist{ 3.0f,6.0f };
-	envs[activeEnv]->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
+	ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
 }
 
 Window::WindowClass::WindowClass() noexcept : hInst(GetModuleHandle(nullptr)) {
@@ -211,6 +219,14 @@ const wchar_t* Window::WindowClass::GetName() noexcept {
 
 HINSTANCE Window::WindowClass::GetIntsance() noexcept {
 	return wndClass.hInst;
+}
+
+void Window::Resize(int width, int height) noexcept {
+	if (pGfx != nullptr) {
+		Gfx().Resize(width, height);
+		ActiveEnv()->Camera().Resize(width, height);
+	}
+	
 }
 
 Window::WindowClass Window::WindowClass::wndClass;

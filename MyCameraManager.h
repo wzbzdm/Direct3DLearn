@@ -9,6 +9,12 @@ public:
         AddAndActiveCamera(defaultCamera);
     }
 
+    void Resize(int width, int height) noexcept {
+        for (auto& camera : cameras) {
+            camera.Resize(width, height);
+        }
+    }
+
     // 添加一个相机
     void AddCamera(const Camera& camera) {
         cameras.push_back(camera);

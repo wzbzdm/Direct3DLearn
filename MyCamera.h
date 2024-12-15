@@ -44,6 +44,11 @@ public:
         UpdateMatrices();
     }
 
+    void Resize(int width, int height) noexcept {
+		data.aspectRatio = static_cast<float>(width) / height;
+		UpdateMatrices();
+    }
+
     // 更新视图矩阵和投影矩阵
     void UpdateMatrices() {
         using namespace DirectX;

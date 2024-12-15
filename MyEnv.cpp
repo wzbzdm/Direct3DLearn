@@ -36,6 +36,14 @@ std::vector<std::unique_ptr<Shape3DBase>>& Env::GetShapes() noexcept {
 	return shapes;
 }
 
+std::unique_ptr<LightManager>& Env::Lights() noexcept {
+	return lightManager;
+}
+
+Camera& Env::Camera() noexcept {
+	return cameraManager->GetCurrentCamera();
+}
+
 // 在 Env.cpp 中定义静态成员
 Graphics* Env::gfx = nullptr; // 在运行时指向有效对象
 std::unique_ptr<CameraCbuf> Env::cameraCbuf = nullptr;
