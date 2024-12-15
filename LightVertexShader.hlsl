@@ -36,8 +36,7 @@ VertexOut main(VertexIn vin)
     // 视图空间转屏幕空间：乘以摄像机的投影矩阵
     vout.position = mul(vout.position, camera.projectionMatrix);
     
-    float3x3 normalMatrix = transpose(SafeInverse3x3((float3x3) transform.worldMatrix));
-    vout.normal = normalize(mul(vin.normal, normalMatrix));
+    vout.normal = normalize(mul(vin.normal, (float3x3) transform.worldMatrix));
 
     // 传递顶点颜色（可以根据材质计算色值）
     vout.index = vin.index;

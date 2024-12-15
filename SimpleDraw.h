@@ -9,7 +9,7 @@ public:
 	int Draw();
 	~SimpleDraw();
 private:
-	void Update();
+	void HandlerEvent();
 private:
 	Window window;
 	Timer timer;

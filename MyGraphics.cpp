@@ -1,6 +1,6 @@
 #include "MyGraphics.h"
 
-Graphics::Graphics(HWND hWnd) {
+Graphics::Graphics(HWND hWnd, int width, int height) {
 	DXGI_SWAP_CHAIN_DESC scDesc = {};
 	scDesc.BufferCount = 1;
 	scDesc.BufferDesc.Width = 0;
@@ -50,8 +50,8 @@ Graphics::Graphics(HWND hWnd) {
 	context->OMSetDepthStencilState(pDSState.Get(), 1u);
 
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 800u;
-	descDepth.Height = 600u;
+	descDepth.Width = width;
+	descDepth.Height = height;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -70,8 +70,8 @@ Graphics::Graphics(HWND hWnd) {
 	context->OMSetRenderTargets(1u, renderTargetView.GetAddressOf(), depthStencilView.Get());
 
 	D3D11_VIEWPORT vp;
-	vp.Width = 800.0f;
-	vp.Height = 600.0f;
+	vp.Width = (float)width;
+	vp.Height = (float)height;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0.0f;

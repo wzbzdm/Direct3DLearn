@@ -12,7 +12,9 @@ int SimpleDraw::Draw() {
 		{
 			return *ecode;
 		}
-		Update();
+
+		// 事件处理
+		HandlerEvent();
 	}
 }
 
@@ -20,14 +22,6 @@ SimpleDraw::~SimpleDraw() {
 
 }
 
-void SimpleDraw::Update() {
-	auto dt = timer.Mark();
-	window.Gfx().ClearBuffer(1.0f, 0.5f, 0.5f);
-	window.RefreshGlobal();
-	for (auto& b : window.ActiveEnv()->GetShapes())
-	{
-		b->Update( window.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
-		b->Draw(window.Gfx());
-	}
-	window.Gfx().EndFrame();
+void SimpleDraw::HandlerEvent() {
+	
 }

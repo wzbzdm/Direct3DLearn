@@ -5,7 +5,6 @@
 // 平面
 class Plane3D : public Shape3D<Plane3D>
 {
-	static DirectX::XMFLOAT2 defaultSize;
 public:
     Plane3D() = default;
     Plane3D(Graphics& gfx);
@@ -17,5 +16,5 @@ public:
     void InitColor() noexcept;
 
 private:
-    DirectX::XMFLOAT2 size = defaultSize; // 长和宽的放大比例
+    DirectX::XMFLOAT2 size = { 1.0f, 1.0f }; // 长和宽的放大比例
 };

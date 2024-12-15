@@ -37,4 +37,27 @@ public:
 
 		return { verts, defaultIndices };
 	}
+
+	Geometry<DefaultVertice> CreateD(float width = 2.0f, float height = 2.0f) noexcept {
+		std::vector<DefaultVertice> vertices = {
+			// 正面
+			{ { -width / 2.0f, -height / 2.0f, 0.0f }, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, 0}, // 左下角
+			{ { width / 2.0f, -height / 2.0f, 0.0f }, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}, 0}, // 右下角
+			{ { width / 2.0f, height / 2.0f, 0.0f }, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, 0}, // 右上角
+			{ { -width / 2.0f, height / 2.0f, 0.0f }, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}, 0}, // 左上角
+
+			// 反面
+			{ { -width / 2.0f, height / 2.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}, 1}, // 左上角
+			{ { width / 2.0f, height / 2.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}, 1}, // 右上角
+			{ { width / 2.0f, -height / 2.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}, 1}, // 右下角
+			{ { -width / 2.0f, -height / 2.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}, 1}, // 左下角
+		};
+
+		std::vector<unsigned short> indices = {
+			0, 1, 2, 0, 2, 3,   // 正面
+			4, 5, 6, 4, 6, 7,    // 反面
+		};
+
+		return { vertices, indices };
+	}
 };

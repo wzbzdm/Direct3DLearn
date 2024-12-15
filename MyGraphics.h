@@ -24,7 +24,7 @@ class Graphics {
 	friend class Bindable;
 	friend class Shape3DBase;
 public:
-	Graphics(HWND hWnd);
+	Graphics(HWND hWnd, int width, int height);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator = (const Graphics&) = delete;
 	void EndFrame();

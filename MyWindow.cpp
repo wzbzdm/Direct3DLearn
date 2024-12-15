@@ -10,14 +10,16 @@ Window::Window(int width, int height, const wchar_t* name) : width(width), heigh
 
 	hWnd = CreateWindow(
 		WindowClass::GetName(), (LPCWSTR)name,
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_SIZEBOX | WS_MAXIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
 		nullptr, nullptr, WindowClass::GetIntsance(), this
 	);
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 
-	pGfx = std::make_unique<Graphics>(hWnd);
+	pGfx = std::make_unique<Graphics>(hWnd, width, height);
+
+	SetTimer(hWnd, PAINT_TIMER, MS_PER_FRAME, nullptr);
 
 	// 默认环境
 	NewEnv();
@@ -70,6 +72,14 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
+	case WM_TIMER:
+	{
+		if (wParam == PAINT_TIMER) {
+			Update();
+			Draw();
+		}
+		break;
+	}
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 		if (!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled()) {
@@ -137,17 +147,17 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		mouse.OnWheelDelta(pt.x, pt.y, delta);
 		break;
 	}
-	//case WM_SIZE:
-	//{
-	//	if (wParam != SIZE_MINIMIZED) {
-	//		width = LOWORD(lParam);
-	//		height = HIWORD(lParam);
-	//		// Resize(width, height);
-	//	}
-	//	break;
-	//}
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+	case WM_SIZE:
+	{
+		if (wParam != SIZE_MINIMIZED) {
+			width = LOWORD(lParam);
+			height = HIWORD(lParam);
+			Resize(width, height);
+		}
+		break;
 	}
+	}
+	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
 Graphics& Window::Gfx() {
@@ -190,6 +200,25 @@ void Window::TestInit() {
 	std::uniform_real_distribution<float> odist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> rdist{ 3.0f,6.0f };
 	ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
+	ActiveEnv()->AddShape(std::make_unique<Cylinder3D>(Gfx()));
+}
+
+void Window::Update() {
+	auto dt = timer.Mark();
+	for (auto& b : ActiveEnv()->GetShapes())
+	{
+		b->Update(kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
+	}
+}
+
+void Window::Draw() {
+	Gfx().ClearBuffer(1.0f, 0.5f, 0.5f);
+	RefreshGlobal();
+	for (auto& b : ActiveEnv()->GetShapes())
+	{
+		b->Draw(Gfx());
+	}
+	Gfx().EndFrame();
 }
 
 Window::WindowClass::WindowClass() noexcept : hInst(GetModuleHandle(nullptr)) {

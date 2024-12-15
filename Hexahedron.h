@@ -98,7 +98,7 @@ public:
 	}
 
     // 生成默认结构
-    Geometry<DefaultVertice> CreateD(float l = 2.0f, float w = 2.0f, float h = 2.0f) {
+    Geometry<DefaultVertice> CreateD(float l = 1.0f, float w = 1.0f, float h = 1.0f) {
         std::vector<DefaultVertice> vertices = {
             { { -l / 2.0f, -h / 2.0f,  w / 2.0f }, { 0.0f,  0.0f,  1.0f }, { 0.0f, 0.0f }, 0},
             { {  l / 2.0f, -h / 2.0f,  w / 2.0f }, { 0.0f,  0.0f,  1.0f }, { 1.0f, 0.0f }, 0},

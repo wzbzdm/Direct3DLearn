@@ -46,6 +46,7 @@ float4 main(VertexOut pin) : SV_Target
             // 计算光源方向与法线的点积，得到漫反射
             float3 lightDir = normalize(lights[i].position.xyz - pin.worldPosition.xyz);
             float diff = max(dot(pin.normal, lightDir), 0.0f);
+            // float diff = saturate(dot(pin.normal, lightDir)); // 或者使用更柔和的计算方式
             
             // 计算高光：光的反射方向和观察方向的点积
             float3 reflectDir = reflect(-lightDir, pin.normal);

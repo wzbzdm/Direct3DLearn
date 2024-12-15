@@ -4,7 +4,6 @@
 
 class Hexahedron3D : public Shape3D<Hexahedron3D>
 {
-	static DirectX::XMFLOAT3 defaultSize;
 public:
 	Hexahedron3D() = default;
 	Hexahedron3D(Graphics&);

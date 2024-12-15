@@ -30,7 +30,7 @@ Box::Box(Graphics& gfx,
 		SetIndexFromStatic();
 	}
 
-	// 动态绑定数据包括，灯光，相机
+	// 动态绑定数据
 	this->BindAll(gfx);
 
 	SetMaterialProperties(MATERIAL_GLASS);

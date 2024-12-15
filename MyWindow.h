@@ -9,6 +9,10 @@
 #include <optional>
 #include <memory>
 
+#define     PAINT_TIMER		1
+#define		HZ				120
+#define		MS_PER_FRAME	1000 / HZ
+
 class Window {
 	friend class Graphics;
 private:
@@ -41,6 +45,8 @@ public:
 	std::unique_ptr<Env>& ActiveEnv();
 	void RefreshGlobal();
 	void TestInit();
+	void Update();
+	void Draw();
 
 	// 事件处理程序
 	void Resize(int width, int height) noexcept;

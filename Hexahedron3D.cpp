@@ -2,66 +2,23 @@
 #include "Hexahedron3D.h"
 #include "BindableBase.h"
 
-DirectX::XMFLOAT3 Hexahedron3D::defaultSize = { 1.0f, 0.8f, 0.7f };
-
 Hexahedron3D::Hexahedron3D(Graphics& gfx)
 {
-    if (!IsStaticInitialized()) {
-        struct Vertex
-        {
-            DirectX::XMFLOAT3 pos;
-        };
+	InitColor();
+	if (!IsStaticInitialized()) {
+		auto model = Hexahedron().CreateD();
 
-		auto model = Hexahedron().Create<Vertex>();
+		BindStaticAll(gfx, model);
+		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
+	}
+	else {
+		SetIndexFromStatic();
+	}
 
-        AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+	// 动态绑定数据
+	this->BindAll(gfx);
 
-        // 添加着色器
-        auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
-        auto pvsbc = pvs->GetBytecode();
-        AddStaticBind(std::move(pvs));
-        AddStaticBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
-
-        AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
-
-        // 添加颜色常量缓冲区
-        struct ConstantBuffer
-        {
-            struct
-            {
-                float r, g, b, a;
-            } face_colors[6];
-        };
-
-        const ConstantBuffer cb =
-        {
-            {
-                { 1.0f, 0.0f, 1.0f, 1.0f },
-                { 1.0f, 0.0f, 0.0f, 1.0f },
-                { 0.0f, 1.0f, 0.0f, 1.0f },
-                { 0.0f, 0.0f, 1.0f, 1.0f },
-                { 1.0f, 1.0f, 0.0f, 1.0f },
-                { 0.0f, 1.0f, 1.0f, 1.0f },
-            }
-        };
-        AddStaticBind(std::make_unique<PixelConstantBuffer<ConstantBuffer>>(gfx, cb));
-
-        // 添加输入布局
-        const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
-        {
-            { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        };
-        AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
-
-        // 添加拓扑
-        AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-    }
-    else {
-        SetIndexFromStatic();
-    }
-
-    // 添加变换常量缓冲区
-    AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+	SetMaterialProperties(MATERIAL_CERAMIC);
 }
 
 void Hexahedron3D::SetSize(const DirectX::XMFLOAT3& size)
