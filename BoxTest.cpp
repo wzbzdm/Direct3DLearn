@@ -1,8 +1,5 @@
 #include "Hexahedron.h"
 #include "BoxTest.h"
-#include "BindableBase.h"
-#include "TextureGenerators.h"
-#include "ImageLoader.h"
 
 Box::Box(Graphics& gfx,
 	std::mt19937& rng,
@@ -22,41 +19,19 @@ Box::Box(Graphics& gfx,
 	theta(adist(rng)),
 	phi(adist(rng))
 {
+	InitColor();
 	if (!IsStaticInitialized()) {
 		auto model = Hexahedron().CreateD();
 
-		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
-
-		auto pvs = std::make_unique<VertexShader>(gfx, L"LightVertexShader.cso");
-		auto pvsbc = pvs->GetBytecode();
-		AddStaticBind(std::move(pvs));
-
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"LightPixelShader.cso"));
-
+		BindStaticAll(gfx, model);
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
-
-		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
-		{
-			{ "Position",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "Normal",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TexCoord",  0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "Index",     0, DXGI_FORMAT_R32_UINT,        0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		};
-
-		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
-
-		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-		//TextureData data = ImageLoader::Load2D(TESTIMG);
-		//auto pTexture = std::make_unique<Texture2D>(gfx, data);
-		//AddStaticBind(std::move(pTexture));
 	}
 	else {
 		SetIndexFromStatic();
 	}
 
 	// 动态绑定数据包括，灯光，相机
-	BindAll(gfx, *this);
+	this->BindAll(gfx);
 
 	SetMaterialProperties(MATERIAL_GLASS);
 }

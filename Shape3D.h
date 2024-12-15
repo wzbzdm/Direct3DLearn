@@ -1,34 +1,23 @@
 #pragma once
 
-#include "Drawable.h"
-#include "Transformable.h"
+#include "Shape3DBase.h"
 #include "BindableBase.h"
-
-class Shape3DBase : public Drawable, public Transformable {
-public:
-	Shape3DBase() = default;
-};
+#include "TextureGenerators.h"
+#include "ImageLoader.h"
+#include "Geometry.h"
 
 template<class T>
 class Shape3D : public Shape3DBase {
 private:
-	static void BindDefault(Graphics& gfx, Shape3DBase& base) noexcept
-	{
-		// 同时绑定到顶点着色器和像素着色器插槽0
-		base.AddBind(std::make_unique<CameraCbuf>(gfx), 0, 1);
-		// 绑定到像素着色器插槽1
-		base.AddBind(std::make_unique<LightCbuf>(gfx), 1, 1);
-	}
-
-	static void BindCustom(Graphics& gfx, Shape3DBase& base) noexcept
+	void BindCustom(Graphics& gfx) noexcept
 	{
 		// 材质, 插槽2
-		AddBind(std::make_unique<MaterialCbuf>(gfx, base), 2, 1);
+		AddBind(std::make_unique<MaterialCbuf>(gfx, *this), 2, 1);
 		// 颜色，插槽3
-		AddBind(std::make_unique<ColorCbuf>(gfx, base), 3, 1);
+		AddBind(std::make_unique<ColorCbuf>(gfx, *this), 3, 1);
 
 		// 世界变换, 顶点插槽1
-		AddBind(std::make_unique<TransformCbuf>(gfx, base), 1, 1);
+		AddBind(std::make_unique<TransformCbuf>(gfx, *this), 1, 1);
 	}
 
 protected:
@@ -37,10 +26,35 @@ protected:
 		return !staticBinds.empty();
 	}
 
-	static void BindAll(Graphics& gfx, Shape3DBase& base) noexcept
+	void BindAll(Graphics& gfx) noexcept
 	{
-		BindDefault(gfx, base);
-		BindCustom(gfx, base);
+		this->BindCustom(gfx);
+	}
+
+	static void BindStaticAll(Graphics& gfx, Geometry<DefaultVertice>& model) {
+		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+
+		auto pvs = std::make_unique<VertexShader>(gfx, L"LightVertexShader.cso");
+		auto pvsbc = pvs->GetBytecode();
+		AddStaticBind(std::move(pvs));
+
+		AddStaticBind(std::make_unique<PixelShader>(gfx, L"LightPixelShader.cso"));
+
+		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
+		{
+			{ "Position",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "Normal",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TexCoord",  0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "Index",     0, DXGI_FORMAT_R32_UINT,        0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+
+		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
+
+		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+		/*TextureData data = ImageLoader::Load2D(TESTIMG);
+		auto pTexture = std::make_unique<Texture2D>(gfx, data);
+		AddStaticBind(std::move(pTexture));*/
 	}
 
 	static void AddStaticBind(std::unique_ptr<Bindable> bind, unsigned int start, unsigned int len) noexcept

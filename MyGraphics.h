@@ -37,6 +37,8 @@ public:
 	DirectX::XMMATRIX GetCameraMatrix() const noexcept;
 	DirectX::XMMATRIX GetProjectionMatrix() const noexcept;
 	void DrawTestTriangle(float angle);		//  测试
+	void BindGlobal() const noexcept;
+
 private:
 	std::shared_ptr<CameraManager> cameras;          // 相机对象
 	std::shared_ptr<LightManager> lights;		// 灯光管理对象

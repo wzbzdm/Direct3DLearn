@@ -2,13 +2,12 @@
 
 LightCbuf::LightCbuf(Graphics& gfx) noexcept {
 	if (!lightsbuf) {
-		lightsbuf = std::make_unique<PixelConstantBuffer<LightBuffer>>(gfx);
+		lightsbuf = std::make_unique<PixelConstantBuffer<LightBuffer>>(gfx, gfx.GetLightBuffer());
 	}
 }
 
 void LightCbuf::Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept {
-	std::vector<LightBuffer> lights = gfx.GetLightBuffer();
-	lightsbuf->Update(gfx, lights);
+	lightsbuf->Update(gfx, gfx.GetLightBuffer());
 	lightsbuf->Bind(gfx, start, len);
 }
 

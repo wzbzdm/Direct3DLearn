@@ -99,3 +99,12 @@ DirectX::XMMATRIX Sphere3D::GetTransformMatrix() const noexcept
     DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
     return scaling * rotationMatrix * translation;
 }
+
+void Sphere3D::InitColor() noexcept
+{
+	SetColors({
+		{ 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 0.0f, 1.0f, 0.0f, 1.0f },
+		{ 0.0f, 0.0f, 1.0f, 1.0f }
+		});
+}

@@ -14,6 +14,7 @@ public:
     void SetDimensions(const DirectX::XMFLOAT2& size);
     void ScaleDimensions(const DirectX::XMFLOAT2& factors);
     DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
+    void InitColor() noexcept;
 
 private:
     DirectX::XMFLOAT2 size = defaultSize; // 长和宽的放大比例

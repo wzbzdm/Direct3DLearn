@@ -32,13 +32,19 @@ struct TransformBuffer
     float4x4 worldMatrix; // 世界矩阵
 };
 
+// 颜色缓冲区
+struct ColorBuffer
+{
+    float4 color;  // 颜色
+};
+
 // 顶点数据结构体
 struct VertexIn
 {
     float3 position : POSITION; // 顶点位置
     float3 normal : NORMAL; // 顶点法线
     float2 texCoord : TEXCOORD0; // 顶点的纹理坐标
-    float4 color : COLOR; // 顶点颜色
+    uint index : INDEX; // 顶点颜色索引
 };
 
 // 输出结构体（传递到像素着色器）
@@ -46,7 +52,7 @@ struct VertexOut
 {
     float4 position : SV_POSITION; // 转换后的屏幕空间位置
     float3 normal : NORMAL; // 传递法线给像素着色器
+    uint index : INDEX; // 顶点颜色索引
     float4 worldPosition : TEXCOORD0; // 传递物体世界空间位置
-    float4 color : TEXCOORD1; // 传递颜色信息
     float2 texCoord : TEXCOORD2; // 传递纹理坐标
 };

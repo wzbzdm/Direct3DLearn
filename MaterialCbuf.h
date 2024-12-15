@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Shape3D.h"
+#include "Shape3DBase.h"
 #include "ConstantBuffers.h"
 
 // 材质

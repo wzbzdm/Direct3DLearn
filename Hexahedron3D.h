@@ -12,6 +12,7 @@ public:
 	void Zoom(const DirectX::XMFLOAT3& scale);
 	void Update(float dt) noexcept;
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
+	void InitColor() noexcept;
 private:
 	DirectX::XMFLOAT3 size = { 1.0, 1.0, 1.0 };
 };

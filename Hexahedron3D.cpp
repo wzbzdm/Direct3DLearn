@@ -101,3 +101,17 @@ void Hexahedron3D::Update(float dt) noexcept
     rotation.y += 1.6f * dt;
     rotation.z += 1.2f * dt;
 }
+
+void Hexahedron3D::InitColor() noexcept
+{
+	SetColors({
+		{ 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 0.0f, 1.0f, 0.0f, 1.0f },
+		{ 0.0f, 0.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 0.0f, 1.0f },
+		{ 1.0f, 0.0f, 1.0f, 1.0f },
+		{ 0.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+		});
+}

@@ -120,3 +120,12 @@ DirectX::XMMATRIX Cylinder3D::GetTransformMatrix() const noexcept
     // 返回组合的变换矩阵：缩放 -> 旋转 -> 平移
     return scaling * rotationMatrix * translation;
 }
+
+void Cylinder3D::InitColor() noexcept
+{
+    SetColors({
+		{ 0.0f, 1.0f, 0.0f, 1.0f },  // 顶部
+		{ 1.0f, 0.0f, 0.0f, 1.0f },  // 底部
+		{ 0.0f, 0.0f, 1.0f, 1.0f }   // 侧面
+        });
+}

@@ -1,6 +1,6 @@
 #include "MyWindow.h"
 
-Window::Window(int width, int height, const wchar_t* name) : width(width), height(height), name(name), cameras(), lights() {
+Window::Window(int width, int height, const wchar_t* name) : width(width), height(height), name(name) {
 	RECT wr;
 	wr.left = 100;
 	wr.right = width + wr.left;
@@ -16,11 +16,12 @@ Window::Window(int width, int height, const wchar_t* name) : width(width), heigh
 	);
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
+
 	pGfx = std::make_unique<Graphics>(hWnd);
-	
-	// 设置 Camera 和 Light 对象到 Graphics 中
-	pGfx->SetCamera(std::make_shared<CameraManager>(cameras)); // 将相机传递给Graphics
-	pGfx->SetLight(std::make_shared<LightManager>(lights));   // 将灯光管理器传递给Graphics
+
+	// 默认环境
+	NewEnv();
+	Env::Initialize(pGfx.get());	// 初始化环境
 }
 
 Window::~Window() {
@@ -142,6 +143,45 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
 Graphics& Window::Gfx() {
 	return *pGfx;
+}
+
+void Window::SwitchEnv(int index) noexcept {
+	if (index >= 0 && index < envs.size()) {
+		activeEnv = index;
+		auto& currentEnv = envs[activeEnv];		// 当前活动的环境
+
+		// 设置 Camera 和 Light 对象到 Graphics 中
+		pGfx->SetCamera(std::shared_ptr<CameraManager>(currentEnv->cameraManager.get())); // 将相机传递给Graphics
+		pGfx->SetLight(std::shared_ptr<LightManager>(currentEnv->lightManager.get()));   // 将灯光管理器传递给Graphics
+	}
+}
+
+void Window::AddEnv(std::unique_ptr<Env> env) noexcept {
+	envs.push_back(std::move(env));
+}
+
+std::unique_ptr<Env>& Window::ActiveEnv() {
+	return envs[activeEnv];
+}
+
+void Window::NewEnv() noexcept {
+	activeEnv = envs.size();
+	envs.push_back(std::make_unique<Env>());
+	SwitchEnv(activeEnv);
+	Env::Initialize(pGfx.get());
+}
+
+void Window::RefreshGlobal() {
+	ActiveEnv()->RefreshBind();
+}
+
+void Window::TestInit() {
+	std::mt19937 rng{ std::random_device{}() };
+	std::uniform_real_distribution<float> adist{ 2.0f,PI * 2.0f };
+	std::uniform_real_distribution<float> ddist{ 1.0f,PI * 0.5f };
+	std::uniform_real_distribution<float> odist{ 1.0f,PI * 0.5f };
+	std::uniform_real_distribution<float> rdist{ 3.0f,6.0f };
+	envs[activeEnv]->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
 }
 
 Window::WindowClass::WindowClass() noexcept : hInst(GetModuleHandle(nullptr)) {

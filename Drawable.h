@@ -25,9 +25,7 @@ class Drawable
 	template<class T>
 	friend class Shape3D;
 public:
-	Drawable() {
-		InitColor();
-	}
+	Drawable() = default;
 
 	Drawable(const Drawable&) = delete;
 	void Draw(Graphics& gfx) const noexcept;
@@ -65,7 +63,10 @@ public:
 		}
 	}
 
-	virtual void InitColor() noexcept = 0;
+	const std::vector<DirectX::XMFLOAT4>& GetColors() const noexcept {
+		return colors;
+	}
+
 	virtual ~Drawable() = default;
 protected:
 	void AddBind(std::unique_ptr<Bindable> bind) noexcept;

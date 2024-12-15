@@ -13,7 +13,7 @@ public:
     void SetRadius(float radius);
     void ScaleRadius(float factor);
     DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
-
+    void InitColor() noexcept;
 private:
     float radius = 1.0f; // 半径
 	int numC = 36;

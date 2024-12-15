@@ -93,7 +93,7 @@
     <ClInclude Include="TransformCbuf.h">
       <Filter>BindableHeader</Filter>
     </ClInclude>
-    <ClInclude Include="Shape3D.h">
+    <ClInclude Include="Shape3DBase.h">
       <Filter>DrawUnitHeader</Filter>
     </ClInclude>
     <ClInclude Include="VertexBuffer.h">
@@ -186,6 +186,15 @@
     <ClInclude Include="MyKeyboard.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ColorCbuf.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape3D.h">
+      <Filter>DrawUnitHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="MyEnv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -273,6 +282,12 @@
       <Filter>BindableSource</Filter>
     </ClCompile>
     <ClCompile Include="MyKeyboard.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorCbuf.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="MyEnv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

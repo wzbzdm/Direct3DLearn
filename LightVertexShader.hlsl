@@ -40,7 +40,7 @@ VertexOut main(VertexIn vin)
     vout.normal = normalize(mul(vin.normal, normalMatrix));
 
     // 传递顶点颜色（可以根据材质计算色值）
-    vout.color = vin.color;
+    vout.index = vin.index;
     
     vout.texCoord = vin.texCoord;
 

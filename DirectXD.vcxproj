@@ -133,6 +133,7 @@
     <ClInclude Include="BindableBase.h" />
     <ClInclude Include="BoxTest.h" />
     <ClInclude Include="CameraCbuf.h" />
+    <ClInclude Include="ColorCbuf.h" />
     <ClInclude Include="LightCbuf.h" />
     <ClInclude Include="MyCameraManager.h" />
     <ClInclude Include="ConstantBuffers.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="MaterialCbuf.h" />
     <ClInclude Include="MyCamera.h" />
+    <ClInclude Include="MyEnv.h" />
     <ClInclude Include="MyGraphics.h" />
     <ClInclude Include="MyKeyboard.h" />
     <ClInclude Include="MyLightManager.h" />
@@ -160,6 +162,7 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Plane3D.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Shape3DBase.h" />
     <ClInclude Include="Shape3D.h" />
     <ClInclude Include="SimpleDraw.h" />
     <ClInclude Include="Sphere.h" />
@@ -180,6 +183,7 @@
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="BoxTest.cpp" />
     <ClCompile Include="CameraCbuf.cpp" />
+    <ClCompile Include="ColorCbuf.cpp" />
     <ClCompile Include="Cylinder3D.cpp" />
     <ClCompile Include="DirectXD.cpp" />
     <ClCompile Include="Drawable.cpp" />
@@ -190,6 +194,7 @@
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="LightCbuf.cpp" />
     <ClCompile Include="MaterialCbuf.cpp" />
+    <ClCompile Include="MyEnv.cpp" />
     <ClCompile Include="MyGraphics.cpp" />
     <ClCompile Include="MyKeyboard.cpp" />
     <ClCompile Include="MyMouse.cpp" />

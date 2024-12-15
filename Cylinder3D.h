@@ -14,7 +14,7 @@ public:
     void SetSize(const DirectX::XMFLOAT3& size);
     void ScaleSize(const DirectX::XMFLOAT3& radio);
     DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
-
+    void InitColor() noexcept;
 private:
     DirectX::XMFLOAT3 size = { 1, 1, 1 }; // 顶部半径、底部半径、高度的缩放比例
     int numC = 36;

@@ -20,6 +20,11 @@ cbuffer MaterialData : register(b2)
     Material material; // 材质数据
 };
 
+cbuffer ColorData : register(b3)
+{
+    ColorBuffer colors[10];  // 颜色数组
+};
+
 Texture2D diffuseTexture : register(t0); // 漫反射纹理
 
 float4 main(VertexOut pin) : SV_Target
@@ -61,7 +66,7 @@ float4 main(VertexOut pin) : SV_Target
     
     if (texColor.a == 0.0f)
     {
-        texColor = pin.color;
+        texColor = colors[pin.index].color;
     }
     
     finalColor.rgb = texColor.rgb * (finalColor.rgb + lightColor); // 独立光照影响

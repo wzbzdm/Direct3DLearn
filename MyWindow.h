@@ -3,6 +3,9 @@
 #include "MyGraphics.h"
 #include "MyMouse.h"
 #include "MyKeyboard.h"
+#include "DrawUnitBase.h"
+#include "MyTimer.h"
+#include "MyEnv.h"	
 #include <optional>
 #include <memory>
 
@@ -32,16 +35,26 @@ public:
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	Graphics& Gfx();
+	void SwitchEnv(int index) noexcept;
+	void AddEnv(std::unique_ptr<Env> env) noexcept;
+	void NewEnv() noexcept;
+	std::unique_ptr<Env>& ActiveEnv();
+	void RefreshGlobal();
+	void TestInit();
+
 public:
 	Mouse mouse;
 	Keyboard kbd;
-	LightManager lights;
-	CameraManager cameras;
+	std::vector<std::unique_ptr<Env>> envs;
+	int activeEnv = 0;
 private:
 	int width;
 	int height;
 	HWND hWnd;
 	const wchar_t* name;
+	Timer timer;
 
 	std::unique_ptr<Graphics> pGfx;
 };
+
+constexpr float PI = 3.14159265f;
