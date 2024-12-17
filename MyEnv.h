@@ -13,6 +13,7 @@ public:
 	static void Initialize(Graphics* gfx); // 静态初始化函数
 	void AddShape(std::unique_ptr<Shape3DBase> shape) noexcept;
 	void DrawAll();
+	void UpdateAll(float dt);
 	std::vector<std::unique_ptr<Shape3DBase>>& GetShapes() noexcept;
 	std::unique_ptr<LightManager>& Lights() noexcept;
 	Camera& Camera() noexcept;

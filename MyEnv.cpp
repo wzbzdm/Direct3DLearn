@@ -24,6 +24,13 @@ void Env::AddShape(std::unique_ptr<Shape3DBase> shape) noexcept {
 	shapes.push_back(std::move(shape));
 }
 
+void Env::UpdateAll(float dt) {
+	for (auto& b : GetShapes())
+	{
+		b->Update(dt);
+	}
+}
+
 void Env::DrawAll() {
 	// 刷新全局绑定
 	RefreshBind();

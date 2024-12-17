@@ -29,4 +29,25 @@ void Transformable::Update(float dt) noexcept
 	rotation.x += 1.8f * dt;
 	rotation.y += 1.6f * dt;
 	rotation.z += 2.0f * dt;
+	float speed = 0.5;
+	float width = 1.0;
+	// 半径为 0.5
+	if (pos.x >= 0 && pos.y >= 0 && pos.x < width) {
+		pos.x += dt * speed;
+		pos.y += dt * speed;
+	}
+	else if (pos.x >= width && pos.y > -width) {
+		pos.y -= dt * speed;
+	}
+	else if ((pos.x * pos.y <= 0) && pos.x > -width) {
+		pos.x -= speed * dt;
+		pos.y += speed * dt;
+	}
+	else if(pos.x <= -width && pos.y > -width) {
+		pos.y -= speed * dt;
+	}
+	else {
+		pos.x += speed * dt;
+		pos.y += speed * dt;
+	}
 }

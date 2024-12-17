@@ -46,6 +46,12 @@
     <Filter Include="TexDataSource">
       <UniqueIdentifier>{4bce2ab9-9862-4cb0-b35b-776b5807adf2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="IMGUI">
+      <UniqueIdentifier>{c33876ea-16dd-478b-988a-8d1f2639998b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IMGUISOURRCE">
+      <UniqueIdentifier>{e5b67b36-afad-4729-a7d1-590571924b54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -195,6 +201,27 @@
     <ClInclude Include="MyEnv.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="RightMenuManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx11.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_win32.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imguiBase.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -290,6 +317,30 @@
     <ClCompile Include="MyEnv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RightMenuManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXD.rc">
@@ -305,6 +356,12 @@
     </Image>
     <Image Include="TextureImg\test.png">
       <Filter>资源文件\TextureImg</Filter>
+    </Image>
+    <Image Include="bitmap1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="lft.bmp">
+      <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

@@ -323,3 +323,11 @@ void Graphics::Resize(int width, int height) noexcept {
 	vp.TopLeftY = 0.0f;
 	context->RSSetViewports(1, &vp);
 }
+
+ID3D11Device* Graphics::Device() noexcept {
+	return device.Get();
+}
+
+ID3D11DeviceContext* Graphics::Context() noexcept {
+	return context.Get();
+}

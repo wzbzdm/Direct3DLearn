@@ -36,8 +36,6 @@ public:
         UpdateMatrices();
     }
 
-    ~Camera() = default;
-
     Camera(const CameraData& data)
         : data(data)
     {
@@ -58,8 +56,7 @@ public:
 
     // 获取视图矩阵
     DirectX::XMMATRIX GetViewMatrix() const {
-        return DirectX::XMMatrixIdentity();
-        // return view;
+        return view;
     }
 
     // 获取投影矩阵

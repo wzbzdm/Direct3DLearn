@@ -6,12 +6,13 @@
 #include "DrawUnitBase.h"
 #include "MyTimer.h"
 #include "MyEnv.h"	
+#include "imguiBase.h"
 #include <optional>
 #include <memory>
 
-#define     PAINT_TIMER		1
-#define		HZ				120
-#define		MS_PER_FRAME	1000 / HZ
+#define     PAINT_TIMER			1
+#define		HZ					120
+#define		MS_PER_FRAME		1000 / HZ
 
 class Window {
 	friend class Graphics;
@@ -33,23 +34,33 @@ public:
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator = (const Window&) = delete;
-	void SetTitle(const char* title);
+	void SetTitle(const wchar_t* title);
 	static std::optional<int> ProcessMessages() noexcept;
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	Graphics& Gfx();
+
+	void InitIMGUI();
+	void ShowIMGUI();
+
+	void InitGdi();
+	HWND CreateBaseWindow();
+	bool HasArea() noexcept;
+
+	void CreateToolbar();
+
+	// Env
 	void SwitchEnv(int index) noexcept;
 	void AddEnv(std::unique_ptr<Env> env) noexcept;
 	void NewEnv() noexcept;
 	std::unique_ptr<Env>& ActiveEnv();
-	void RefreshGlobal();
+	// Test
 	void TestInit();
+	// Handler
 	void Update();
 	void Draw();
-
-	// 事件处理程序
-	void Resize(int width, int height) noexcept;
+	void Resize(int width, int height) noexcept;			// 事件处理程序
 
 public:
 	Mouse mouse;
@@ -60,10 +71,12 @@ private:
 	int width;
 	int height;
 	HWND hWnd;
+	HWND toolBar;
 	const wchar_t* name;
 	Timer timer;
 
 	std::unique_ptr<Graphics> pGfx = nullptr;
+	ULONG_PTR gdiplusToken;
 };
 
 constexpr float PI = 3.14159265f;

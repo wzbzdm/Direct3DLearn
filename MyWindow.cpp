@@ -1,6 +1,66 @@
 #include "MyWindow.h"
+#include <gdiplus.h>
+#pragma comment (lib,"Gdiplus.lib")
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 Window::Window(int width, int height, const wchar_t* name) : width(width), height(height), name(name) {
+	InitGdi();
+
+	// 创建窗口
+	hWnd = CreateBaseWindow();
+
+	// 创建 DirexctX 管理类
+	pGfx = std::make_unique<Graphics>(hWnd, width, height);
+
+	// 初始化 imgui
+	InitIMGUI();
+
+	// 设置定时器
+	SetTimer(hWnd, PAINT_TIMER, MS_PER_FRAME, nullptr);
+
+	// 创建初始化环境
+	NewEnv();
+
+	// 环境初始化完成, 最后显示窗口
+	ShowWindow(hWnd, SW_SHOWDEFAULT);
+}
+
+void Window::InitIMGUI() {
+	// 初始化 IMGUI
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	// 设置 IMGUI 风格
+	ImGui::StyleColorsDark();
+
+	// 初始化 Win32 和 DirectX11 后端
+	ImGui_ImplWin32_Init(hWnd);
+	ImGui_ImplDX11_Init(Gfx().Device(), Gfx().Context());
+}
+
+void Window::ShowIMGUI() {
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	static bool show_demo_window = true;
+	if (show_demo_window)
+	{
+		ImGui::ShowDemoWindow(&show_demo_window);
+	}
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Window::InitGdi() {
+	// 初始化 GDI+
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR gdiplusToken;
+	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr);
+}
+
+HWND Window::CreateBaseWindow() {
 	RECT wr;
 	wr.left = 100;
 	wr.right = width + wr.left;
@@ -8,29 +68,42 @@ Window::Window(int width, int height, const wchar_t* name) : width(width), heigh
 	wr.bottom = height + wr.top;
 	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-	hWnd = CreateWindow(
+	HWND hWnd = CreateWindow(
 		WindowClass::GetName(), (LPCWSTR)name,
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_SIZEBOX | WS_MAXIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
 		nullptr, nullptr, WindowClass::GetIntsance(), this
 	);
 
-	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	CreateToolbar();
 
-	pGfx = std::make_unique<Graphics>(hWnd, width, height);
+	return hWnd;
+}
 
-	SetTimer(hWnd, PAINT_TIMER, MS_PER_FRAME, nullptr);
+void Window::CreateToolbar() {
+	// 创建工具栏
+	toolBar = CreateWindowEx(0, TOOLBARCLASSNAME, NULL,
+		WS_CHILD | WS_VISIBLE | TBSTYLE_TOOLTIPS | TBSTYLE_WRAPABLE | TBSTYLE_FLAT, // 工具栏风格
+		0, 0, this->width, 50, this->hWnd, nullptr, WindowClass::GetIntsance(), NULL);
 
-	// 默认环境
-	NewEnv();
-	Env::Initialize(pGfx.get());	// 初始化环境
+	// 初始化工具栏
+	SendMessage(toolBar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0);
+	SendMessage(toolBar, TB_SETPADDING, 0, MAKELPARAM(20, 20));  // 填充
+	SendMessage(toolBar, TB_SETBITMAPSIZE, 0, MAKELPARAM(30, 30));
+	SendMessage(toolBar, TB_SETBUTTONSIZE, 0, MAKELPARAM(50, 50)); // 设置按钮大小以确保图标居中
+
+	SetWindowPos(toolBar, NULL, 0, 0, this->width, 50, SWP_NOZORDER);  // 设置工具栏高度为45像素，宽度为窗口宽度
 }
 
 Window::~Window() {
+	Gdiplus::GdiplusShutdown(gdiplusToken);
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 	DestroyWindow(hWnd);
 }
 
-void Window::SetTitle(const char* title) {
+void Window::SetTitle(const wchar_t* title) {
 	SetWindowText(hWnd, (LPCWSTR)title);
 }
 
@@ -68,6 +141,9 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 }
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
+		return true;
+	}
 	switch (msg) {
 	case WM_CLOSE:
 		PostQuitMessage(0);
@@ -77,6 +153,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		if (wParam == PAINT_TIMER) {
 			Update();
 			Draw();
+
 		}
 		break;
 	}
@@ -95,7 +172,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		break;
 	case WM_MOUSEMOVE:
 	{
-		const POINTS pt = MAKEPOINTS(lParam);
+		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height) {
 			mouse.OnMouseMove(pt.x, pt.y);
 			if (!mouse.IsInWindow()) {
@@ -116,7 +193,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_LBUTTONDOWN:
 	{
-		const POINTS pt = MAKEPOINTS(lParam);
+		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnLeftPressed(pt.x, pt.y);
 		// bring window to foreground on lclick client region
 		SetForegroundWindow(hWnd);
@@ -124,25 +201,25 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_RBUTTONDOWN:
 	{
-		const POINTS pt = MAKEPOINTS(lParam);
+		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightPressed(pt.x, pt.y);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
-		const POINTS pt = MAKEPOINTS(lParam);
+		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnLeftReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_RBUTTONUP:
 	{
-		const POINTS pt = MAKEPOINTS(lParam);
+		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_MOUSEWHEEL:
 	{
-		const POINTS pt = MAKEPOINTS(lParam);
+		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
 		mouse.OnWheelDelta(pt.x, pt.y, delta);
 		break;
@@ -189,10 +266,6 @@ void Window::NewEnv() noexcept {
 	Env::Initialize(pGfx.get());
 }
 
-void Window::RefreshGlobal() {
-	ActiveEnv()->RefreshBind();
-}
-
 void Window::TestInit() {
 	std::mt19937 rng{ std::random_device{}() };
 	std::uniform_real_distribution<float> adist{ 2.0f,PI * 2.0f };
@@ -200,24 +273,25 @@ void Window::TestInit() {
 	std::uniform_real_distribution<float> odist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> rdist{ 3.0f,6.0f };
 	ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
-	ActiveEnv()->AddShape(std::make_unique<Cylinder3D>(Gfx()));
+	ActiveEnv()->AddShape(std::make_unique<Sphere3D>(Gfx()));
 }
 
 void Window::Update() {
 	auto dt = timer.Mark();
-	for (auto& b : ActiveEnv()->GetShapes())
-	{
-		b->Update(kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
-	}
+	ActiveEnv()->UpdateAll(kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
+}
+
+bool Window::HasArea() noexcept {
+	return width != 0 && height != 0;
 }
 
 void Window::Draw() {
+	if (!HasArea()) return;
 	Gfx().ClearBuffer(1.0f, 0.5f, 0.5f);
-	RefreshGlobal();
-	for (auto& b : ActiveEnv()->GetShapes())
-	{
-		b->Draw(Gfx());
-	}
+	ActiveEnv()->DrawAll();
+	
+	ShowIMGUI();
+
 	Gfx().EndFrame();
 }
 
@@ -252,10 +326,11 @@ HINSTANCE Window::WindowClass::GetIntsance() noexcept {
 
 void Window::Resize(int width, int height) noexcept {
 	if (pGfx != nullptr) {
+		this->width = width;
+		this->height = height;
 		Gfx().Resize(width, height);
 		ActiveEnv()->Camera().Resize(width, height);
 	}
-	
 }
 
 Window::WindowClass Window::WindowClass::wndClass;

@@ -30,7 +30,7 @@ public:
     LightManager() {
         // 初始化一个默认的点光源
         defaultLight = {
-            DirectX::XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f),    // 点光源位置 (x, y, z)，例如放在场景中的(0, 10, 0)高度位置
+            DirectX::XMFLOAT4(0.0f, 10.0f, -10.0f, 1.0f),    // 点光源位置 (x, y, z)，例如放在场景中的(0, 10, 0)高度位置
             DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f),   // 点光源方向，点光源不需要方向，通常用零向量 (0, 0, 0)
             DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),    // 点光源的颜色，白色光，RGB=(1, 1, 1) 
             1.0f,                                         // 光强度，1.0表示正常强度

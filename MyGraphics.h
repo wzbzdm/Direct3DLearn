@@ -21,7 +21,6 @@ namespace wrl = Microsoft::WRL;
 class Window;
 
 class Graphics {
-	friend class Bindable;
 	friend class Shape3DBase;
 public:
 	Graphics(HWND hWnd, int width, int height);
@@ -39,6 +38,8 @@ public:
 	void DrawTestTriangle(float angle);		//  测试
 	void BindGlobal() const noexcept;
 	void Resize(int width, int height) noexcept;
+	ID3D11Device* Device() noexcept;
+	ID3D11DeviceContext* Context() noexcept;
 
 private:
 	std::shared_ptr<CameraManager> cameras;          // 相机对象
