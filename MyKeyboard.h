@@ -13,8 +13,8 @@ public:
 	public:
 		enum class Type
 		{
-			Press,
-			Release,
+			Press,		// 按下
+			Release,	// 释放
 		};
 	private:
 		Type type;

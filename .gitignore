@@ -31,6 +31,8 @@
 *.out
 *.app
 *.cso
+*.ini
+*.bin
 
 x64/
 .vs/

@@ -15,7 +15,6 @@
 #define IDR_MENU2                       131
 #define IDR_TOOLBARR1                   132
 #define IDB_BITMAP1                     133
-#define IDB_LFT                         133
 
 // Next default values for new objects
 // 

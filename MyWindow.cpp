@@ -40,17 +40,183 @@ void Window::InitIMGUI() {
 }
 
 void Window::ShowIMGUI() {
+	// 开启新的 IMGUI 帧
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	static bool show_demo_window = true;
-	if (show_demo_window)
-	{
-		ImGui::ShowDemoWindow(&show_demo_window);
-	}
+	Show3DChoose();
+
+	ShowCameraConf();
+	
+	ShowLightCof();
+
+	// 渲染 IMGUI 界面
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+
+
+void Window::Show3DChoose() {
+	// *********************
+	// 工具栏 1：物体选择
+	// *********************
+	if (ImGui::Begin("Objects Toolbar")) {  // 工具栏窗口的标题
+		ImGui::Text("Add an object:");
+
+		// 每个选项作为独立按钮
+		if (ImGui::Button("Sphere")) {
+			ActiveEnv()->AddShape(std::make_unique<Sphere3D>(Gfx()));
+		}
+		ImGui::SameLine();  // 使按钮位于同一行
+
+		if (ImGui::Button("Cube")) {
+			ActiveEnv()->AddShape(std::make_unique<Hexahedron3D>(Gfx()));
+		}
+		ImGui::SameLine();
+
+		if (ImGui::Button("Plane")) {
+			ActiveEnv()->AddShape(std::make_unique<Plane3D>(Gfx()));
+		}
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cylinder")) {
+			ActiveEnv()->AddShape(std::make_unique<Cylinder3D>(Gfx()));
+		}
+	}
+	ImGui::End();
+}
+
+void Window::ShowCameraConf() {
+	if (ImGui::Begin("Camera Configuration")) {
+		CameraData camera = ActiveEnv()->Camera().GetCameraData();
+
+		// 计算相机的朝向向量
+		DirectX::XMVECTOR cameraToTarget = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&camera.target), DirectX::XMLoadFloat3(&camera.position));
+		DirectX::XMFLOAT3 direction;
+		DirectX::XMStoreFloat3(&direction, cameraToTarget);
+
+		// 默认的方向向量
+		DirectX::XMVECTOR forward = DirectX::XMVector3Normalize(cameraToTarget); // 当前朝向
+		DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&camera.upVector);           // 当前上向量
+		DirectX::XMVECTOR right = DirectX::XMVector3Cross(up, forward);          // 右向量：朝向和上向量的叉积
+
+		ImGui::Text("Position (X, Y, Z):");
+		if (ImGui::InputFloat3("Position", &camera.position.x)) {
+			ActiveEnv()->Camera().SetPosition(camera.position);
+		}
+
+		ImGui::Text("Target (X, Y, Z):");
+		if (ImGui::InputFloat3("Target", &camera.target.x)) {
+			ActiveEnv()->Camera().SetTarget(camera.target);
+		}
+
+		ImGui::Text("Up Vector (X, Y, Z):");
+		if (ImGui::InputFloat3("Up Vector", &camera.upVector.x)) {
+			ActiveEnv()->Camera().SetUpV(camera.upVector);
+		}
+
+		float yaw = 0, pitch = 0, roll = 0;
+
+		// 更新Yaw后，绕局部坐标系旋转
+		if (ImGui::SliderFloat("Yaw", &yaw, -DirectX::XM_PI, DirectX::XM_PI)) {
+			// 旋转矩阵：绕相机的up轴旋转
+			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(up, yaw);
+			DirectX::XMVECTOR newTarget = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.target), rotationMatrix);
+			DirectX::XMStoreFloat3(&camera.target, newTarget);
+			ActiveEnv()->Camera().SetTarget(camera.target);
+		}
+
+		// 更新Pitch后，绕局部坐标系旋转
+		if (ImGui::SliderFloat("Pitch", &pitch, -DirectX::XM_PI / 2, DirectX::XM_PI / 2)) {
+			// 绕right（右）轴旋转
+			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(right, pitch);
+			DirectX::XMVECTOR newTarget = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.target), rotationMatrix);
+			DirectX::XMStoreFloat3(&camera.target, newTarget);
+			ActiveEnv()->Camera().SetTarget(camera.target);
+		}
+
+		// 更新Roll后，绕当前的前向（forward）轴旋转
+		if (ImGui::SliderFloat("Roll", &roll, -DirectX::XM_PI, DirectX::XM_PI)) {
+			// 绕前向轴旋转
+			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(forward, roll);
+			DirectX::XMVECTOR newUp = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.upVector), rotationMatrix);
+			DirectX::XMStoreFloat3(&camera.upVector, newUp);
+			ActiveEnv()->Camera().SetUpV(camera.upVector);
+		}
+
+		// FOV角度
+		std::string fov_label = "FOV";
+		float fov = camera.fieldOfView / DirectX::XM_PI * 360;
+		if (ImGui::SliderFloat(fov_label.c_str(), &fov, 60.0f, 200.0f)) {
+			float newF = fov / 360 * DirectX::XM_PI;
+			ActiveEnv()->Camera().SetFieldOfView(newF);
+		}
+
+		// 远裁面
+		std::string far_label = "FarPlane";
+		if (ImGui::SliderFloat(far_label.c_str(), &camera.farPlane, 50.0f, 1000.0f)) {
+			ActiveEnv()->Camera().SetFarPlane(camera.farPlane);
+		}
+	}
+	ImGui::End();
+}
+
+void Window::ShowLightCof() {
+	// *********************
+	// 工具栏 3：光照配置
+	// *********************
+	if (ImGui::Begin("Light Configuration")) {
+		auto lights = ActiveEnv()->Lights()->GetLightsData();  // 获取所有光源
+		ImGui::Text("Lights Count: %d", static_cast<int>(lights.size()));
+
+		// 遍历所有光照信息并显示
+		for (size_t i = 0; i < lights.size(); ++i) {
+			ImGui::Separator();
+			ImGui::Text("Light #%d", static_cast<int>(i + 1));  // 光照编号
+
+			DirectX::XMFLOAT4& position = lights[i].position;
+			DirectX::XMFLOAT4& color = lights[i].color;
+			float& intensity = lights[i].intensity;
+			float& range = lights[i].range;
+
+			// 光照位置编辑
+			std::string pos_label = "Position##" + std::to_string(i);
+			if (ImGui::InputFloat4(pos_label.c_str(), &position.x)) {
+				ActiveEnv()->Lights()->UpdateLight(lights[i], i);
+			}
+
+			// 光照颜色编辑
+			std::string color_label = "Color##" + std::to_string(i);
+			if (ImGui::ColorEdit4(color_label.c_str(), &color.x)) {
+				ActiveEnv()->Lights()->UpdateLight(lights[i], i);
+			}
+
+			// 光照强度编辑
+			std::string intensity_label = "Intensity##" + std::to_string(i);
+			if (ImGui::SliderFloat(intensity_label.c_str(), &intensity, 0.0f, 10.0f)) {
+				ActiveEnv()->Lights()->UpdateLight(lights[i], i);
+			}
+
+			// 光照范围编辑
+			std::string range_label = "Range##" + std::to_string(i);
+			if (ImGui::SliderFloat(range_label.c_str(), &range, 0.0f, 1000.0f)) {
+				ActiveEnv()->Lights()->UpdateLight(lights[i], i);
+			}
+		}
+
+		ImGui::Separator();  // 窗口分割线
+
+		if (ImGui::Button("Add Light")) {
+			ActiveEnv()->Lights()->AddLight();
+		}
+	}
+	ImGui::End();
+}
+
+std::optional<Mouse::Event> Window::ReadMouseEvent() noexcept {
+	return mouse.Read();
 }
 
 void Window::InitGdi() {
@@ -153,7 +319,6 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		if (wParam == PAINT_TIMER) {
 			Update();
 			Draw();
-
 		}
 		break;
 	}
@@ -215,6 +380,14 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightReleased(pt.x, pt.y);
+		break;
+	}
+	case WM_MBUTTONDOWN:
+	{
+		break;
+	}
+	case WM_MBUTTONUP:
+	{
 		break;
 	}
 	case WM_MOUSEWHEEL:
@@ -331,6 +504,42 @@ void Window::Resize(int width, int height) noexcept {
 		Gfx().Resize(width, height);
 		ActiveEnv()->Camera().Resize(width, height);
 	}
+}
+
+void Window::LClick(POINT pt) {
+
+}
+
+void Window::LDClick(POINT pt) {
+
+}
+
+void Window::RClick(POINT pt) {
+
+}
+
+void Window::RDClick(POINT pt) {
+
+}
+
+void Window::LPMove(POINT pt) {
+
+}
+
+void Window::RPMove(POINT pt) {
+
+}
+
+void Window::MPMove(POINT pt) {
+
+}
+
+void Window::WheelDown() {
+
+}
+
+void Window::WheelUp() {
+
 }
 
 Window::WindowClass Window::WindowClass::wndClass;

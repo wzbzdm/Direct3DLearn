@@ -2,6 +2,8 @@
 
 #include <DirectXMath.h>
 #include <vector>
+#include <algorithm>
+#include <iostream>
 
 // 灯光属性数据结构
 struct LightProperties {
@@ -64,6 +66,10 @@ public:
         lights.at(index) = light;  // 更新灯光列表中的数据
     }
 
+    std::vector<LightProperties> GetLightsData() {
+        return lights;
+    }
+
     // 为所有灯光计算与视图相关的矩阵
     void TransformLightsWithViewMatrix(const DirectX::XMMATRIX& viewMatrix) {
         using namespace DirectX;
@@ -82,14 +88,14 @@ public:
     }
 
     std::vector<LightBuffer> GetLightBufferData() {
-        std::vector<LightBuffer> lightBufferData;
-        for (const auto& light : lights) {
+        std::vector<LightBuffer> lightBufferData(10);
+        for (int i = 0; i < std::min(10, (int)lights.size()); i++) {
             LightBuffer buffer;
-            buffer.position = light.position;
-            buffer.color = light.color;
-            buffer.intensity = light.intensity;
-            buffer.range = light.range;
-            lightBufferData.push_back(buffer);
+            buffer.position = lights[i].position;
+            buffer.color = lights[i].color;
+            buffer.intensity = lights[i].intensity;
+            buffer.range = lights[i].range;
+            lightBufferData[i] = buffer;
         }
         return lightBufferData;
     }
@@ -97,6 +103,10 @@ public:
     // 添加光源
     void AddLight(const LightProperties& light) {
         lights.push_back(light);  // 添加到灯光列表
+    }
+
+    void AddLight() {
+        lights.push_back(defaultLight);
     }
 
     // 删除指定索引的光源

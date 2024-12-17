@@ -28,7 +28,7 @@ public:
             DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f),   // 默认位置 (在Z轴负方向上)
             DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),    // 默认目标 (指向原点)
             DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),    // 默认上向量 (指向Y轴正方向)
-            114.0f,                                 
+            114.0f / 360 * DirectX::XM_PI,                                 
             0.1f,                                   // 默认近裁剪面距离 
             100.0f,                                  // 默认远裁剪面距离
             4.0 / 3.0                               // 默认纵横比 (4:3)
@@ -71,13 +71,21 @@ public:
 
     // 更新相机位置，并重新计算矩阵
     void SetPosition(const DirectX::XMFLOAT3& newPos) {
+        if (data.target.x == newPos.x && data.target.y == newPos.y && data.target.z == newPos.z) return;
         data.position = newPos;
         UpdateMatrices();
     }
 
     // 更新相机的目标（朝向）
     void SetTarget(const DirectX::XMFLOAT3& newTarget) {
+        // 防止数据相同
+        if (data.position.x == newTarget.x && data.position.y == newTarget.y && data.position.z == newTarget.z) return;
         data.target = newTarget;
+        UpdateMatrices();
+    }
+
+    void SetUpV(const DirectX::XMFLOAT3& newUpV) {
+        data.upVector = newUpV;
         UpdateMatrices();
     }
 
@@ -116,6 +124,11 @@ public:
     // 设置视野角度（FOV）
     void SetFieldOfView(float fov) {
         data.fieldOfView = fov;
+        UpdateMatrices();
+    }
+
+    void SetFarPlane(float far) {
+        data.farPlane = far;
         UpdateMatrices();
     }
 

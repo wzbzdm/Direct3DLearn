@@ -231,9 +231,7 @@
     <ResourceCompile Include="DirectXD.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bitmap1.bmp" />
     <Image Include="DirectXD.ico" />
-    <Image Include="lft.bmp" />
     <Image Include="small.ico" />
     <Image Include="TextureImg\test.png" />
   </ItemGroup>

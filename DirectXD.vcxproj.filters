@@ -357,12 +357,6 @@
     <Image Include="TextureImg\test.png">
       <Filter>资源文件\TextureImg</Filter>
     </Image>
-    <Image Include="bitmap1.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="lft.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">

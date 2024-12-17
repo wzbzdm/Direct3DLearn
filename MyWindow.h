@@ -43,6 +43,13 @@ public:
 
 	void InitIMGUI();
 	void ShowIMGUI();
+	
+	void Show3DChoose();
+	void ShowCameraConf();
+	void ShowLightCof();
+
+	// Event
+	std::optional<Mouse::Event> ReadMouseEvent() noexcept;
 
 	void InitGdi();
 	HWND CreateBaseWindow();
@@ -61,6 +68,15 @@ public:
 	void Update();
 	void Draw();
 	void Resize(int width, int height) noexcept;			// 事件处理程序
+	void LClick(POINT pt);
+	void LDClick(POINT pt);
+	void RClick(POINT pt);
+	void RDClick(POINT pt);
+	void LPMove(POINT pt);
+	void RPMove(POINT pt);
+	void MPMove(POINT pt);
+	void WheelDown();
+	void WheelUp();
 
 public:
 	Mouse mouse;
