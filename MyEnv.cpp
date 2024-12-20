@@ -31,6 +31,21 @@ void Env::UpdateAll(float dt) {
 	}
 }
 
+int Env::GetClickIndex(Ray& ray) noexcept {
+	int index = -1;
+	DirectX::XMFLOAT3 calc(0,0, FLT_MAX);
+	for (int i = 0; i < shapes.size(); i++) {
+		DirectX::XMFLOAT3 mid;
+		if (shapes[i]->RayIntersect(ray, mid)) {
+			if (mid.z > calc.z) continue;
+			calc = mid;
+			index = i;
+		}
+	}
+
+	return index;
+}
+
 void Env::DrawAll() {
 	// 刷新全局绑定
 	RefreshBind();
@@ -49,6 +64,10 @@ std::unique_ptr<LightManager>& Env::Lights() noexcept {
 
 Camera& Env::Camera() noexcept {
 	return cameraManager->GetCurrentCamera();
+}
+
+void Env::SetActiveShape(int index) noexcept {
+	this->activeShape = index;
 }
 
 // 在 Env.cpp 中定义静态成员

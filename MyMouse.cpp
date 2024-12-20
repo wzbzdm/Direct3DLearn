@@ -42,6 +42,23 @@ std::optional<Mouse::Event> Mouse::Read() noexcept
 	return {};
 }
 
+std::optional<Mouse::Event> Mouse::ReadEvent() noexcept
+{
+	if (events.size() > 0u)
+	{
+		Mouse::Event e = events.front();
+		events.pop_front();
+		return e;
+	}
+	return {};
+}
+
+void Mouse::PushBoth(Mouse::Event&& mevent) noexcept {
+	// 使用 std::move 转换为右值，避免拷贝
+	buffer.push_back(std::move(mevent));
+	events.push_back(buffer.back());
+}
+
 void Mouse::Flush() noexcept
 {
 	buffer = std::deque<Event>();
@@ -62,11 +79,11 @@ void Mouse::OnMouseMove(int newx, int newy) noexcept
 		Mouse::Event last = buffer.back();
 		if (last.GetPosX() != newx || last.GetPosY() != newy) {
 			if (last.GetType() == Mouse::Event::Type::LPress || last.GetType() == Mouse::Event::Type::LPMove) {
-				buffer.push_back(Mouse::Event(Mouse::Event::Type::LPMove, *this));
+				PushBoth(Mouse::Event(Mouse::Event::Type::LPMove, *this));
 			}else if (last.GetType() == Mouse::Event::Type::RPress || last.GetType() == Mouse::Event::Type::RPMove) {
-				buffer.push_back(Mouse::Event(Mouse::Event::Type::RPMove, *this));
+				PushBoth(Mouse::Event(Mouse::Event::Type::RPMove, *this));
 			} else if (last.GetType() == Mouse::Event::Type::MPress || last.GetType() == Mouse::Event::Type::MPMove) {
-				buffer.push_back(Mouse::Event(Mouse::Event::Type::MPMove, *this));
+				PushBoth(Mouse::Event(Mouse::Event::Type::MPMove, *this));
 			} else {
 				buffer.push_back(Mouse::Event(Mouse::Event::Type::Move, *this));
 			}
@@ -110,19 +127,19 @@ void Mouse::OnLeftReleased(int x, int y) noexcept
 	if (!IsEmpty()) {
 		Mouse::Event last = buffer.back();
 		long long currentTime = Mouse::CurrentTimeMS();
-		if (last.GetType() == Mouse::Event::Type::LPress && (currentTime - last.GetTime()) < MINCLICKTIME) {
+		if (last.GetType() == Mouse::Event::Type::LPress) {
 			buffer.pop_back();
 			if (!IsEmpty()) {
 				Mouse::Event lastlast = buffer.back();
 				if (lastlast.GetType() == Mouse::Event::Type::LClick && (currentTime - lastlast.GetTime()) < MINDCLICKTIME) {
 					buffer.pop_back();
-					buffer.push_back(Mouse::Event(Mouse::Event::Type::LDClick, *this));
+					PushBoth(Mouse::Event(Mouse::Event::Type::LDClick, *this));
 				}
 				else {
-					buffer.push_back(Mouse::Event(Mouse::Event::Type::LClick, *this));
+					PushBoth(Mouse::Event(Mouse::Event::Type::LClick, *this));
 				}
 			} else {
-				buffer.push_back(Mouse::Event(Mouse::Event::Type::LClick, *this));
+				PushBoth(Mouse::Event(Mouse::Event::Type::LClick, *this));
 			}
 		} else {
 			buffer.push_back(Mouse::Event(Mouse::Event::Type::LRelease, *this));
@@ -158,14 +175,14 @@ void Mouse::OnRightReleased(int x, int y) noexcept
 				Mouse::Event lastlast = buffer.back();
 				if (lastlast.GetType() == Mouse::Event::Type::RClick && (currentTime - lastlast.GetTime()) < MINDCLICKTIME) {
 					buffer.pop_back();
-					buffer.push_back(Mouse::Event(Mouse::Event::Type::RDClick, *this));
+					PushBoth(Mouse::Event(Mouse::Event::Type::RDClick, *this));
 				}
 				else {
-					buffer.push_back(Mouse::Event(Mouse::Event::Type::RClick, *this));
+					PushBoth(Mouse::Event(Mouse::Event::Type::RClick, *this));
 				}
 			}
 			else {
-				buffer.push_back(Mouse::Event(Mouse::Event::Type::RClick, *this));
+				PushBoth(Mouse::Event(Mouse::Event::Type::RClick, *this));
 			}
 
 		}
@@ -201,7 +218,7 @@ void Mouse::OnWheelUp(int x, int y) noexcept
 {
 	this->x = x;
 	this->y = y;
-	buffer.push_back(Mouse::Event(Mouse::Event::Type::WheelUp, *this));
+	PushBoth(Mouse::Event(Mouse::Event::Type::WheelUp, *this));
 	TrimBuffer();
 }
 
@@ -209,7 +226,7 @@ void Mouse::OnWheelDown(int x, int y) noexcept
 {
 	this->x = x;
 	this->y = y;
-	buffer.push_back(Mouse::Event(Mouse::Event::Type::WheelDown, *this));
+	PushBoth(Mouse::Event(Mouse::Event::Type::WheelDown, *this));
 	TrimBuffer();
 }
 

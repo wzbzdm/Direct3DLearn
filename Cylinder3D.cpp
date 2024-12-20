@@ -2,13 +2,11 @@
 #include "Cylinder3D.h"
 #include "BindableBase.h"
 
-DirectX::XMFLOAT3 Cylinder3D::conf = { 1.0f, 1.0f, 1.0 };
-
 Cylinder3D::Cylinder3D(Graphics& gfx)
 {
     InitColor();
     if (!IsStaticInitialized()) {
-        auto model = Cylinder().CreateD();
+        auto model = Cylinder().CreateD(size.x, size.y, size.z);
 
         BindStaticAll(gfx, model);
         AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
@@ -30,14 +28,14 @@ void Cylinder3D::SetConf(int numC, int numH) {
 
 void Cylinder3D::SetSize(const DirectX::XMFLOAT3& size)
 {
-    conf = size;  // 设置顶部半径、底部半径、高度
+    this->size = size;  // 设置顶部半径、底部半径、高度
 }
 
 void Cylinder3D::ScaleSize(const DirectX::XMFLOAT3& radio)
 {
-    conf.x *= radio.x;
-    conf.y *= radio.y;
-    conf.z *= radio.z;  // 缩放操作
+    this->size.x *= radio.x;
+    this->size.y *= radio.y;
+    this->size.z *= radio.z;  // 缩放操作
 }
 
 DirectX::XMMATRIX Cylinder3D::GetTransformMatrix() const noexcept
@@ -52,10 +50,19 @@ DirectX::XMMATRIX Cylinder3D::GetTransformMatrix() const noexcept
     DirectX::XMMATRIX rotationMatrix = rotationX * rotationY * rotationZ;
 
     // 获取缩放矩阵（按 X, Y, Z 三个方向的缩放）
-    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(conf.x, conf.y, conf.z);
+    // DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(this->size.x, this->size.y, this->size.z);
 
     // 返回组合的变换矩阵：缩放 -> 旋转 -> 平移
-    return scaling * rotationMatrix * translation;
+    // 圆柱的缩放需要单独处理, 重新创建图形然后绑定缓冲区
+    return rotationMatrix * translation;
+}
+
+// 计算当前图形与射线的交点
+// 位置 pos
+// 大小 size  分别为: 顶部半径，底部半径和高度
+// 旋转 rotation
+bool Cylinder3D::RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept {
+    return false;
 }
 
 void Cylinder3D::InitColor() noexcept

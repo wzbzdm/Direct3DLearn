@@ -93,9 +93,13 @@ public:
 	bool LeftIsPressed() const noexcept;
 	bool RightIsPressed() const noexcept;
 	std::optional<Mouse::Event> Read() noexcept;
-	bool IsEmpty() const noexcept
-	{
+	std::optional<Mouse::Event> ReadEvent() noexcept;
+	void PushBoth(Mouse::Event&& mevent) noexcept;
+	bool IsEmpty() const noexcept {
 		return buffer.empty();
+	}
+	bool IsEventEmpty() const noexcept {
+		return events.empty();
 	}
 	void Flush() noexcept;
 private:
@@ -123,4 +127,5 @@ private:
 	bool isInWindow = false;
 	int wheelDeltaCarry = 0;
 	std::deque<Event> buffer;
+	std::deque<Event> events;
 };

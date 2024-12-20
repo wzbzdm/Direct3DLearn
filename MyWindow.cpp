@@ -218,7 +218,7 @@ void Window::ShowLightCof() {
 }
 
 std::optional<Mouse::Event> Window::ReadMouseEvent() noexcept {
-	return mouse.Read();
+	return mouse.ReadEvent();
 }
 
 void Window::InitGdi() {
@@ -450,8 +450,9 @@ void Window::TestInit() {
 	std::uniform_real_distribution<float> ddist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> odist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> rdist{ 3.0f,6.0f };
-	ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
-	ActiveEnv()->AddShape(std::make_unique<Sphere3D>(Gfx()));
+	// ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
+	// ActiveEnv()->AddShape(std::make_unique<Sphere3D>(Gfx()));
+	// ActiveEnv()->AddShape(std::make_unique<Hexahedron3D>(Gfx()));
 }
 
 void Window::Update() {
@@ -521,7 +522,11 @@ void Window::Resize(int width, int height) noexcept {
 }
 
 void Window::LClick(POINT pt) {
-
+	DirectX::XMFLOAT3 target = GetCurPos(pt.x, pt.y);
+	DirectX::XMFLOAT3 origin = ActiveEnv()->Camera().GetPos();
+	Ray cur(origin, target);
+	int index = ActiveEnv()->GetClickIndex(cur);
+	ActiveEnv()->SetActiveShape(index);
 }
 
 void Window::LDClick(POINT pt) {

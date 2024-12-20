@@ -50,6 +50,53 @@ DirectX::XMMATRIX Plane3D::GetTransformMatrix() const noexcept
     return scaling * rotationMatrix * translation;
 }
 
+// 计算当前图形与射线的交点
+// 位置 pos
+// 大小 size
+// 旋转 rotation
+bool Plane3D::RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept {
+    using namespace DirectX;
+
+    // 平面的初始法向量 (0, 0, 1)
+    XMVECTOR initialNormal = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+
+    // 获取平面的旋转变换矩阵
+    XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+
+    // 应用旋转变换到法向量
+    XMVECTOR transformedNormal = XMVector3TransformNormal(initialNormal, rotationMatrix);
+
+    // 取平面上的一个点（中心点 pos）
+    XMVECTOR planePoint = XMLoadFloat3(&pos);
+
+    // 射线起点和方向
+    XMVECTOR rayOrigin = XMLoadFloat3(&ray.GetOrigin());
+    XMVECTOR rayDir = XMVector3Normalize(XMLoadFloat3(&ray.GetDirection()));
+
+    // 计算射线方向和法向量的点积
+    float denom = XMVectorGetX(XMVector3Dot(transformedNormal, rayDir));
+
+    // 如果点积接近 0，则射线与平面平行
+    if (fabs(denom) < 1e-6f) {
+        return false; // 平行，无交点
+    }
+
+    // 计算 t 参数
+    float t = XMVectorGetX(XMVector3Dot(planePoint - rayOrigin, transformedNormal)) / denom;
+
+    // 如果 t < 0，交点在射线的反方向
+    if (t < 0) {
+        return false;
+    }
+
+    // 计算交点
+    XMVECTOR intersection = rayOrigin + t * rayDir;
+    XMStoreFloat3(&intersectionPoint, intersection);
+
+    return true;
+}
+
+
 void Plane3D::InitColor() noexcept {
     SetColors({
 		{ 0.5f, 1.0f, 0.5f, 1.0f },

@@ -41,6 +41,10 @@ float Camera::GetCurZ(int height) noexcept {
     return static_cast<float>(height) / tanf(data.fieldOfView / 2);
 }
 
+DirectX::XMFLOAT3 Camera::GetPos() const noexcept {
+    return data.position;
+}
+
 void Camera::UpdateMatrices() {
     using namespace DirectX;
     view = XMMatrixLookAtLH(XMLoadFloat3(&data.position), XMLoadFloat3(&data.target), XMLoadFloat3(&data.upVector));

@@ -54,6 +54,10 @@ DirectX::XMMATRIX Box::GetTransformMatrix() const noexcept
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 10.0f);
 }
 
+bool Box::RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept {
+	return false;
+}
+
 void Box::InitColor() noexcept {
 	SetColors({
 	{ 1.0f, 0.0f, 0.0f, 1.0f },

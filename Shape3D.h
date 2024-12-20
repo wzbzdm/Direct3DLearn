@@ -5,6 +5,7 @@
 #include "TextureGenerators.h"
 #include "ImageLoader.h"
 #include "Geometry.h"
+#include "Ray.h"
 
 template<class T>
 class Shape3D : public Shape3DBase {

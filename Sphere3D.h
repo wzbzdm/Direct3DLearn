@@ -13,6 +13,7 @@ public:
     void SetRadius(float radius);
     void ScaleRadius(float factor);
     DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
+    bool RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept override;
     void InitColor() noexcept;
 private:
     float radius = 1.0f; // 半径
