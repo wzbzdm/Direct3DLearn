@@ -13,6 +13,8 @@ Window::Window(int width, int height, const wchar_t* name) : width(width), heigh
 	// 创建 DirexctX 管理类
 	pGfx = std::make_unique<Graphics>(hWnd, width, height);
 
+	Camera::Init(height, 114.0);
+
 	// 初始化 imgui
 	InitIMGUI();
 
@@ -62,8 +64,8 @@ void Window::Show3DChoose() {
 	// *********************
 	// 工具栏 1：物体选择
 	// *********************
-	if (ImGui::Begin("Objects Toolbar")) {  // 工具栏窗口的标题
-		ImGui::Text("Add an object:");
+	if (ImGui::Begin("Objects")) {  // 工具栏窗口的标题
+		ImGui::Text("Add 3D shape:");
 
 		// 每个选项作为独立按钮
 		if (ImGui::Button("Sphere")) {
@@ -89,7 +91,7 @@ void Window::Show3DChoose() {
 }
 
 void Window::ShowCameraConf() {
-	if (ImGui::Begin("Camera Configuration")) {
+	if (ImGui::Begin("Camera")) {
 		CameraData camera = ActiveEnv()->Camera().GetCameraData();
 
 		// 计算相机的朝向向量
@@ -102,25 +104,25 @@ void Window::ShowCameraConf() {
 		DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&camera.upVector);           // 当前上向量
 		DirectX::XMVECTOR right = DirectX::XMVector3Cross(up, forward);          // 右向量：朝向和上向量的叉积
 
-		ImGui::Text("Position (X, Y, Z):");
-		if (ImGui::InputFloat3("Position", &camera.position.x)) {
+		ImGui::Text("Position:");
+		if (ImGui::InputFloat3("##Position", &camera.position.x)) {
 			ActiveEnv()->Camera().SetPosition(camera.position);
 		}
 
-		ImGui::Text("Target (X, Y, Z):");
-		if (ImGui::InputFloat3("Target", &camera.target.x)) {
+		ImGui::Text("Target:");
+		if (ImGui::InputFloat3("##Target", &camera.target.x)) {
 			ActiveEnv()->Camera().SetTarget(camera.target);
 		}
 
-		ImGui::Text("Up Vector (X, Y, Z):");
-		if (ImGui::InputFloat3("Up Vector", &camera.upVector.x)) {
+		ImGui::Text("Up Vector:");
+		if (ImGui::InputFloat3("##Up Vector", &camera.upVector.x)) {
 			ActiveEnv()->Camera().SetUpV(camera.upVector);
 		}
 
 		float yaw = 0, pitch = 0, roll = 0;
 
 		// 更新Yaw后，绕局部坐标系旋转
-		if (ImGui::SliderFloat("Yaw", &yaw, -DirectX::XM_PI, DirectX::XM_PI)) {
+		if (ImGui::SliderFloat("Yaw##", &yaw, -DirectX::XM_PI, DirectX::XM_PI)) {
 			// 旋转矩阵：绕相机的up轴旋转
 			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(up, yaw);
 			DirectX::XMVECTOR newTarget = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.target), rotationMatrix);
@@ -129,7 +131,7 @@ void Window::ShowCameraConf() {
 		}
 
 		// 更新Pitch后，绕局部坐标系旋转
-		if (ImGui::SliderFloat("Pitch", &pitch, -DirectX::XM_PI / 2, DirectX::XM_PI / 2)) {
+		if (ImGui::SliderFloat("Pitch##", &pitch, -DirectX::XM_PI / 2, DirectX::XM_PI / 2)) {
 			// 绕right（右）轴旋转
 			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(right, pitch);
 			DirectX::XMVECTOR newTarget = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.target), rotationMatrix);
@@ -138,7 +140,7 @@ void Window::ShowCameraConf() {
 		}
 
 		// 更新Roll后，绕当前的前向（forward）轴旋转
-		if (ImGui::SliderFloat("Roll", &roll, -DirectX::XM_PI, DirectX::XM_PI)) {
+		if (ImGui::SliderFloat("Roll##", &roll, -DirectX::XM_PI, DirectX::XM_PI)) {
 			// 绕前向轴旋转
 			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(forward, roll);
 			DirectX::XMVECTOR newUp = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.upVector), rotationMatrix);
@@ -147,15 +149,15 @@ void Window::ShowCameraConf() {
 		}
 
 		// FOV角度
-		std::string fov_label = "FOV";
+		std::string fov_label = "FOV##";
 		float fov = camera.fieldOfView / DirectX::XM_PI * 360;
-		if (ImGui::SliderFloat(fov_label.c_str(), &fov, 60.0f, 200.0f)) {
+		if (ImGui::SliderFloat(fov_label.c_str(), &fov, 10.0f, 300.0f)) {
 			float newF = fov / 360 * DirectX::XM_PI;
 			ActiveEnv()->Camera().SetFieldOfView(newF);
 		}
 
 		// 远裁面
-		std::string far_label = "FarPlane";
+		std::string far_label = "FarPlane##";
 		if (ImGui::SliderFloat(far_label.c_str(), &camera.farPlane, 50.0f, 1000.0f)) {
 			ActiveEnv()->Camera().SetFarPlane(camera.farPlane);
 		}
@@ -167,7 +169,7 @@ void Window::ShowLightCof() {
 	// *********************
 	// 工具栏 3：光照配置
 	// *********************
-	if (ImGui::Begin("Light Configuration")) {
+	if (ImGui::Begin("Light")) {
 		auto lights = ActiveEnv()->Lights()->GetLightsData();  // 获取所有光源
 		ImGui::Text("Lights Count: %d", static_cast<int>(lights.size()));
 
@@ -421,6 +423,9 @@ void Window::SwitchEnv(int index) noexcept {
 		// 设置 Camera 和 Light 对象到 Graphics 中
 		pGfx->SetCamera(std::shared_ptr<CameraManager>(ActiveEnv()->cameraManager.get())); // 将相机传递给Graphics
 		pGfx->SetLight(std::shared_ptr<LightManager>(ActiveEnv()->lightManager.get()));   // 将灯光管理器传递给Graphics
+
+		// 初始化相机配置
+		ActiveEnv()->Camera().Resize(width, height);
 	}
 }
 
@@ -466,6 +471,15 @@ void Window::Draw() {
 	ShowIMGUI();
 
 	Gfx().EndFrame();
+}
+
+DirectX::XMFLOAT3 Window::GetCurPos(int x, int y) noexcept {
+	float z = ActiveEnv()->Camera().GetCurZ(height);
+	// 通过当前屏幕的 width, height 计算当前的normx, normy坐标
+	float normX = (2.0f * x) / static_cast<float>(width) - 1.0f;
+	float normY = 1.0f - (2.0f * y) / static_cast<float>(height);
+
+	return DirectX::XMFLOAT3(normX, normY, z);
 }
 
 Window::WindowClass::WindowClass() noexcept : hInst(GetModuleHandle(nullptr)) {

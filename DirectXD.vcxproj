@@ -208,6 +208,7 @@
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="LightCbuf.cpp" />
     <ClCompile Include="MaterialCbuf.cpp" />
+    <ClCompile Include="MyCamera.cpp" />
     <ClCompile Include="MyEnv.cpp" />
     <ClCompile Include="MyGraphics.cpp" />
     <ClCompile Include="MyKeyboard.cpp" />

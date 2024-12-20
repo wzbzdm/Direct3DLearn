@@ -11,7 +11,7 @@
 #include <memory>
 
 #define     PAINT_TIMER			1
-#define		HZ					120
+#define		HZ					90
 #define		MS_PER_FRAME		1000 / HZ
 
 class Window {
@@ -67,6 +67,7 @@ public:
 	// Handler
 	void Update();
 	void Draw();
+	DirectX::XMFLOAT3 GetCurPos(int x, int y) noexcept;		// 通过屏幕上的点获取当前在3D空间投影屏幕的坐标
 	void Resize(int width, int height) noexcept;			// 事件处理程序
 	void LClick(POINT pt);
 	void LDClick(POINT pt);

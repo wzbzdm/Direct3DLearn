@@ -341,6 +341,9 @@
     <ClCompile Include="imgui\imgui_demo.cpp">
       <Filter>IMGUISOURRCE</Filter>
     </ClCompile>
+    <ClCompile Include="MyCamera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXD.rc">
