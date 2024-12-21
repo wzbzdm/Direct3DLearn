@@ -300,6 +300,9 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
 		return true;
 	}
+	// 当Imgui 想要捕获 鼠标事件或键盘事件 时，不再传递给下面的处理程序
+	if (io.WantCaptureMouse) return true;
+	if (io.WantCaptureKeyboard) return true;
 	switch (msg) {
 	case WM_CLOSE:
 		PostQuitMessage(0);
@@ -348,7 +351,6 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_LBUTTONDOWN:
 	{
-		if (io.WantCaptureMouse) break;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnLeftPressed(pt.x, pt.y);
 		// bring window to foreground on lclick client region
@@ -357,21 +359,18 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_RBUTTONDOWN:
 	{
-		if (io.WantCaptureMouse) break;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightPressed(pt.x, pt.y);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
-		if (io.WantCaptureMouse) break;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnLeftReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_RBUTTONUP:
 	{
-		if (io.WantCaptureMouse) break;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightReleased(pt.x, pt.y);
 		break;
