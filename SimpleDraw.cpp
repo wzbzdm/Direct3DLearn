@@ -5,13 +5,13 @@ SimpleDraw::SimpleDraw() : window(800, 600, L"Test") {
 	window.TestInit();
 
 	// 创建处理 HandlerEvent 的线程
-	//eventThread = std::thread([this]() {
-	//	while (running) {
-	//		HandlerEvent();
-	//		std::this_thread::sleep_for(std::chrono::milliseconds(10)); // 防止空转占用 CPU
-	//	}
-	//	});
-	//running = true;
+	eventThread = std::thread([this]() {
+		while (running) {
+			HandlerEvent();
+			std::this_thread::sleep_for(std::chrono::milliseconds(10)); // 防止空转占用 CPU
+		}
+		});
+	running = true;
 }
 
 int SimpleDraw::Draw() {
@@ -21,8 +21,8 @@ int SimpleDraw::Draw() {
 		{
 			return *ecode;
 		}
-
-		HandlerEvent();
+		// 测试使用
+		//HandlerEvent();
 	}
 }
 

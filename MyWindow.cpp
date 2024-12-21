@@ -300,9 +300,6 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
 		return true;
 	}
-	// 当Imgui 想要捕获 鼠标事件或键盘事件 时，不再传递给下面的处理程序
-	if (io.WantCaptureMouse) return true;
-	if (io.WantCaptureKeyboard) return true;
 	switch (msg) {
 	case WM_CLOSE:
 		PostQuitMessage(0);
@@ -317,15 +314,19 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
+		// 当Imgui 想要捕获 鼠标事件或键盘事件 时，不再传递给下面的处理程序
+		if (io.WantCaptureKeyboard) return true;
 		if (!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled()) {
 			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
 		}
 		break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
+		if (io.WantCaptureKeyboard) return true;
 		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
 		break;
 	case WM_CHAR:
+		if (io.WantCaptureKeyboard) return true;
 		kbd.OnChar(static_cast<unsigned char>(wParam));
 		break;
 	case WM_MOUSEMOVE:
@@ -351,6 +352,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_LBUTTONDOWN:
 	{
+		// 当Imgui 想要捕获 鼠标事件或键盘事件 时，不再传递给下面的处理程序
+		if (io.WantCaptureMouse) return true;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnLeftPressed(pt.x, pt.y);
 		// bring window to foreground on lclick client region
@@ -359,28 +362,37 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_RBUTTONDOWN:
 	{
+		if (io.WantCaptureMouse) return true;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightPressed(pt.x, pt.y);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
+		if (io.WantCaptureMouse) return true;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnLeftReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_RBUTTONUP:
 	{
+		if (io.WantCaptureMouse) return true;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_MBUTTONDOWN:
 	{
+		if (io.WantCaptureMouse) return true;
+		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
+		mouse.OnMidPressed(pt.x, pt.y);
 		break;
 	}
 	case WM_MBUTTONUP:
 	{
+		if (io.WantCaptureMouse) return true;
+		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
+		mouse.OnMidReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_MOUSEWHEEL:
