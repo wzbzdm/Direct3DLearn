@@ -27,7 +27,8 @@ public:
 	}
 
     // 射线与三角形的交点检测实现
-    bool RayIntersectsTriangle(const DirectX::XMFLOAT3& v0, const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2, float& t, DirectX::XMFLOAT3& barycentricCoords) const
+    bool RayIntersectsTriangle(const DirectX::XMFLOAT3& v0, const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2,
+        float& t, DirectX::XMFLOAT3& barycentricCoords) const
     {
         using namespace DirectX;
 
@@ -39,8 +40,9 @@ public:
         XMVECTOR h = XMVector3Cross(XMLoadFloat3(&direction), edge2);
         float a = XMVectorGetX(XMVector3Dot(edge1, h));
 
-        // 如果平行（接近 0），则不相交
-        if (fabs(a) < 1e-8) {
+        // 如果平行（接近 0），则不相交。引入一个容差值（epsilon）。
+        const float epsilon = 1e-4f;  // 可以根据需求调整容差值
+        if (fabs(a) < epsilon) {
             return false;
         }
 
@@ -48,19 +50,19 @@ public:
 
         XMVECTOR s = XMLoadFloat3(&origin) - XMLoadFloat3(&v0);
         float u = f * XMVectorGetX(XMVector3Dot(s, h));
-        if (u < 0.0f || u > 1.0f) {
+        if (u < -epsilon || u > 1.0f + epsilon) {
             return false;
         }
 
         XMVECTOR q = XMVector3Cross(s, edge1);
         float v = f * XMVectorGetX(XMVector3Dot(XMLoadFloat3(&direction), q));
-        if (v < 0.0f || u + v > 1.0f) {
+        if (v < -epsilon || u + v > 1.0f + epsilon) {
             return false;
         }
 
         // 计算交点参数 t
         t = f * XMVectorGetX(XMVector3Dot(edge2, q));
-        if (t > 1e-8) {
+        if (t > epsilon) {  // 在t值计算时也考虑容差
             // 交点的重心坐标
             barycentricCoords = { 1 - u - v, u, v };
             return true;
@@ -68,4 +70,5 @@ public:
 
         return false;
     }
+
 };

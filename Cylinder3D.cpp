@@ -62,7 +62,40 @@ DirectX::XMMATRIX Cylinder3D::GetTransformMatrix() const noexcept
 // 大小 size  分别为: 顶部半径，底部半径和高度
 // 旋转 rotation
 bool Cylinder3D::RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept {
-    return false;
+    struct Position {
+        DirectX::XMFLOAT3 pos;
+    };
+    Geometry<Position> poss = Cylinder::Create<Position>(size.x, size.y, size.z, 36, 1);
+
+    DirectX::XMMATRIX transform = GetTransformMatrix();
+    for (auto& v : poss.vertices) {
+        DirectX::XMVECTOR vert = DirectX::XMLoadFloat3(&v.pos);
+        vert = DirectX::XMVector3Transform(vert, transform);
+        DirectX::XMStoreFloat3(&v.pos, vert);
+    }
+
+    bool hasIntersection = false;
+    float lastZ = FLT_MAX;
+    for (int i = 0; i < poss.indices.size() - 2; i += 3) {
+        DirectX::XMFLOAT3 lastIn;
+        float t;
+        if (ray.RayIntersectsTriangle(
+            poss.vertices[poss.indices[i]].pos,
+            poss.vertices[poss.indices[i + 1]].pos,
+            poss.vertices[poss.indices[i + 2]].pos,
+            t, lastIn)) {
+            if (t >= lastZ) continue;
+            lastZ = t;
+            intersectionPoint = {
+                ray.GetOrigin().x + ray.GetDirection().x * t,
+                ray.GetOrigin().y + ray.GetDirection().y * t,
+                ray.GetOrigin().z + ray.GetDirection().z * t
+            };
+            hasIntersection = true;
+        }
+    }
+
+    return hasIntersection;
 }
 
 void Cylinder3D::InitColor() noexcept
