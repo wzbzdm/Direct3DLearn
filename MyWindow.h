@@ -90,6 +90,7 @@ private:
 	Timer timer;
 
 	std::unique_ptr<Graphics> pGfx = nullptr;
+	ImGuiIO io;
 	ULONG_PTR gdiplusToken;
 };
 

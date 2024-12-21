@@ -47,6 +47,7 @@ void Window::ShowIMGUI() {
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	io = ImGui::GetIO();
 	Show3DChoose();
 
 	ShowCameraConf();
@@ -347,6 +348,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_LBUTTONDOWN:
 	{
+		if (io.WantCaptureMouse) break;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnLeftPressed(pt.x, pt.y);
 		// bring window to foreground on lclick client region
@@ -355,18 +357,21 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_RBUTTONDOWN:
 	{
+		if (io.WantCaptureMouse) break;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightPressed(pt.x, pt.y);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
+		if (io.WantCaptureMouse) break;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnLeftReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_RBUTTONUP:
 	{
+		if (io.WantCaptureMouse) break;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		mouse.OnRightReleased(pt.x, pt.y);
 		break;
@@ -443,7 +448,7 @@ void Window::TestInit() {
 	std::unique_ptr<Sphere3D> ts = std::make_unique<Sphere3D>(Gfx());
 	ts->SetPosition(DirectX::XMFLOAT3(0, 0, 0.0));
 	ts->SetMaterialProperties(MATERIAL_CERAMIC);
-	//ActiveEnv()->AddShape(std::move(ts));
+	ActiveEnv()->AddShape(std::move(ts));
 }
 
 void Window::Update() {
