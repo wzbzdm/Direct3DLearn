@@ -35,11 +35,27 @@ void Camera::Resize(int width, int height) noexcept {
     UpdateMatrices();
 }
 
-// 根据 fieldOfView 和 height 计算 Z
-float Camera::GetCurZ(int height) noexcept {
-    // height / tan(FOV/2)
-    return static_cast<float>(height) / tanf(data.fieldOfView / 2);
+DirectX::XMFLOAT3 Camera::GetCurDir(float x, float y) noexcept {
+    // 假定输入是 NDC 范围，直接用裁剪坐标
+    DirectX::XMVECTOR clipCoords = DirectX::XMVectorSet(x, y, 1.0f, 1.0f);
+
+    // 使用缓存的投影矩阵逆矩阵
+    DirectX::XMVECTOR viewCoords = DirectX::XMVector4Transform(clipCoords, inverseProjection);
+
+    // 使用缓存的视图矩阵逆矩阵
+    DirectX::XMVECTOR worldCoords = DirectX::XMVector3TransformCoord(viewCoords, inverseView);
+
+    // 计算射线方向
+    DirectX::XMVECTOR cameraPosition = DirectX::XMLoadFloat3(&data.position);
+    DirectX::XMVECTOR rayDirection = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(worldCoords, cameraPosition));
+
+    // 返回方向向量
+    DirectX::XMFLOAT3 direction;
+    DirectX::XMStoreFloat3(&direction, rayDirection);
+
+    return direction;
 }
+
 
 DirectX::XMFLOAT3 Camera::GetPos() const noexcept {
     return data.position;
@@ -48,7 +64,9 @@ DirectX::XMFLOAT3 Camera::GetPos() const noexcept {
 void Camera::UpdateMatrices() {
     using namespace DirectX;
     view = XMMatrixLookAtLH(XMLoadFloat3(&data.position), XMLoadFloat3(&data.target), XMLoadFloat3(&data.upVector));
+    inverseView = DirectX::XMMatrixInverse(nullptr, view);
     projection = XMMatrixPerspectiveFovLH(data.fieldOfView, data.aspectRatio, data.nearPlane, data.farPlane);
+    inverseProjection = DirectX::XMMatrixInverse(nullptr, projection);
 }
 
 DirectX::XMMATRIX Camera::GetViewMatrix() const {

@@ -12,6 +12,7 @@ public:
 	void RefreshBind();
 	static void Initialize(Graphics* gfx); // 静态初始化函数
 	void AddShape(std::unique_ptr<Shape3DBase> shape) noexcept;
+	void DeleteCurShape() noexcept;
 	void DrawAll();
 	void UpdateAll(float dt);
 	int GetClickIndex(Ray& ray) noexcept;

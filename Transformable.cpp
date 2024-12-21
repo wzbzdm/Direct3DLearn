@@ -5,6 +5,10 @@ void Transformable::SetPosition(const DirectX::XMFLOAT3& position)
 	pos = position;
 }
 
+const DirectX::XMFLOAT3& Transformable::GetPosition() const noexcept {
+	return this->pos;
+}
+
 void Transformable::Translate(const DirectX::XMFLOAT3& offset)
 {
 	pos.x += offset.x;
@@ -15,6 +19,10 @@ void Transformable::Translate(const DirectX::XMFLOAT3& offset)
 void Transformable::SetRotation(const DirectX::XMFLOAT3& rotation)
 {
 	this->rotation = rotation;
+}
+
+const DirectX::XMFLOAT3& Transformable::GetRotation() const noexcept {
+	return this->rotation;
 }
 
 void Transformable::Rotate(const DirectX::XMFLOAT3& delta)

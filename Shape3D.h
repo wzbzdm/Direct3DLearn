@@ -53,9 +53,9 @@ protected:
 
 		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-		/*TextureData data = ImageLoader::Load2D(TESTIMG);
-		auto pTexture = std::make_unique<Texture2D>(gfx, data);
-		AddStaticBind(std::move(pTexture));*/
+		//TextureData data = ImageLoader::Load2D(TESTIMG);
+		//auto pTexture = std::make_unique<Texture2D>(gfx, data);
+		//AddStaticBind(std::move(pTexture));
 	}
 
 	static void AddStaticBind(std::unique_ptr<Bindable> bind, unsigned int start, unsigned int len) noexcept

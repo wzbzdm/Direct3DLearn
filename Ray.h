@@ -8,6 +8,17 @@ private:
 public:
 	Ray(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction)
 		: origin(origin), direction(direction) {}
+    Ray(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& target, int i)
+        : origin(origin)
+    {
+        DirectX::XMVECTOR originVec = DirectX::XMLoadFloat3(&origin);
+        DirectX::XMVECTOR targetVec = DirectX::XMLoadFloat3(&target);
+        DirectX::XMVECTOR directionVec = DirectX::XMVectorSubtract(targetVec, originVec);
+        directionVec = DirectX::XMVector3Normalize(directionVec); // Normalize the direction
+
+        DirectX::XMStoreFloat3(&direction, directionVec);
+    }
+
 	const DirectX::XMFLOAT3& GetOrigin() const {
 		return origin;
 	}

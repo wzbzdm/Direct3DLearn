@@ -86,6 +86,10 @@ void Window::Show3DChoose() {
 		if (ImGui::Button("Cylinder")) {
 			ActiveEnv()->AddShape(std::make_unique<Cylinder3D>(Gfx()));
 		}
+
+		if (ImGui::Button("Delete Cur Shape")) {
+			ActiveEnv()->DeleteCurShape();
+		}
 	}
 	ImGui::End();
 }
@@ -243,24 +247,7 @@ HWND Window::CreateBaseWindow() {
 		nullptr, nullptr, WindowClass::GetIntsance(), this
 	);
 
-	CreateToolbar();
-
 	return hWnd;
-}
-
-void Window::CreateToolbar() {
-	// 创建工具栏
-	toolBar = CreateWindowEx(0, TOOLBARCLASSNAME, NULL,
-		WS_CHILD | WS_VISIBLE | TBSTYLE_TOOLTIPS | TBSTYLE_WRAPABLE | TBSTYLE_FLAT, // 工具栏风格
-		0, 0, this->width, 50, this->hWnd, nullptr, WindowClass::GetIntsance(), NULL);
-
-	// 初始化工具栏
-	SendMessage(toolBar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0);
-	SendMessage(toolBar, TB_SETPADDING, 0, MAKELPARAM(20, 20));  // 填充
-	SendMessage(toolBar, TB_SETBITMAPSIZE, 0, MAKELPARAM(30, 30));
-	SendMessage(toolBar, TB_SETBUTTONSIZE, 0, MAKELPARAM(50, 50)); // 设置按钮大小以确保图标居中
-
-	SetWindowPos(toolBar, NULL, 0, 0, this->width, 50, SWP_NOZORDER);  // 设置工具栏高度为45像素，宽度为窗口宽度
 }
 
 Window::~Window() {
@@ -450,9 +437,13 @@ void Window::TestInit() {
 	std::uniform_real_distribution<float> ddist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> odist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> rdist{ 3.0f,6.0f };
-	// ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
+	ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
 	// ActiveEnv()->AddShape(std::make_unique<Sphere3D>(Gfx()));
 	// ActiveEnv()->AddShape(std::make_unique<Hexahedron3D>(Gfx()));
+	std::unique_ptr<Sphere3D> ts = std::make_unique<Sphere3D>(Gfx());
+	ts->SetPosition(DirectX::XMFLOAT3(0, 0, 0.0));
+	ts->SetMaterialProperties(MATERIAL_CERAMIC);
+	//ActiveEnv()->AddShape(std::move(ts));
 }
 
 void Window::Update() {
@@ -474,13 +465,11 @@ void Window::Draw() {
 	Gfx().EndFrame();
 }
 
-DirectX::XMFLOAT3 Window::GetCurPos(int x, int y) noexcept {
-	float z = ActiveEnv()->Camera().GetCurZ(height);
-	// 通过当前屏幕的 width, height 计算当前的normx, normy坐标
-	float normX = (2.0f * x) / static_cast<float>(width) - 1.0f;
-	float normY = 1.0f - (2.0f * y) / static_cast<float>(height);
-
-	return DirectX::XMFLOAT3(normX, normY, z);
+DirectX::XMFLOAT3 Window::GetCurVector(int x, int y) noexcept {
+	// 屏幕坐标到 NDC
+	float xNDC = (2.0f * x) / width - 1.0f;
+	float yNDC = 1.0f - (2.0f * y) / height;
+	return ActiveEnv()->Camera().GetCurDir(xNDC, yNDC);
 }
 
 Window::WindowClass::WindowClass() noexcept : hInst(GetModuleHandle(nullptr)) {
@@ -522,9 +511,9 @@ void Window::Resize(int width, int height) noexcept {
 }
 
 void Window::LClick(POINT pt) {
-	DirectX::XMFLOAT3 target = GetCurPos(pt.x, pt.y);
+	DirectX::XMFLOAT3 direction = GetCurVector(pt.x, pt.y);
 	DirectX::XMFLOAT3 origin = ActiveEnv()->Camera().GetPos();
-	Ray cur(origin, target);
+	Ray cur(origin, direction);
 	int index = ActiveEnv()->GetClickIndex(cur);
 	ActiveEnv()->SetActiveShape(index);
 }

@@ -55,8 +55,6 @@ public:
 	HWND CreateBaseWindow();
 	bool HasArea() noexcept;
 
-	void CreateToolbar();
-
 	// Env
 	void SwitchEnv(int index) noexcept;
 	void AddEnv(std::unique_ptr<Env> env) noexcept;
@@ -67,7 +65,7 @@ public:
 	// Handler
 	void Update();
 	void Draw();
-	DirectX::XMFLOAT3 GetCurPos(int x, int y) noexcept;		// 通过屏幕上的点获取当前在3D空间投影屏幕的坐标
+	DirectX::XMFLOAT3 GetCurVector(int x, int y) noexcept;		// 通过屏幕上的点获取当前在3D空间投影屏幕的坐标
 	void Resize(int width, int height) noexcept;			// 事件处理程序
 	void LClick(POINT pt);
 	void LDClick(POINT pt);
@@ -88,7 +86,6 @@ private:
 	int width;
 	int height;
 	HWND hWnd;
-	HWND toolBar;
 	const wchar_t* name;
 	Timer timer;
 

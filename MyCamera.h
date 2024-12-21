@@ -30,7 +30,7 @@ public:
 
     static void Init(int baseheight, float baseFOv);
     void Resize(int width, int height) noexcept;
-    float GetCurZ(int height) noexcept;   // 获取当前投影屏幕的Z值
+    DirectX::XMFLOAT3 GetCurDir(float x, float y) noexcept;   // 获取当前投影屏幕的Z值
     DirectX::XMFLOAT3 GetPos() const noexcept;
     // 更新视图矩阵和投影矩阵
     void UpdateMatrices();
@@ -64,5 +64,7 @@ public:
 private:
     CameraData data;              // 保存相机的相关数据
     DirectX::XMMATRIX view;       // 视图矩阵
+    DirectX::XMMATRIX inverseView;
     DirectX::XMMATRIX projection; // 投影矩阵
+    DirectX::XMMATRIX inverseProjection;
 };

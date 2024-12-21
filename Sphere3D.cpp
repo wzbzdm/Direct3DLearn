@@ -55,6 +55,7 @@ DirectX::XMMATRIX Sphere3D::GetTransformMatrix() const noexcept
 // radius为半径
 // 计算射线与球是否有交点
 bool Sphere3D::RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept {
+    
     using namespace DirectX;
 
     XMVECTOR sphereCenter = XMLoadFloat3(&pos);
@@ -62,7 +63,7 @@ bool Sphere3D::RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint
     XMVECTOR rayDir = XMVector3Normalize(XMLoadFloat3(&ray.GetDirection()));
 
     // L 是射线起点到球心的向量
-    XMVECTOR L = sphereCenter - rayOrigin;
+    XMVECTOR L = XMVectorSubtract(sphereCenter, rayOrigin);
 
     // 射线方向在 L 上的投影长度
     float tca = XMVectorGetX(XMVector3Dot(L, rayDir));
