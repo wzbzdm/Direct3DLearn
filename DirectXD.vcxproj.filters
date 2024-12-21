@@ -201,9 +201,6 @@
     <ClInclude Include="MyEnv.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="RightMenuManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="imgui\imgui.h">
       <Filter>IMGUI</Filter>
     </ClInclude>
@@ -318,9 +315,6 @@
       <Filter>BindableSource</Filter>
     </ClCompile>
     <ClCompile Include="MyEnv.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RightMenuManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">

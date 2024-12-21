@@ -30,7 +30,7 @@ public:
 	Drawable(const Drawable&) = delete;
 	void Draw(Graphics& gfx) const noexcept;
 	// 获取材质属性
-	const MaterialProperties& GetMaterialProperties() const noexcept {
+	MaterialProperties GetMaterialProperties() const noexcept {
 		return materialProperties;
 	}
 

@@ -47,6 +47,7 @@ public:
 	void Show3DChoose();
 	void ShowCameraConf();
 	void ShowLightCof();
+	void ShowMaterialEditor();
 
 	// Event
 	std::optional<Mouse::Event> ReadMouseEvent() noexcept;
@@ -88,6 +89,7 @@ private:
 	HWND hWnd;
 	const wchar_t* name;
 	Timer timer;
+	bool showActiveWindow = false;
 
 	std::unique_ptr<Graphics> pGfx = nullptr;
 	ImGuiIO io;

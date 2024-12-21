@@ -43,21 +43,22 @@ int Env::GetClickIndex(Ray& ray) noexcept {
 	for (int i = 0; i < shapes.size(); i++) {
 		DirectX::XMFLOAT3 mid;
 
-		DirectX::XMFLOAT3 basepos = DirectX::XMFLOAT3(0.0, 0.0, 0.0);
-		DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&basepos);
-		// 设置 w = 1
-		DirectX::XMVECTOR center = DirectX::XMVectorSetW(pos, 1.0f);
+		// 测试
+		//DirectX::XMFLOAT3 basepos = DirectX::XMFLOAT3(0.0, 0.0, 0.0);
+		//DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&basepos);
+		//// 设置 w = 1
+		//DirectX::XMVECTOR center = DirectX::XMVectorSetW(pos, 1.0f);
 
-		DirectX::XMMATRIX trans = shapes[i]->GetTransformMatrix(); // 物体的变换矩阵
-		DirectX::XMMATRIX view = Camera().GetViewMatrix();    // 摄像机的视图投影矩阵
-		DirectX::XMMATRIX proj = Camera().GetProjectionMatrix();
+		//DirectX::XMMATRIX trans = shapes[i]->GetTransformMatrix(); // 物体的变换矩阵
+		//DirectX::XMMATRIX view = Camera().GetViewMatrix();    // 摄像机的视图投影矩阵
+		//DirectX::XMMATRIX proj = Camera().GetProjectionMatrix();
 
-		// 计算完整的变换矩阵：世界矩阵 -> 视图矩阵 -> 投影矩阵
-		center = DirectX::XMVector4Transform(center, trans);
-		center = DirectX::XMVector4Transform(center, view);
-		center = DirectX::XMVector4Transform(center, proj);
-		// 使用齐次坐标变换点的位置信息
-		DirectX::XMVECTOR ndc = DirectX::XMVectorDivide(center, DirectX::XMVectorSplatW(center));
+		//// 计算完整的变换矩阵：世界矩阵 -> 视图矩阵 -> 投影矩阵
+		//center = DirectX::XMVector4Transform(center, trans);
+		//center = DirectX::XMVector4Transform(center, view);
+		//center = DirectX::XMVector4Transform(center, proj);
+		//// 使用齐次坐标变换点的位置信息
+		//DirectX::XMVECTOR ndc = DirectX::XMVectorDivide(center, DirectX::XMVectorSplatW(center));
 
 		if (shapes[i]->RayIntersect(ray, mid)) {
 			if (mid.z > calc.z) continue;
@@ -81,8 +82,8 @@ std::vector<std::unique_ptr<Shape3DBase>>& Env::GetShapes() noexcept {
 	return shapes;
 }
 
-std::unique_ptr<LightManager>& Env::Lights() noexcept {
-	return lightManager;
+LightManager* Env::Lights() noexcept {
+	return lightManager.get();
 }
 
 Camera& Env::Camera() noexcept {
@@ -91,6 +92,21 @@ Camera& Env::Camera() noexcept {
 
 void Env::SetActiveShape(int index) noexcept {
 	this->activeShape = index;
+}
+
+int Env::GetActiveShapeIndex() noexcept {
+	return this->activeShape;
+}
+
+bool Env::HasSelect() noexcept {
+	return this->activeShape >= 0 && this->activeShape < shapes.size();
+}
+
+std::optional<Shape3DBase*> Env::GetSelectedShape() noexcept {
+	if (HasSelect()) {
+		return this->shapes[activeShape].get();
+	}
+	return {};
 }
 
 // 在 Env.cpp 中定义静态成员

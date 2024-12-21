@@ -5,6 +5,7 @@
 #include "CameraCbuf.h"
 #include "LightCbuf.h"
 #include "Shape3DBase.h"
+#include <optional>
 
 class Env {
 public:
@@ -17,9 +18,12 @@ public:
 	void UpdateAll(float dt);
 	int GetClickIndex(Ray& ray) noexcept;
 	std::vector<std::unique_ptr<Shape3DBase>>& GetShapes() noexcept;
-	std::unique_ptr<LightManager>& Lights() noexcept;
+	LightManager* Lights() noexcept;
 	Camera& Camera() noexcept;
 	void SetActiveShape(int index) noexcept;
+	int GetActiveShapeIndex() noexcept;
+	bool HasSelect() noexcept;
+	std::optional<Shape3DBase*> GetSelectedShape() noexcept;
 
 public:
 	std::unique_ptr<LightManager> lightManager;

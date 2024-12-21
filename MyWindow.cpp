@@ -54,6 +54,8 @@ void Window::ShowIMGUI() {
 	
 	ShowLightCof();
 
+	ShowMaterialEditor();
+
 	// 渲染 IMGUI 界面
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -220,6 +222,40 @@ void Window::ShowLightCof() {
 		}
 	}
 	ImGui::End();
+}
+
+void Window::ShowMaterialEditor() {
+	if (showActiveWindow && ActiveEnv()->HasSelect()) {
+		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
+		if (!selected.has_value()) return;
+		Shape3DBase* selectedObject = selected.value();
+		MaterialProperties material = selectedObject->GetMaterialProperties();  // 获取选中物体的材质信息
+
+		// 使用ImGui显示一个弹出窗口来编辑材质属性
+		if (ImGui::Begin("Material Editor")) {
+			// 编辑环境光反射系数
+			if (ImGui::ColorEdit4("Ambient", &material.ambient.x)) {
+				// 可以在这里加入代码处理材质更改的响应，比如应用到物体上
+				selectedObject->SetMaterialProperties(material);
+			}
+
+			// 编辑漫反射系数
+			if (ImGui::ColorEdit4("Diffuse", &material.diffuse.x)) {
+				selectedObject->SetMaterialProperties(material);
+			}
+
+			// 编辑镜面反射系数
+			if (ImGui::ColorEdit4("Specular", &material.specular.x)) {
+				selectedObject->SetMaterialProperties(material);
+			}
+
+			// 编辑高光系数
+			if (ImGui::SliderFloat("Shininess", &material.shininess, 0.0f, 100.0f)) {
+				selectedObject->SetMaterialProperties(material);
+			}
+		}
+		ImGui::End();  // 结束材质编辑窗口
+	}
 }
 
 std::optional<Mouse::Event> Window::ReadMouseEvent() noexcept {
@@ -527,6 +563,7 @@ void Window::Resize(int width, int height) noexcept {
 }
 
 void Window::LClick(POINT pt) {
+	showActiveWindow = false;
 	DirectX::XMFLOAT3 direction = GetCurVector(pt.x, pt.y);
 	DirectX::XMFLOAT3 origin = ActiveEnv()->Camera().GetPos();
 	Ray cur(origin, direction);
@@ -535,7 +572,13 @@ void Window::LClick(POINT pt) {
 }
 
 void Window::LDClick(POINT pt) {
-
+	DirectX::XMFLOAT3 direction = GetCurVector(pt.x, pt.y);
+	DirectX::XMFLOAT3 origin = ActiveEnv()->Camera().GetPos();
+	Ray cur(origin, direction);
+	int index = ActiveEnv()->GetClickIndex(cur);
+	if (index == ActiveEnv()->GetActiveShapeIndex()) {
+		showActiveWindow = true;
+	}
 }
 
 void Window::RClick(POINT pt) {

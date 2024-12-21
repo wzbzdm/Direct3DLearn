@@ -169,7 +169,6 @@
     <ClInclude Include="Plane3D.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="RightMenuManager.h" />
     <ClInclude Include="Shape3DBase.h" />
     <ClInclude Include="Shape3D.h" />
     <ClInclude Include="SimpleDraw.h" />
@@ -219,7 +218,6 @@
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Plane3D.cpp" />
-    <ClCompile Include="RightMenuManager.cpp" />
     <ClCompile Include="SimpleDraw.cpp" />
     <ClCompile Include="Sphere3D.cpp" />
     <ClCompile Include="TextureGenerators.cpp" />
