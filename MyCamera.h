@@ -32,6 +32,8 @@ public:
     void Resize(int width, int height) noexcept;
     DirectX::XMFLOAT3 GetCurDir(float x, float y) noexcept;   // 获取当前投影屏幕的Z值
     DirectX::XMFLOAT3 GetPos() const noexcept;
+    DirectX::XMFLOAT3 GetUpVector() const noexcept;
+    DirectX::XMFLOAT3 GetDirection() const noexcept;
    
     void UpdateMatrices();                      // 更新视图矩阵和投影矩阵
     DirectX::XMMATRIX GetViewMatrix() const;    // 获取视图矩阵

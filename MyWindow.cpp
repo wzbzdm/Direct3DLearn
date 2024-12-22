@@ -62,8 +62,6 @@ void Window::ShowIMGUI() {
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-
-
 void Window::Show3DChoose() {
 	// *********************
 	// 工具栏 1：物体选择
@@ -232,30 +230,57 @@ void Window::ShowMaterialEditor() {
 		Shape3DBase* selectedObject = selected.value();
 		MaterialProperties material = selectedObject->GetMaterialProperties();  // 获取选中物体的材质信息
 
+		// 获取变换信息
+		DirectX::XMFLOAT3 position = selectedObject->GetPosition();
+		DirectX::XMFLOAT3 rotation = selectedObject->GetRotation();
+		float radius = selectedObject->GetRadius();
+
 		// 使用ImGui显示一个弹出窗口来编辑材质属性
-		if (ImGui::Begin("Material Editor")) {
-			// 编辑环境光反射系数
-			if (ImGui::ColorEdit4("Ambient", &material.ambient.x)) {
-				// 可以在这里加入代码处理材质更改的响应，比如应用到物体上
-				selectedObject->SetMaterialProperties(material);
+		// 使用ImGui显示一个弹出窗口来编辑属性
+		if (ImGui::Begin("Shape Info")) {
+			// ---- 材质编辑 ----
+			if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen)) {
+				// 环境光
+				if (ImGui::ColorEdit4("Ambient", &material.ambient.x)) {
+					selectedObject->SetMaterialProperties(material);
+				}
+
+				// 漫反射
+				if (ImGui::ColorEdit4("Diffuse", &material.diffuse.x)) {
+					selectedObject->SetMaterialProperties(material);
+				}
+
+				// 镜面反射
+				if (ImGui::ColorEdit4("Specular", &material.specular.x)) {
+					selectedObject->SetMaterialProperties(material);
+				}
+
+				// 高光
+				if (ImGui::SliderFloat("Shininess", &material.shininess, 0.0f, 100.0f)) {
+					selectedObject->SetMaterialProperties(material);
+				}
 			}
 
-			// 编辑漫反射系数
-			if (ImGui::ColorEdit4("Diffuse", &material.diffuse.x)) {
-				selectedObject->SetMaterialProperties(material);
-			}
+			// ---- 变换编辑 ----
+			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+				// 位置编辑
+				if (ImGui::DragFloat3("Position", &position.x, 0.001f)) {
+					selectedObject->SetPosition(position);
+				}
 
-			// 编辑镜面反射系数
-			if (ImGui::ColorEdit4("Specular", &material.specular.x)) {
-				selectedObject->SetMaterialProperties(material);
-			}
+				// 旋转编辑
+				if (ImGui::DragFloat3("Rotation", &rotation.x, 0.001f, 0, DirectX::XM_2PI)) { 
+					selectedObject->SetRotation(rotation);
+				}
 
-			// 编辑高光系数
-			if (ImGui::SliderFloat("Shininess", &material.shininess, 0.0f, 100.0f)) {
-				selectedObject->SetMaterialProperties(material);
+				// 缩放比例编辑
+				if (ImGui::SliderFloat("Scale", &radius, 0.1f, 10.0f)) {  // 缩放比例限制在 [0.1, 10.0]
+					selectedObject->SetRadius(radius);
+				}
 			}
 		}
-		ImGui::End();  // 结束材质编辑窗口
+
+		ImGui::End();  // 结束编辑窗口
 	}
 }
 
@@ -657,8 +682,43 @@ void Window::RDClick(Mouse::Event& mevent) {
 
 }
 
-DirectX::XMFLOAT3 Window::GetCurrentOffInActiveShapePlane(POINT from, POINT to) noexcept {
+// from 为屏幕上的上一个点， to为平面的下一个点，pos为当前选中物体的中心点，求物体应该移动的距离
+DirectX::XMFLOAT3 Window::GetCurrentOffInActiveShapePlane(POINT from, POINT to, const DirectX::XMFLOAT3& pos) noexcept {
+	// from 射线方向
+	DirectX::XMFLOAT3 fromDir = GetCurVector(from.x, from.y);
+	// to 射线方向
+	DirectX::XMFLOAT3 toDir = GetCurVector(to.x, to.y);
+	// 相机方向
+	DirectX::XMFLOAT3 cameraDir = ActiveEnv()->Camera().GetDirection();
+	// 相机位置
+	DirectX::XMFLOAT3 origin = ActiveEnv()->Camera().GetPos();
 
+	// 平面的法向量是相机的方向
+	DirectX::XMFLOAT3 planeNormal = cameraDir;
+
+	// 计算相机到平面的距离，平面方程：ax + by + cz = d，其中 (a, b, c) 是法向量
+	float d = planeNormal.x * pos.x + planeNormal.y * pos.y + planeNormal.z * pos.z;
+
+	// 计算射线 fromDir 与平面的交点
+	DirectX::XMFLOAT3 fromJ;
+	float t_from = (d - (planeNormal.x * origin.x + planeNormal.y * origin.y + planeNormal.z * origin.z)) /
+		(planeNormal.x * fromDir.x + planeNormal.y * fromDir.y + planeNormal.z * fromDir.z);
+	fromJ.x = origin.x + t_from * fromDir.x;
+	fromJ.y = origin.y + t_from * fromDir.y;
+	fromJ.z = origin.z + t_from * fromDir.z;
+
+	// 计算射线 toDir 与平面的交点
+	DirectX::XMFLOAT3 toJ;
+	float t_to = (d - (planeNormal.x * origin.x + planeNormal.y * origin.y + planeNormal.z * origin.z)) /
+		(planeNormal.x * toDir.x + planeNormal.y * toDir.y + planeNormal.z * toDir.z);
+	toJ.x = origin.x + t_to * toDir.x;
+	toJ.y = origin.y + t_to * toDir.y;
+	toJ.z = origin.z + t_to * toDir.z;
+
+	// 计算偏移量，平面上的两个交点 toJ - fromJ
+	DirectX::XMFLOAT3 offset = { toJ.x - fromJ.x, toJ.y - fromJ.y, toJ.z - fromJ.z };
+
+	return offset;
 }
 
 // 根据当前摄像头的位置控制物体?
@@ -673,7 +733,7 @@ void Window::LPMove(Mouse::Event& mevent) {
 		POINT lastp = { mevent.GetPosX() - mevent.GetOffX(), mevent.GetPosY() - mevent.GetOffY() };
 		// 移动
 		// 通过两个点的射线与当前视线方向的垂直的过当前选中物体的pos的平面的两个交点的偏移
-		DirectX::XMFLOAT3 off = GetCurrentOffInActiveShapePlane(lastp, nowp);
+		DirectX::XMFLOAT3 off = GetCurrentOffInActiveShapePlane(lastp, nowp, select->GetPosition());
 		select->Translate(off);
 	}
 }
@@ -684,10 +744,23 @@ void Window::RPMove(Mouse::Event& mevent) {
 		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
 		if (!selected.has_value()) return;
 		Shape3DBase* select = selected.value();
-		POINT nowp = { mevent.GetPosX(), mevent.GetPosY() };
-		POINT lastp = { mevent.GetPosX()-mevent.GetOffX(), mevent.GetPosY()-mevent.GetOffY() };
 		// 旋转
+		// 通过偏移和当前相机方向获取物体各个方向的旋转角度
+		DirectX::XMFLOAT3 cameraDir = ActiveEnv()->Camera().GetDirection();    // 相机视线方向
+		DirectX::XMFLOAT3 upVector = ActiveEnv()->Camera().GetUpVector();     // 相机的up向量
+		DirectX::XMFLOAT3 rightVector = ActiveEnv()->Camera().CrossProduct(upVector, cameraDir); // 相机的right向量
 
+		float rotationSpeed = 0.005f;
+		float rightO = rotationSpeed * mevent.GetOffX();
+		float upO = rotationSpeed * mevent.GetOffY();
+
+		DirectX::XMFLOAT3 offset = {
+			rightVector.x * rightO + upVector.x * upO,
+			rightVector.y * rightO + upVector.y * upO,
+			rightVector.z * rightO + upVector.z * upO,
+		};
+
+		select->Rotate(offset);
 	}
 }
 
@@ -703,11 +776,19 @@ void Window::MPMove(Mouse::Event& mevent) {
 }
 
 void Window::WheelDown(Mouse::Event& mevent) {
-
+	std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
+	if (!selected.has_value()) return;
+	Shape3DBase* selectedObject = selected.value();
+	float speed = 0.1;
+	selectedObject->Zoom(1 - speed);
 }
 
 void Window::WheelUp(Mouse::Event& mevent) {
-
+	std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
+	if (!selected.has_value()) return;
+	Shape3DBase* selectedObject = selected.value();
+	float speed = 0.1;
+	selectedObject->Zoom(1 + speed);
 }
 
 Window::WindowClass Window::WindowClass::wndClass;

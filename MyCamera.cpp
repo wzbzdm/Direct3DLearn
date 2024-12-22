@@ -61,6 +61,14 @@ DirectX::XMFLOAT3 Camera::GetPos() const noexcept {
     return data.position;
 }
 
+DirectX::XMFLOAT3 Camera::GetUpVector() const noexcept {
+    return data.upVector;
+}
+
+DirectX::XMFLOAT3 Camera::GetDirection() const noexcept {
+    return DirectX::XMFLOAT3(data.target.x - data.position.x, data.target.y - data.position.y, data.target.z - data.position.z);
+}
+
 void Camera::UpdateMatrices() {
     using namespace DirectX;
     view = XMMatrixLookAtLH(XMLoadFloat3(&data.position), XMLoadFloat3(&data.target), XMLoadFloat3(&data.upVector));
