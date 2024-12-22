@@ -1,10 +1,5 @@
 #include "Light.hlsli"
 
-SamplerState sampleState
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-};
-
 cbuffer CameraData : register(b0)
 {
     CameraBuffer camera; // 摄像头相关数据
@@ -22,10 +17,11 @@ cbuffer MaterialData : register(b2)
 
 cbuffer ColorData : register(b3)
 {
-    ColorBuffer colors[10];  // 颜色数组
+    ColorBuffer colors[20];  // 颜色数组
 };
 
 Texture2D diffuseTexture : register(t0); // 漫反射纹理
+SamplerState defaultSampler : register(s0);
 
 float4 main(VertexOut pin) : SV_Target
 {
@@ -63,7 +59,7 @@ float4 main(VertexOut pin) : SV_Target
         }
     }
     
-    float4 texColor = diffuseTexture.Sample(sampleState, pin.texCoord);
+    float4 texColor = diffuseTexture.Sample(defaultSampler, pin.texCoord);
     
     if (texColor.a == 0.0f)
     {

@@ -10,18 +10,6 @@ cbuffer TransformData : register(b1)
    TransformBuffer transform; // 变换数据
 };
 
-float3x3 SafeInverse3x3(float3x3 m)
-{
-    float3x3 adj =
-    {
-        cross(m[1], m[2]),
-        cross(m[2], m[0]),
-        cross(m[0], m[1])
-    };
-    float det = dot(m[0], adj[0]);
-    return det != 0 ? adj / det : float3x3(1, 0, 0, 0, 1, 0, 0, 0, 1); // 返回单位矩阵作为默认值
-}
-
 VertexOut main(VertexIn vin)
 {
     VertexOut vout;

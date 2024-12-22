@@ -16,9 +16,15 @@ private:
 		AddBind(std::make_unique<MaterialCbuf>(gfx, *this), 2, 1);
 		// 颜色，插槽3
 		AddBind(std::make_unique<ColorCbuf>(gfx, *this), 3, 1);
-
 		// 世界变换, 顶点插槽1
 		AddBind(std::make_unique<TransformCbuf>(gfx, *this), 1, 1);
+		// 采样器
+		AddBind(std::make_unique<Sampler>(gfx, samplerConf));
+
+		// 纹理
+		TextureData data = ImageLoader::Load2D(TESTIMG);
+		auto pTexture = std::make_unique<Texture2D>(gfx, data);
+		AddStaticBind(std::move(pTexture));
 	}
 
 protected:
@@ -52,10 +58,6 @@ protected:
 		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
 
 		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-		//TextureData data = ImageLoader::Load2D(TESTIMG);
-		//auto pTexture = std::make_unique<Texture2D>(gfx, data);
-		//AddStaticBind(std::move(pTexture));
 	}
 
 	static void AddStaticBind(std::unique_ptr<Bindable> bind, unsigned int start, unsigned int len) noexcept

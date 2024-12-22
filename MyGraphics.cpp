@@ -2,9 +2,9 @@
 
 Graphics::Graphics(HWND hWnd, int width, int height) {
 	DXGI_SWAP_CHAIN_DESC scDesc = {};
-	scDesc.BufferCount = 1;
-	scDesc.BufferDesc.Width = 0;
-	scDesc.BufferDesc.Height = 0;
+	scDesc.BufferCount = 2;
+	scDesc.BufferDesc.Width = width;
+	scDesc.BufferDesc.Height = height;
 	scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -15,7 +15,7 @@ Graphics::Graphics(HWND hWnd, int width, int height) {
 	scDesc.SampleDesc.Count = 1;
 	scDesc.SampleDesc.Quality = 0;
 	scDesc.Windowed = TRUE;
-	scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	scDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;	// 使用新的 Flip-model
 	scDesc.Flags = 0;
 
 	UINT swapCreateFlags = 0;
@@ -77,6 +77,10 @@ Graphics::Graphics(HWND hWnd, int width, int height) {
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
 	context->RSSetViewports(1u, &vp);
+}
+
+void Graphics::StartFrame() {
+	context->OMSetRenderTargets(1u, renderTargetView.GetAddressOf(), depthStencilView.Get());
 }
 
 void Graphics::EndFrame() {

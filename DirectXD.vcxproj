@@ -219,6 +219,7 @@
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Plane3D.cpp" />
+    <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="SimpleDraw.cpp" />
     <ClCompile Include="Sphere3D.cpp" />
     <ClCompile Include="Texture.cpp" />

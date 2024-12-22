@@ -566,9 +566,10 @@ bool Window::HasArea() noexcept {
 
 void Window::Draw() {
 	if (!HasArea()) return;
+	Gfx().StartFrame();
+
 	Gfx().ClearBuffer(1.0f, 0.5f, 0.5f);
 	ActiveEnv()->DrawAll();
-	
 	ShowIMGUI();
 
 	Gfx().EndFrame();

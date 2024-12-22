@@ -26,7 +26,7 @@ Sampler::Sampler(Graphics& gfx, const D3D11_SAMPLER_DESC& samplerDesc) {
 }
 
 // 绑定采样器
-void Sampler::Bind(Graphics& gfx, unsigned int start = 0, unsigned int numSamplers = 1) noexcept {
+void Sampler::Bind(Graphics& gfx, unsigned int start, unsigned int numSamplers) noexcept {
     GetContext(gfx)->PSSetSamplers(start, numSamplers, pSamplerState.GetAddressOf());
 }
 

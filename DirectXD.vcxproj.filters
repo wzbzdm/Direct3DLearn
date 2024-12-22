@@ -347,6 +347,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>BindableSource</Filter>
     </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXD.rc">

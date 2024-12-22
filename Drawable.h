@@ -2,6 +2,7 @@
 
 #include "MyGraphics.h"
 #include <DirectXMath.h>
+#include <random>
 
 class Bindable;
 
@@ -19,6 +20,8 @@ struct MaterialProperties {
 	float shininess;            // 高光系数
 	float pad[3];			   // 填充字节
 };
+
+#define DEFAULTCOLORBUFSIZE		20
 
 class Drawable
 {
@@ -63,8 +66,34 @@ public:
 		}
 	}
 
-	const std::vector<DirectX::XMFLOAT4>& GetColors() const noexcept {
-		return colors;
+	std::vector<DirectX::XMFLOAT4> GetColors() const noexcept {
+		std::vector<DirectX::XMFLOAT4> tempcolors(colors);  // 创建副本
+		Drawable::AdjustColors(tempcolors, DEFAULTCOLORBUFSIZE);  // 调整副本
+		return tempcolors;  // 返回调整后的副本
+	}
+
+	static void AdjustColors(std::vector<DirectX::XMFLOAT4>& colors, size_t sized = DEFAULTCOLORBUFSIZE) {
+		if (colors.size() < sized) {
+			// 初始化随机引擎
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+			// 填充随机颜色
+			while (colors.size() < sized) {
+				DirectX::XMFLOAT4 randomColor = {
+					dist(gen), // R
+					dist(gen), // G
+					dist(gen), // B
+					1.0f       // A (默认不透明)
+				};
+				colors.push_back(randomColor);
+			}
+		}
+		else if (colors.size() > sized) {
+			// 移除多余的颜色
+			colors.resize(sized);
+		}
 	}
 
 	virtual ~Drawable() = default;
@@ -77,6 +106,19 @@ private:
 protected:
 	const class IndexBuffer* pIndexBuffer = nullptr;
 	std::vector<std::unique_ptr<BindableInfo>> binds;
+	// 采样器配置
+	D3D11_SAMPLER_DESC samplerConf = {
+		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		0.0f,
+		1,
+		D3D11_COMPARISON_ALWAYS,
+		{ 0, 0, 0, 0},
+		0.0f,
+		D3D11_FLOAT32_MAX
+	};
 	// 颜色数据
 	std::vector<DirectX::XMFLOAT4> colors;
 	MaterialProperties materialProperties = {
