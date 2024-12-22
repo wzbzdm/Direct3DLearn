@@ -65,6 +65,7 @@ public:
 	void AddEnv(std::unique_ptr<Env> env) noexcept;
 	void NewEnv() noexcept;
 	std::unique_ptr<Env>& ActiveEnv();
+
 	// Test
 	void TestInit();
 	// Handler
@@ -82,6 +83,9 @@ public:
 	void MPMove(POINT pt);
 	void WheelDown();
 	void WheelUp();
+
+	// 其他
+
 
 public:
 	Mouse mouse;

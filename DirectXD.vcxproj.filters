@@ -222,6 +222,9 @@
     <ClInclude Include="Ray.h">
       <Filter>DrawUnitHeader</Filter>
     </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -340,6 +343,9 @@
     </ClCompile>
     <ClCompile Include="MyCamera.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>BindableSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

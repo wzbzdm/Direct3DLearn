@@ -646,12 +646,26 @@ void Window::RDClick(POINT pt) {
 
 }
 
-void Window::LPMove(POINT pt) {
+// 根据当前摄像头的位置控制物体?
 
+// 左键按下移动，控制当前选中物体移动
+void Window::LPMove(POINT pt) {
+	if (ActiveEnv()->HasSelect()) {
+		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
+		if (!selected.has_value()) return;
+
+		// 移动
+	}
 }
 
+// 右键按下移动，控制当前选中物体旋转
 void Window::RPMove(POINT pt) {
+	if (ActiveEnv()->HasSelect()) {
+		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
+		if (!selected.has_value()) return;
 
+		// 旋转
+	}
 }
 
 void Window::MPMove(POINT pt) {

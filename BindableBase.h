@@ -13,3 +13,4 @@
 #include "CameraCbuf.h"
 #include "LightCbuf.h"
 #include "ColorCbuf.h"
+#include "Sampler.h"

@@ -169,6 +169,7 @@
     <ClInclude Include="Plane3D.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Sampler.h" />
     <ClInclude Include="Shape3DBase.h" />
     <ClInclude Include="Shape3D.h" />
     <ClInclude Include="SimpleDraw.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="Plane3D.cpp" />
     <ClCompile Include="SimpleDraw.cpp" />
     <ClCompile Include="Sphere3D.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureGenerators.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="Transformable.cpp" />
