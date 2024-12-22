@@ -126,32 +126,21 @@ void Window::ShowCameraConf() {
 		}
 
 		float yaw = 0, pitch = 0, roll = 0;
-
-		// 更新Yaw后，绕局部坐标系旋转
-		if (ImGui::SliderFloat("Yaw##", &yaw, -DirectX::XM_PI, DirectX::XM_PI)) {
-			// 旋转矩阵：绕相机的up轴旋转
-			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(up, yaw);
-			DirectX::XMVECTOR newTarget = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.target), rotationMatrix);
-			DirectX::XMStoreFloat3(&camera.target, newTarget);
-			ActiveEnv()->Camera().SetTarget(camera.target);
-		}
+		float speedAngle = 0.01f;
 
 		// 更新Pitch后，绕局部坐标系旋转
-		if (ImGui::SliderFloat("Pitch##", &pitch, -DirectX::XM_PI / 2, DirectX::XM_PI / 2)) {
-			// 绕right（右）轴旋转
-			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(right, pitch);
-			DirectX::XMVECTOR newTarget = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.target), rotationMatrix);
-			DirectX::XMStoreFloat3(&camera.target, newTarget);
-			ActiveEnv()->Camera().SetTarget(camera.target);
+		if (ImGui::SliderFloat("Pitch##", &pitch, -5.0f, 5.0f)) {
+			ActiveEnv()->Camera().AdjustOrientation(speedAngle * pitch, 0, 0);
+		}
+
+		// 更新Yaw后，绕局部坐标系旋转
+		if (ImGui::SliderFloat("Yaw##", &yaw, -5.0f, 5.0f)) {
+			ActiveEnv()->Camera().AdjustOrientation(0, speedAngle * yaw, 0);
 		}
 
 		// 更新Roll后，绕当前的前向（forward）轴旋转
-		if (ImGui::SliderFloat("Roll##", &roll, -DirectX::XM_PI, DirectX::XM_PI)) {
-			// 绕前向轴旋转
-			DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationAxis(forward, roll);
-			DirectX::XMVECTOR newUp = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&camera.upVector), rotationMatrix);
-			DirectX::XMStoreFloat3(&camera.upVector, newUp);
-			ActiveEnv()->Camera().SetUpV(camera.upVector);
+		if (ImGui::SliderFloat("Roll##", &roll, -20.0f, 20.0f)) {
+			ActiveEnv()->Camera().AdjustOrientation(0, 0, speedAngle * roll);
 		}
 
 		// FOV角度
@@ -180,7 +169,7 @@ void Window::ShowLightCof() {
 		ImGui::Text("Lights Count: %d", static_cast<int>(lights.size()));
 
 		// 遍历所有光照信息并显示
-		for (size_t i = 0; i < lights.size(); ++i) {
+		for (unsigned int i = 0; i < lights.size(); ++i) {
 			ImGui::Separator();
 			ImGui::Text("Light #%d", static_cast<int>(i + 1));  // 光照编号
 
@@ -506,7 +495,7 @@ std::unique_ptr<Env>& Window::ActiveEnv() {
 }
 
 void Window::NewEnv() noexcept {
-	activeEnv = envs.size();
+	activeEnv = (int)envs.size();
 	envs.push_back(std::make_unique<Env>());
 	SwitchEnv(activeEnv);
 	Env::Initialize(pGfx.get());
@@ -532,8 +521,8 @@ void Window::TestInit() {
 // 绕朝向旋转: 键盘按键控制( 空格+SHIFT )
 // 运动方向: 鼠标中键按下更新朝向
 void Window::KeyEventHandler() noexcept {
-	float speedPos = 0.1;
-	float speedAngle = 0.01;
+	float speedPos = 0.1f;
+	float speedAngle = 0.01f;
 	// 修正 
 	// 前 W: 0x57
 	if (kbd.KeyIsPressed(0x57)) {
@@ -738,6 +727,7 @@ void Window::LPMove(Mouse::Event& mevent) {
 	}
 }
 
+// TODO: 改正逻辑
 // 右键按下移动，控制当前选中物体旋转
 void Window::RPMove(Mouse::Event& mevent) {
 	if (ActiveEnv()->HasSelect()) {
@@ -769,7 +759,7 @@ void Window::MPMove(Mouse::Event& mevent) {
 	POINT pt = { mevent.GetPosX(), mevent.GetPosY() };
 	POINT off = { mevent.GetOffX(), mevent.GetOffY() };
 	// 中键按下调整角度
-	float speedAngle = 0.003;
+	float speedAngle = 0.003f;
 	float speedLR = -off.x * speedAngle;
 	float speedTB = off.y * speedAngle;
 	ActiveEnv()->Camera().AdjustOrientation(speedTB, speedLR, 0);
@@ -779,7 +769,7 @@ void Window::WheelDown(Mouse::Event& mevent) {
 	std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
 	if (!selected.has_value()) return;
 	Shape3DBase* selectedObject = selected.value();
-	float speed = 0.1;
+	float speed = 0.1f;
 	selectedObject->Zoom(1 - speed);
 }
 
@@ -787,7 +777,7 @@ void Window::WheelUp(Mouse::Event& mevent) {
 	std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
 	if (!selected.has_value()) return;
 	Shape3DBase* selectedObject = selected.value();
-	float speed = 0.1;
+	float speed = 0.1f;
 	selectedObject->Zoom(1 + speed);
 }
 

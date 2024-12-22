@@ -82,6 +82,9 @@ class PixelConstantBuffer : public ConstantBuffer<C> {
 	using Bindable::GetContext;
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
+	PixelConstantBuffer(Graphics& gtx, const std::vector<C>& data) {
+		this->Initialize(gtx, data.data(), sizeof(C) * data.size());
+	}
 	void Bind(Graphics& gtx, unsigned int start, unsigned int len) noexcept override {
 		GetContext(gtx)->PSSetConstantBuffers(start, len, pConstantBuffer.GetAddressOf());
 	}

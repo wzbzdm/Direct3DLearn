@@ -21,7 +21,7 @@ public:
     }
 
     void AddAndActiveCamera(const Camera& camera) {
-        currentCameraIndex = cameras.size();
+        currentCameraIndex = (unsigned int)cameras.size();
         cameras.push_back(camera);
     }
 
@@ -66,7 +66,7 @@ public:
         if (index < cameras.size()) {
             cameras.erase(cameras.begin() + index);
             if (currentCameraIndex >= cameras.size()) {
-                currentCameraIndex = cameras.size() - 1; // 防止越界
+                currentCameraIndex = (unsigned int)cameras.size() - 1; // 防止越界
             }
         }
     }
