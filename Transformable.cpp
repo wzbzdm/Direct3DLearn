@@ -32,6 +32,18 @@ void Transformable::Rotate(const DirectX::XMFLOAT3& delta)
 	rotation.z += delta.z;
 }
 
+float Transformable::GetRadius() const noexcept {
+	return this->radius;
+}
+
+void Transformable::SetRadius(float r) {
+	this->radius = r;
+}
+
+void Transformable::Zoom(float r) {
+	this->radius *= r;
+}
+
 void Transformable::Update(float dt) noexcept
 {
 	rotation.x += 1.8f * dt;

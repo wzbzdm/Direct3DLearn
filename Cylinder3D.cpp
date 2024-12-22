@@ -50,11 +50,11 @@ DirectX::XMMATRIX Cylinder3D::GetTransformMatrix() const noexcept
     DirectX::XMMATRIX rotationMatrix = rotationX * rotationY * rotationZ;
 
     // 获取缩放矩阵（按 X, Y, Z 三个方向的缩放）
-    // DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(this->size.x, this->size.y, this->size.z);
+    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(this->radius, this->radius, this->radius);
 
     // 返回组合的变换矩阵：缩放 -> 旋转 -> 平移
     // 圆柱的缩放需要单独处理, 重新创建图形然后绑定缓冲区
-    return rotationMatrix * translation;
+    return scaling * rotationMatrix * translation;
 }
 
 // 计算当前图形与射线的交点

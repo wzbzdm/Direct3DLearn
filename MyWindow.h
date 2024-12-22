@@ -65,6 +65,7 @@ public:
 	void AddEnv(std::unique_ptr<Env> env) noexcept;
 	void NewEnv() noexcept;
 	std::unique_ptr<Env>& ActiveEnv();
+	DirectX::XMFLOAT3 GetCurrentOffInActiveShapePlane(POINT from, POINT to) noexcept;
 
 	// Test
 	void TestInit();

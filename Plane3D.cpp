@@ -44,7 +44,7 @@ DirectX::XMMATRIX Plane3D::GetTransformMatrix() const noexcept
     DirectX::XMMATRIX rotationMatrix = rotationX * rotationY * rotationZ;
 
     // 获取缩放矩阵（按 X, Y 三个方向的缩放）
-    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(size.x, size.y, 1.0);  // Z轴方向不缩放
+    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(this->radius * size.x, this->radius * size.y, 1.0);  // Z轴方向不缩放
 
     // 返回组合的变换矩阵：缩放 -> 旋转 -> 平移
     return scaling * rotationMatrix * translation;

@@ -657,6 +657,10 @@ void Window::RDClick(Mouse::Event& mevent) {
 
 }
 
+DirectX::XMFLOAT3 Window::GetCurrentOffInActiveShapePlane(POINT from, POINT to) noexcept {
+
+}
+
 // 根据当前摄像头的位置控制物体?
 
 // 左键按下移动，控制当前选中物体移动
@@ -664,9 +668,13 @@ void Window::LPMove(Mouse::Event& mevent) {
 	if (ActiveEnv()->HasSelect()) {
 		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
 		if (!selected.has_value()) return;
-
+		Shape3DBase* select = selected.value();
+		POINT nowp = { mevent.GetPosX(), mevent.GetPosY() };
+		POINT lastp = { mevent.GetPosX() - mevent.GetOffX(), mevent.GetPosY() - mevent.GetOffY() };
 		// 移动
-
+		// 通过两个点的射线与当前视线方向的垂直的过当前选中物体的pos的平面的两个交点的偏移
+		DirectX::XMFLOAT3 off = GetCurrentOffInActiveShapePlane(lastp, nowp);
+		select->Translate(off);
 	}
 }
 
@@ -675,7 +683,9 @@ void Window::RPMove(Mouse::Event& mevent) {
 	if (ActiveEnv()->HasSelect()) {
 		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
 		if (!selected.has_value()) return;
-
+		Shape3DBase* select = selected.value();
+		POINT nowp = { mevent.GetPosX(), mevent.GetPosY() };
+		POINT lastp = { mevent.GetPosX()-mevent.GetOffX(), mevent.GetPosY()-mevent.GetOffY() };
 		// 旋转
 
 	}

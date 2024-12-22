@@ -16,6 +16,11 @@ public:
     const DirectX::XMFLOAT3& GetRotation() const noexcept;
     void Rotate(const DirectX::XMFLOAT3& delta);
 
+    // 缩放
+    float GetRadius()const noexcept;
+    void SetRadius(float r);
+    void Zoom(float r);
+
     virtual void Update(float dt) noexcept;
 
     // 获取当前变换矩阵
@@ -24,4 +29,5 @@ public:
 protected:
 	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT3 rotation = { 0.0f, 0.0f, 0.0f };
+    float radius = 1.0f;
 };

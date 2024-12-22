@@ -16,7 +16,7 @@ public:
     bool RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept override;
     void InitColor() noexcept;
 private:
-    float radius = 1.0f; // 半径
+    float r = 1.0f; // 半径
 	int numC = 36;
 	int numH = 36;
 };

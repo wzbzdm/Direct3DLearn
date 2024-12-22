@@ -29,17 +29,17 @@ void Sphere3D::SetConf(int numC, int numH)
 
 void Sphere3D::SetRadius(float r)
 {
-    radius = r;
+    this->r = r;
 }
 
 void Sphere3D::ScaleRadius(float factor)
 {
-    radius *= factor;
+    this->r *= factor;
 }
 
 DirectX::XMMATRIX Sphere3D::GetTransformMatrix() const noexcept
 {
-    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(radius, radius, radius);
+    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(this->radius * this->r, this->radius * this->r, this->radius * this->r);
 
     // 获取旋转矩阵（绕X、Y、Z轴旋转）
     DirectX::XMMATRIX rotationX = DirectX::XMMatrixRotationX(rotation.x);
@@ -70,7 +70,7 @@ bool Sphere3D::RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint
 
     // 投影的平方减去 L 的平方就是半径方向的平方
     float d2 = XMVectorGetX(XMVector3Dot(L, L)) - tca * tca;
-    float radius2 = radius * radius;
+    float radius2 = this->r * this->r;
 
     if (d2 > radius2) {
         // 射线未与球体相交

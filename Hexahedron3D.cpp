@@ -44,7 +44,7 @@ DirectX::XMMATRIX Hexahedron3D::GetTransformMatrix() const noexcept
     DirectX::XMMATRIX rotationMatrix = rotationX * rotationY * rotationZ;
 
     // 获取缩放矩阵（按 X, Y, Z 三个方向的缩放）
-    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(size.x, size.y, size.z);
+    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(radius * size.x, radius * size.y, radius * size.z);
 
     // 返回组合的变换矩阵：缩放 -> 旋转 -> 平移
     return scaling * rotationMatrix * translation;
