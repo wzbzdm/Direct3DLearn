@@ -32,34 +32,29 @@ public:
     void Resize(int width, int height) noexcept;
     DirectX::XMFLOAT3 GetCurDir(float x, float y) noexcept;   // 获取当前投影屏幕的Z值
     DirectX::XMFLOAT3 GetPos() const noexcept;
-    // 更新视图矩阵和投影矩阵
-    void UpdateMatrices();
-    // 获取视图矩阵
-    DirectX::XMMATRIX GetViewMatrix() const;
-    // 获取投影矩阵
-    DirectX::XMMATRIX GetProjectionMatrix() const;
-    // 获取完整的相机矩阵（视图 + 投影）
-    DirectX::XMMATRIX GetCameraMatrix() const;
-    // 更新相机位置，并重新计算矩阵
-    void SetPosition(const DirectX::XMFLOAT3& newPos);
-    // 更新相机的目标（朝向）
-    void SetTarget(const DirectX::XMFLOAT3& newTarget);
-    void SetUpV(const DirectX::XMFLOAT3& newUpV);
-    // 根据法向量设置相机的朝向
-    void SetOrientationFromNormal(const DirectX::XMFLOAT3& normal);
-    // 返回相机的配置数据
-    const CameraData& GetCameraData() const;
-    // 转换为可以传递给GPU的相机数据
+   
+    void UpdateMatrices();                      // 更新视图矩阵和投影矩阵
+    DirectX::XMMATRIX GetViewMatrix() const;    // 获取视图矩阵
+    DirectX::XMMATRIX GetProjectionMatrix() const;      // 获取投影矩阵
+    DirectX::XMMATRIX GetCameraMatrix() const;  // 获取完整的相机矩阵（视图 + 投影）
+    void SetPosition(const DirectX::XMFLOAT3& newPos);  // 更新相机位置，并重新计算矩阵
+    void SetTarget(const DirectX::XMFLOAT3& newTarget); // 更新相机的目标（朝向）
+    void SetUpV(const DirectX::XMFLOAT3& newUpV);       // 根据法向量设置相机的朝向
+    void SetOrientationFromNormal(const DirectX::XMFLOAT3& normal); // 返回相机的配置数据
+    const CameraData& GetCameraData() const;        // 转换为可以传递给GPU的相机数据
     CameraBuffer GetCameraBufferData() const;
-    // 设置视野角度（FOV）
-    void SetFieldOfView(float fov);
+    void SetFieldOfView(float fov);         // 设置视野角度（FOV）
     void SetFarPlane(float far);
-    // 设置纵横比
-    void SetAspectRatio(float aspectRatio);
-    // 相机的旋转，控制俯仰角、偏航角和滚转角
-    void AdjustRotation(float pitch, float yaw, float roll = 0.0f);
-    // 相机围绕目标点进行绕行旋转
-    void Orbit(float deltaYaw, float deltaPitch);
+    void SetAspectRatio(float aspectRatio); // 设置纵横比
+    void AdjustRotation(float pitch, float yaw, float roll = 0.0f); // 相机的旋转，控制俯仰角、偏航角和滚转角
+    void Orbit(float deltaYaw, float deltaPitch);   // 相机围绕目标点进行绕行旋转
+
+    // 移动函数
+    DirectX::XMFLOAT3 Normalize(const DirectX::XMFLOAT3& vec);
+    DirectX::XMFLOAT3 CrossProduct(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b);
+    void GetCameraAxes(DirectX::XMFLOAT3& forward, DirectX::XMFLOAT3& right, DirectX::XMFLOAT3& up);
+    void AdjustOrientation(float pitch, float yaw, float roll);
+    void Move(float forwardDelta, float rightDelta, float upDelta);
 
 private:
     CameraData data;              // 保存相机的相关数据

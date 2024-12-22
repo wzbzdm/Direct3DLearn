@@ -177,3 +177,92 @@ void Camera::Orbit(float deltaYaw, float deltaPitch) {
     XMStoreFloat3(&data.position, cameraPos);
     UpdateMatrices();
 }
+
+// 前向矢量
+DirectX::XMFLOAT3 Camera::Normalize(const DirectX::XMFLOAT3& vec) {
+    DirectX::XMVECTOR v = DirectX::XMLoadFloat3(&vec);
+    v = DirectX::XMVector3Normalize(v);
+    DirectX::XMFLOAT3 result;
+    DirectX::XMStoreFloat3(&result, v);
+    return result;
+}
+
+// 右向矢量
+DirectX::XMFLOAT3 Camera::CrossProduct(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b) {
+    DirectX::XMVECTOR va = DirectX::XMLoadFloat3(&a);
+    DirectX::XMVECTOR vb = DirectX::XMLoadFloat3(&b);
+    DirectX::XMVECTOR cross = DirectX::XMVector3Cross(va, vb);
+    DirectX::XMFLOAT3 result;
+    DirectX::XMStoreFloat3(&result, cross);
+    return result;
+}
+
+void Camera::GetCameraAxes(DirectX::XMFLOAT3& forward, DirectX::XMFLOAT3& right, DirectX::XMFLOAT3& up) {
+    forward = Normalize(DirectX::XMFLOAT3(
+        data.target.x - data.position.x,
+        data.target.y - data.position.y,
+        data.target.z - data.position.z
+    ));
+    right = Normalize(CrossProduct(forward, data.upVector));
+    up = Normalize(CrossProduct(right, forward));
+}
+
+// 上下旋转（俯仰）：pitch
+// 左右旋转（偏航）：yaw
+// 绕朝向旋转（滚转）：roll
+void Camera::AdjustOrientation(float pitch, float yaw, float roll) {
+    DirectX::XMFLOAT3 forward, right, up;
+    GetCameraAxes(forward, right, up);  // 获取当前相机的方向轴
+
+    // 构造旋转矩阵
+    DirectX::XMMATRIX rotation =
+        DirectX::XMMatrixRotationAxis(DirectX::XMLoadFloat3(&right), pitch) *   // 俯仰
+        DirectX::XMMatrixRotationAxis(DirectX::XMLoadFloat3(&up), yaw) *       // 偏航
+        DirectX::XMMatrixRotationAxis(DirectX::XMLoadFloat3(&forward), roll);  // 滚转
+
+    // 更新方向向量
+    DirectX::XMVECTOR newForward = DirectX::XMVector3Transform(
+        DirectX::XMLoadFloat3(&forward),
+        rotation
+    );
+
+    DirectX::XMVECTOR newUp = DirectX::XMVector3Transform(
+        DirectX::XMLoadFloat3(&up),
+        rotation
+    );
+
+    // 将更新的方向存入 forward 和 up 向量
+    DirectX::XMStoreFloat3(&forward, newForward);
+    DirectX::XMStoreFloat3(&up, newUp);
+
+    // 更新相机目标点
+    data.target = {
+        data.position.x + forward.x,
+        data.position.y + forward.y,
+        data.position.z + forward.z
+    };
+
+    // 更新相机上向量
+    data.upVector = up;
+
+    // 更新视图矩阵
+    UpdateMatrices();
+}
+
+
+void Camera::Move(float forwardDelta, float rightDelta, float upDelta) {
+    DirectX::XMFLOAT3 forward, right, up;
+    GetCameraAxes(forward, right, up);
+
+    // 根据局部轴计算位移
+    data.position.x += forward.x * forwardDelta + right.x * rightDelta + up.x * upDelta;
+    data.position.y += forward.y * forwardDelta + right.y * rightDelta + up.y * upDelta;
+    data.position.z += forward.z * forwardDelta + right.z * rightDelta + up.z * upDelta;
+
+    // 更新目标点（保证朝向不变）
+    data.target.x += forward.x * forwardDelta + right.x * rightDelta + up.x * upDelta;
+    data.target.y += forward.y * forwardDelta + right.y * rightDelta + up.y * upDelta;
+    data.target.z += forward.z * forwardDelta + right.z * rightDelta + up.z * upDelta;
+
+    UpdateMatrices(); // 更新视图矩阵
+}

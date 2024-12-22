@@ -14,6 +14,10 @@
 #define		HZ					90
 #define		MS_PER_FRAME		1000 / HZ
 
+#define		KEYLISTENER			2
+#define		KEYHZ					100
+#define		MS_PER_SEC			1000 / KEYHZ
+
 class Window {
 	friend class Graphics;
 private:
@@ -64,6 +68,7 @@ public:
 	// Test
 	void TestInit();
 	// Handler
+	void KeyEventHandler() noexcept;
 	void Update();
 	void Draw();
 	DirectX::XMFLOAT3 GetCurVector(int x, int y) noexcept;		// 通过屏幕上的点获取当前在3D空间投影屏幕的坐标
@@ -97,3 +102,13 @@ private:
 };
 
 constexpr float PI = 3.14159265f;
+
+// 控制逻辑
+// 相机: 
+// 上下左右: 键盘按键 ( WSAD/上下左右键 )
+// 绕朝向旋转: 键盘按键控制( 空格+SHIFT )
+// 运动方向: 鼠标中键按下更新朝向
+
+// 物体控制
+// 左键按下: 根据摄像头朝向垂直平面移动
+// 右键按下: 物体旋转相关?

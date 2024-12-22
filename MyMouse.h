@@ -51,6 +51,15 @@ public:
 			y(parent.y),
 			timestamp(CurrentTimeMS())
 		{}
+		Event(Type type, int offsetX, int offsetY, const Mouse& parent) noexcept
+			:
+			type(type),
+			leftIsPressed(parent.leftIsPressed),
+			rightIsPressed(parent.rightIsPressed),
+			x(offsetX),
+			y(offsetY),
+			timestamp(CurrentTimeMS())
+		{}
 		Event(Type type, const Mouse& parent, long long timestamp) noexcept
 			:
 			type(type),
@@ -95,6 +104,7 @@ public:
 	std::optional<Mouse::Event> Read() noexcept;
 	std::optional<Mouse::Event> ReadEvent() noexcept;
 	void PushBoth(Mouse::Event&& mevent) noexcept;
+	void PushBothMove(Mouse::Event&& mevent) noexcept;
 	bool IsEmpty() const noexcept {
 		return buffer.empty();
 	}

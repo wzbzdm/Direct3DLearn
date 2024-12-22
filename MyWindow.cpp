@@ -20,6 +20,7 @@ Window::Window(int width, int height, const wchar_t* name) : width(width), heigh
 
 	// 设置定时器
 	SetTimer(hWnd, PAINT_TIMER, MS_PER_FRAME, nullptr);
+	SetTimer(hWnd, KEYLISTENER, MS_PER_SEC, nullptr);
 
 	// 创建初始化环境
 	NewEnv();
@@ -346,6 +347,9 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 			Update();
 			Draw();
 		}
+		else if (wParam == KEYLISTENER) {
+			KeyEventHandler();
+		}
 		break;
 	}
 	case WM_KEYDOWN:
@@ -498,9 +502,62 @@ void Window::TestInit() {
 	ActiveEnv()->AddShape(std::move(ts));
 }
 
+// 相机: 
+// 上下左右: 键盘按键 ( WSAD/上下左右键 )
+// 绕朝向旋转: 键盘按键控制( 空格+SHIFT )
+// 运动方向: 鼠标中键按下更新朝向
+void Window::KeyEventHandler() noexcept {
+	float speedPos = 0.1;
+	float speedAngle = 0.05;
+	// 修正 
+	// 前 W: 0x57
+	if (kbd.KeyIsPressed(0x57)) {
+		ActiveEnv()->Camera().Move(speedPos, 0, 0);
+	}
+	// 后 S: 0x53
+	if (kbd.KeyIsPressed(0x53)) {
+		ActiveEnv()->Camera().Move(-speedPos, 0, 0);
+	}
+	// 左 A: 0x41
+	if (kbd.KeyIsPressed(0x41)) {
+		ActiveEnv()->Camera().Move(0, speedPos, 0);
+	}
+	// 右 D: 0x44
+	if (kbd.KeyIsPressed(0x44)) {
+		ActiveEnv()->Camera().Move(0, -speedPos, 0);
+	}
+	//  | VK_UP
+	if (kbd.KeyIsPressed(VK_UP)) {
+		ActiveEnv()->Camera().AdjustOrientation(speedAngle, 0, 0);
+	}
+	//  | VK_DOWN
+	if (kbd.KeyIsPressed(VK_DOWN)) {
+		ActiveEnv()->Camera().AdjustOrientation(-speedAngle, 0, 0);
+	}
+	//  | VK_LEFT
+	if (kbd.KeyIsPressed(VK_LEFT)) {
+		ActiveEnv()->Camera().AdjustOrientation(0, speedAngle, 0);
+	}
+	//  | VK_RIGHT
+	if (kbd.KeyIsPressed(VK_RIGHT)) {
+		ActiveEnv()->Camera().AdjustOrientation(0, -speedAngle, 0);
+	}
+	// 空格, 旋转
+	if (kbd.KeyIsPressed(VK_SPACE)) {
+		// 逆时针
+		if (kbd.KeyIsPressed(VK_SHIFT)) {
+			ActiveEnv()->Camera().AdjustOrientation(0, 0, -speedAngle);
+		}
+		// 顺时针
+		else {
+ 			ActiveEnv()->Camera().AdjustOrientation(0, 0, speedAngle);
+		}
+	}
+}
+
 void Window::Update() {
 	auto dt = timer.Mark();
-	ActiveEnv()->UpdateAll(kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
+	ActiveEnv()->UpdateAll(dt);
 }
 
 bool Window::HasArea() noexcept {

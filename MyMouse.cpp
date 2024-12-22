@@ -59,6 +59,16 @@ void Mouse::PushBoth(Mouse::Event&& mevent) noexcept {
 	events.push_back(buffer.back());
 }
 
+// 保存PMove时保存相对位移
+void Mouse::PushBothMove(Mouse::Event&& mevent) noexcept {
+	Mouse::Event last = buffer.back();
+	int offsetX = mevent.GetPosX() - last.GetPosX();
+	int offsetY = mevent.GetPosY() - last.GetPosY();
+	buffer.push_back(std::move(mevent));
+	const Mouse::Event now = buffer.back();
+	events.push_back(Mouse::Event(now.GetType(), offsetX, offsetY, *this));
+}
+
 void Mouse::Flush() noexcept
 {
 	buffer = std::deque<Event>();
@@ -79,11 +89,11 @@ void Mouse::OnMouseMove(int newx, int newy) noexcept
 		Mouse::Event last = buffer.back();
 		if (last.GetPosX() != newx || last.GetPosY() != newy) {
 			if (last.GetType() == Mouse::Event::Type::LPress || last.GetType() == Mouse::Event::Type::LPMove) {
-				PushBoth(Mouse::Event(Mouse::Event::Type::LPMove, *this));
+				PushBothMove(Mouse::Event(Mouse::Event::Type::LPMove, *this));
 			}else if (last.GetType() == Mouse::Event::Type::RPress || last.GetType() == Mouse::Event::Type::RPMove) {
-				PushBoth(Mouse::Event(Mouse::Event::Type::RPMove, *this));
+				PushBothMove(Mouse::Event(Mouse::Event::Type::RPMove, *this));
 			} else if (last.GetType() == Mouse::Event::Type::MPress || last.GetType() == Mouse::Event::Type::MPMove) {
-				PushBoth(Mouse::Event(Mouse::Event::Type::MPMove, *this));
+				PushBothMove(Mouse::Event(Mouse::Event::Type::MPMove, *this));
 			} else {
 				buffer.push_back(Mouse::Event(Mouse::Event::Type::Move, *this));
 			}
