@@ -508,7 +508,7 @@ void Window::TestInit() {
 // 运动方向: 鼠标中键按下更新朝向
 void Window::KeyEventHandler() noexcept {
 	float speedPos = 0.1;
-	float speedAngle = 0.05;
+	float speedAngle = 0.01;
 	// 修正 
 	// 前 W: 0x57
 	if (kbd.KeyIsPressed(0x57)) {
@@ -525,6 +525,14 @@ void Window::KeyEventHandler() noexcept {
 	// 右 D: 0x44
 	if (kbd.KeyIsPressed(0x44)) {
 		ActiveEnv()->Camera().Move(0, -speedPos, 0);
+	}
+	// 上 Q: 0x51
+	if (kbd.KeyIsPressed(0x51)) {
+		ActiveEnv()->Camera().Move(0, 0, speedPos);
+	}
+	// 下 E: 0x45
+	if (kbd.KeyIsPressed(0x45)) {
+		ActiveEnv()->Camera().Move(0, 0, -speedPos);
 	}
 	//  | VK_UP
 	if (kbd.KeyIsPressed(VK_UP)) {
@@ -620,7 +628,8 @@ void Window::Resize(int width, int height) noexcept {
 	}
 }
 
-void Window::LClick(POINT pt) {
+void Window::LClick(Mouse::Event& mevent) {
+	POINT pt = { mevent.GetPosX(), mevent.GetPosY() };
 	showActiveWindow = false;
 	DirectX::XMFLOAT3 direction = GetCurVector(pt.x, pt.y);
 	DirectX::XMFLOAT3 origin = ActiveEnv()->Camera().GetPos();
@@ -629,7 +638,8 @@ void Window::LClick(POINT pt) {
 	ActiveEnv()->SetActiveShape(index);
 }
 
-void Window::LDClick(POINT pt) {
+void Window::LDClick(Mouse::Event& mevent) {
+	POINT pt = { mevent.GetPosX(), mevent.GetPosY() };
 	DirectX::XMFLOAT3 direction = GetCurVector(pt.x, pt.y);
 	DirectX::XMFLOAT3 origin = ActiveEnv()->Camera().GetPos();
 	Ray cur(origin, direction);
@@ -639,45 +649,54 @@ void Window::LDClick(POINT pt) {
 	}
 }
 
-void Window::RClick(POINT pt) {
+void Window::RClick(Mouse::Event& mevent) {
 
 }
 
-void Window::RDClick(POINT pt) {
+void Window::RDClick(Mouse::Event& mevent) {
 
 }
 
 // 根据当前摄像头的位置控制物体?
 
 // 左键按下移动，控制当前选中物体移动
-void Window::LPMove(POINT pt) {
+void Window::LPMove(Mouse::Event& mevent) {
 	if (ActiveEnv()->HasSelect()) {
 		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
 		if (!selected.has_value()) return;
 
 		// 移动
+
 	}
 }
 
 // 右键按下移动，控制当前选中物体旋转
-void Window::RPMove(POINT pt) {
+void Window::RPMove(Mouse::Event& mevent) {
 	if (ActiveEnv()->HasSelect()) {
 		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
 		if (!selected.has_value()) return;
 
 		// 旋转
+
 	}
 }
 
-void Window::MPMove(POINT pt) {
+// TODO: 根据两次位置调整偏移角度
+void Window::MPMove(Mouse::Event& mevent) {
+	POINT pt = { mevent.GetPosX(), mevent.GetPosY() };
+	POINT off = { mevent.GetOffX(), mevent.GetOffY() };
+	// 中键按下调整角度
+	float speedAngle = 0.003;
+	float speedLR = -off.x * speedAngle;
+	float speedTB = off.y * speedAngle;
+	ActiveEnv()->Camera().AdjustOrientation(speedTB, speedLR, 0);
+}
+
+void Window::WheelDown(Mouse::Event& mevent) {
 
 }
 
-void Window::WheelDown() {
-
-}
-
-void Window::WheelUp() {
+void Window::WheelUp(Mouse::Event& mevent) {
 
 }
 

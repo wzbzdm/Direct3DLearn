@@ -40,6 +40,8 @@ public:
 		bool rightIsPressed;
 		int x;
 		int y;
+		int offsetX;
+		int offsetY;
 		long long timestamp;
 	public:
 		Event(Type type, const Mouse& parent) noexcept
@@ -49,6 +51,8 @@ public:
 			rightIsPressed(parent.rightIsPressed),
 			x(parent.x),
 			y(parent.y),
+			offsetX(0),
+			offsetY(0),
 			timestamp(CurrentTimeMS())
 		{}
 		Event(Type type, int offsetX, int offsetY, const Mouse& parent) noexcept
@@ -56,8 +60,10 @@ public:
 			type(type),
 			leftIsPressed(parent.leftIsPressed),
 			rightIsPressed(parent.rightIsPressed),
-			x(offsetX),
-			y(offsetY),
+			x(parent.x),
+			y(parent.y),
+			offsetX(offsetX),
+			offsetY(offsetY),
 			timestamp(CurrentTimeMS())
 		{}
 		Event(Type type, const Mouse& parent, long long timestamp) noexcept
@@ -67,6 +73,8 @@ public:
 			rightIsPressed(parent.rightIsPressed),
 			x(parent.x),
 			y(parent.y),
+			offsetX(0),
+			offsetY(0),
 			timestamp(timestamp)
 		{}
 		Type GetType() const noexcept {
@@ -83,6 +91,12 @@ public:
 		}
 		int GetPosY() const noexcept {
 			return y;
+		}
+		int GetOffX() const noexcept {
+			return offsetX;
+		}
+		int GetOffY() const noexcept {
+			return offsetY;
 		}
 		bool LeftIsPressed() const noexcept {
 			return leftIsPressed;

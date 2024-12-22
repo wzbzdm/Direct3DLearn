@@ -74,15 +74,15 @@ public:
 	void Draw();
 	DirectX::XMFLOAT3 GetCurVector(int x, int y) noexcept;		// 通过屏幕上的点获取当前在3D空间投影屏幕的坐标
 	void Resize(int width, int height) noexcept;			// 事件处理程序
-	void LClick(POINT pt);
-	void LDClick(POINT pt);
-	void RClick(POINT pt);
-	void RDClick(POINT pt);
-	void LPMove(POINT pt);
-	void RPMove(POINT pt);
-	void MPMove(POINT pt);
-	void WheelDown();
-	void WheelUp();
+	void LClick(Mouse::Event& mevent);
+	void LDClick(Mouse::Event& mevent);
+	void RClick(Mouse::Event& mevent);
+	void RDClick(Mouse::Event& mevent);
+	void LPMove(Mouse::Event& mevent);
+	void RPMove(Mouse::Event& mevent);
+	void MPMove(Mouse::Event& mevent);
+	void WheelDown(Mouse::Event& mevent);
+	void WheelUp(Mouse::Event& mevent);
 
 	// 其他
 

@@ -38,34 +38,33 @@ void SimpleDraw::HandlerEvent() {
 	std::optional<Mouse::Event> mevent = window.ReadMouseEvent();
 	if (mevent.has_value()) {
 		Mouse::Event meven = mevent.value();
-		POINT pt = { meven.GetPosX(), meven.GetPosY() };
 		switch (meven.GetType()) {
 		case Mouse::Event::Type::LClick:
-			window.LClick(pt);
+			window.LClick(meven);
 			break;
 		case Mouse::Event::Type::LDClick:
-			window.LDClick(pt);
+			window.LDClick(meven);
 			break;
 		case Mouse::Event::Type::RClick:
-			window.RClick(pt);
+			window.RClick(meven);
 			break;
 		case Mouse::Event::Type::RDClick:
-			window.RDClick(pt);
+			window.RDClick(meven);
 			break;
 		case Mouse::Event::Type::LPMove:
-			window.LPMove(pt);
+			window.LPMove(meven);
 			break;
 		case Mouse::Event::Type::RPMove:
-			window.RPMove(pt);
+			window.RPMove(meven);
 			break;
 		case Mouse::Event::Type::MPMove:
-			window.MPMove(pt);
+			window.MPMove(meven);
 			break;
 		case Mouse::Event::Type::WheelDown:
-			window.WheelDown();
+			window.WheelDown(meven);
 			break;
 		case Mouse::Event::Type::WheelUp:
-			window.WheelUp();
+			window.WheelUp(meven);
 			break;
 		default:
 			break;
