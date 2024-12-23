@@ -17,7 +17,7 @@ Camera::Camera() {
         Camera::baseFOV,                        // FOV
         0.1f,                                   // 默认近裁剪面距离 
         100.0f,                                  // 默认远裁剪面距离
-        4.0f / 3.0                               // 默认纵横比 (4:3)
+        4.0f / 3.0f                               // 默认纵横比 (4:3)
     };
     UpdateMatrices();
 }
