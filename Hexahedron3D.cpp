@@ -3,102 +3,21 @@
 
 Hexahedron3D::Hexahedron3D(Graphics& gfx)
 {
-    struct Vertex
-    {
-        DirectX::XMFLOAT3 pos;
-    };
+	InitColor();
+	if (!IsStaticInitialized()) {
+		auto model = Hexahedron().CreateD();
 
-    // 根据初始大小生成顶点
-    const std::vector<Vertex> vertices =
-    {
-        { {-size.x, -size.y, -size.z} },
-        { { size.x, -size.y, -size.z} },
-        { {-size.x,  size.y, -size.z} },
-        { { size.x,  size.y, -size.z} },
-        { {-size.x, -size.y,  size.z} },
-        { { size.x, -size.y,  size.z} },
-        { {-size.x,  size.y,  size.z} },
-        { { size.x,  size.y,  size.z} },
-    };
+		BindStaticAll(gfx, model);
+		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
+	}
+	else {
+		SetIndexFromStatic();
+	}
 
-    AddBind(std::make_unique<VertexBuffer>(gfx, vertices));
+	// 动态绑定数据
+	this->BindAll(gfx);
 
-    // 添加着色器
-    auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
-    auto pvsbc = pvs->GetBytecode();
-    AddBind(std::move(pvs));
-    AddBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
-
-    // 添加索引缓冲区
-    const std::vector<unsigned short> indices =
-    {
-        0,2,1, 2,3,1,
-        1,3,5, 3,7,5,
-        2,6,3, 3,6,7,
-        4,5,7, 4,7,6,
-        0,4,2, 2,4,6,
-        0,1,4, 1,5,4
-    };
-    AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
-
-    // 添加颜色常量缓冲区
-    struct ConstantBuffer2
-    {
-        struct
-        {
-            float r, g, b, a;
-        } face_colors[6];
-    };
-    const ConstantBuffer2 cb2 =
-    {
-        {
-            { 1.0f, 0.0f, 1.0f, 1.0f },
-            { 1.0f, 0.0f, 0.0f, 1.0f },
-            { 0.0f, 1.0f, 0.0f, 1.0f },
-            { 0.0f, 0.0f, 1.0f, 1.0f },
-            { 1.0f, 1.0f, 0.0f, 1.0f },
-            { 0.0f, 1.0f, 1.0f, 1.0f },
-        }
-    };
-    AddBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
-
-    // 添加输入布局
-    const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
-    {
-        { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-    AddBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
-
-    // 添加拓扑
-    AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-    // 添加变换常量缓冲区
-    AddBind(std::make_unique<TransformCbuf>(gfx, *this));
-}
-
-
-void Hexahedron3D::SetPosition(const DirectX::XMFLOAT3& position) noexcept
-{
-    pos = position;  // 设置位置
-}
-
-void Hexahedron3D::Translate(const DirectX::XMFLOAT3& offset) noexcept
-{
-    pos.x += offset.x;
-    pos.y += offset.y;
-    pos.z += offset.z;
-}
-
-void Hexahedron3D::SetRotation(const DirectX::XMFLOAT3& rotation) noexcept
-{
-    this->rotation = rotation;  // 设置旋转（欧拉角）
-}
-
-void Hexahedron3D::Rotate(const DirectX::XMFLOAT3& delta) noexcept
-{
-    rotation.x += delta.x;
-    rotation.y += delta.y;
-    rotation.z += delta.z;
+	SetMaterialProperties(MATERIAL_CERAMIC);
 }
 
 void Hexahedron3D::SetSize(const DirectX::XMFLOAT3& size)
@@ -125,13 +44,92 @@ DirectX::XMMATRIX Hexahedron3D::GetTransformMatrix() const noexcept
     DirectX::XMMATRIX rotationMatrix = rotationX * rotationY * rotationZ;
 
     // 获取缩放矩阵（按 X, Y, Z 三个方向的缩放）
-    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(size.x, size.y, size.z);
+    DirectX::XMMATRIX scaling = DirectX::XMMatrixScaling(radius * size.x, radius * size.y, radius * size.z);
 
     // 返回组合的变换矩阵：缩放 -> 旋转 -> 平移
     return scaling * rotationMatrix * translation;
 }
 
+// 计算当前图形与射线的交点
+// 位置 pos
+// 大小 size
+// 旋转 rotation
+bool Hexahedron3D::RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept {
+    // 1. 获取六面体的世界空间 8 个顶点
+    DirectX::XMMATRIX transform = GetTransformMatrix();
+    std::vector<DirectX::XMFLOAT3> vertices = {
+        {-0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f},
+        {0.5f,  0.5f, -0.5f}, {-0.5f,  0.5f, -0.5f},
+        {-0.5f, -0.5f,  0.5f}, {0.5f, -0.5f,  0.5f},
+        {0.5f,  0.5f,  0.5f}, {-0.5f,  0.5f,  0.5f}
+    };
+
+    // 变换到世界空间
+    for (auto& v : vertices) {
+        DirectX::XMVECTOR vert = DirectX::XMLoadFloat3(&v);
+        vert = DirectX::XMVector3Transform(vert, transform);
+        DirectX::XMStoreFloat3(&v, vert);
+    }
+
+    // 2. 定义六面体的 6 个平面，每个平面由 2 个三角形组成
+    static const int indices[12][3] = {
+        {0, 1, 2}, {0, 2, 3}, // -Z 面
+        {4, 6, 5}, {4, 7, 6}, // +Z 面
+        {0, 4, 5}, {0, 5, 1}, // -Y 面
+        {2, 6, 7}, {2, 7, 3}, // +Y 面
+        {0, 3, 7}, {0, 7, 4}, // -X 面
+        {1, 5, 6}, {1, 6, 2}  // +X 面
+    };
+
+    bool hasIntersection = false;
+    float minT = FLT_MAX;
+
+    // 3. 射线与每个三角形进行检测
+    for (int i = 0; i < 12; ++i) {
+        const auto& tri = indices[i];
+
+        // 加载三角形顶点
+        DirectX::XMFLOAT3 v0 = vertices[tri[0]];
+        DirectX::XMFLOAT3 v1 = vertices[tri[1]];
+        DirectX::XMFLOAT3 v2 = vertices[tri[2]];
+
+        // 计算射线与三角形的交点
+        DirectX::XMFLOAT3 barycentricCoords;
+        float t;
+        if (ray.RayIntersectsTriangle(v0, v1, v2, t, barycentricCoords)) {
+            if (t < minT && t > 0) { // 检查最近的交点且必须是前方
+                minT = t;
+                intersectionPoint = {
+                    ray.GetOrigin().x + ray.GetDirection().x * t,
+                    ray.GetOrigin().y + ray.GetDirection().y * t,
+                    ray.GetOrigin().z + ray.GetDirection().z * t
+                };
+                hasIntersection = true;
+            }
+        }
+    }
+
+    return hasIntersection;
+}
+
 void Hexahedron3D::Update(float dt) noexcept
 {
-	// 什么也不做
+    // 自定义 Update
+	rotation.x += 2.0f * dt;
+    rotation.y += 1.6f * dt;
+    rotation.z += 1.2f * dt;
+}
+
+void Hexahedron3D::InitColor() noexcept
+{
+	SetColors({
+		{ 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 0.0f, 1.0f, 0.0f, 1.0f },
+		{ 0.0f, 0.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 0.0f, 1.0f },
+		{ 1.0f, 0.0f, 1.0f, 1.0f },
+		{ 0.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+		});
 }

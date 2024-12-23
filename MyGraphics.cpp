@@ -1,12 +1,13 @@
 #include "MyGraphics.h"
 
-Graphics::Graphics(HWND hWnd) {
-<<<<<<< HEAD
+Graphics::Graphics(HWND hWnd, int width, int height) {
 	DXGI_SWAP_CHAIN_DESC scDesc = {};
-	scDesc.BufferCount = 1;
-	scDesc.BufferDesc.Width = 0;
-	scDesc.BufferDesc.Height = 0;
+	scDesc.BufferCount = 2;
+	scDesc.BufferDesc.Width = width;
+	scDesc.BufferDesc.Height = height;
 	scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	scDesc.BufferDesc.RefreshRate.Numerator = 0;
 	scDesc.BufferDesc.RefreshRate.Denominator = 0;
 	scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -14,14 +15,19 @@ Graphics::Graphics(HWND hWnd) {
 	scDesc.SampleDesc.Count = 1;
 	scDesc.SampleDesc.Quality = 0;
 	scDesc.Windowed = TRUE;
-	scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	scDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;	// 使用新的 Flip-model
 	scDesc.Flags = 0;
+
+	UINT swapCreateFlags = 0;
+#ifndef NDEBUG
+	swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
 
 	D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		0,
+		swapCreateFlags,
 		nullptr,
 		0,
 		D3D11_SDK_VERSION,
@@ -32,73 +38,87 @@ Graphics::Graphics(HWND hWnd) {
 		&context
 	);
 
-	FAILED(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer));
-	FAILED(device->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView));
-=======
-    DXGI_SWAP_CHAIN_DESC scDesc = {};
-    scDesc.BufferCount = 1;
-    scDesc.BufferDesc.Width = 0;
-    scDesc.BufferDesc.Height = 0;
-    scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    scDesc.BufferDesc.RefreshRate.Numerator = 0;
-    scDesc.BufferDesc.RefreshRate.Denominator = 0;
-    scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    scDesc.OutputWindow = hWnd;
-    scDesc.SampleDesc.Count = 1;
-    scDesc.SampleDesc.Quality = 0;
-    scDesc.Windowed = TRUE;
-    scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-    scDesc.Flags = 0;
+	swapChain->GetBuffer(0, __uuidof(ID3D11Resource), (void**)&backBuffer);
+	device->CreateRenderTargetView(backBuffer.Get(), nullptr, &renderTargetView);
 
-    D3D11CreateDeviceAndSwapChain(
-        nullptr,
-        D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        nullptr,
-        0,
-        D3D11_SDK_VERSION,
-        &scDesc,
-        &swapChain,
-        &device,
-        nullptr,
-        &context
-    );
+	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+	dsDesc.DepthEnable = TRUE;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	device->CreateDepthStencilState(&dsDesc, &pDSState);
 
-	FAILED(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer));
-    FAILED(device->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView));
->>>>>>> origin/main
+	context->OMSetDepthStencilState(pDSState.Get(), 1u);
+
+	D3D11_TEXTURE2D_DESC descDepth = {};
+	descDepth.Width = width;
+	descDepth.Height = height;
+	descDepth.MipLevels = 1u;
+	descDepth.ArraySize = 1u;
+	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	descDepth.SampleDesc.Count = 1u;
+	descDepth.SampleDesc.Quality = 0u;
+	descDepth.Usage = D3D11_USAGE_DEFAULT;
+	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	device->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
+	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	descDSV.Texture2D.MipSlice = 0u;
+	device->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &depthStencilView);
+
+	context->OMSetRenderTargets(1u, renderTargetView.GetAddressOf(), depthStencilView.Get());
+
+	D3D11_VIEWPORT vp;
+	vp.Width = (float)width;
+	vp.Height = (float)height;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	context->RSSetViewports(1u, &vp);
 }
 
-Graphics::~Graphics() {
-	if (swapChain != nullptr) {
-		swapChain->Release();
-	}
-	if (context != nullptr) {
-		context->Release();
-	}
-	if (device != nullptr) {
-		device->Release();
-	}
-	if (renderTargetView != nullptr) {
-		renderTargetView->Release();
-	}
-	if (backBuffer != nullptr) {
-		backBuffer->Release();
-	}
+void Graphics::StartFrame() {
+	context->OMSetRenderTargets(1u, renderTargetView.GetAddressOf(), depthStencilView.Get());
 }
 
 void Graphics::EndFrame() {
 	swapChain->Present(1u, 0u);
 }
 
+void Graphics::SetCamera(std::shared_ptr<CameraManager> camera) noexcept {
+	cameras = camera;
+}
+
+void Graphics::SetLight(std::shared_ptr<LightManager> light) noexcept {
+	lights = light;
+}
+
+CameraBuffer Graphics::GetCameraBuffer() noexcept {
+	return cameras->GetCurrentCamera().GetCameraBufferData();
+}
+
+std::vector<LightBuffer> Graphics::GetLightBuffer() noexcept {
+	return lights->GetLightBufferData();
+}
+
 void Graphics::ClearBuffer(float red, float green, float blue) noexcept {
 	const float color[] = { red, green, blue, 1.0f };
-	context->ClearRenderTargetView(renderTargetView, color);
+	context->ClearRenderTargetView(renderTargetView.Get(), color);
+	context->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
 void Graphics::DrawIndexed(UINT count) noexcept {
 	context->DrawIndexed(count, 0u, 0u);
+}
+
+DirectX::XMMATRIX Graphics::GetCameraMatrix() const noexcept {
+	return cameras->GetCameraMatrix();
+}
+
+DirectX::XMMATRIX Graphics::GetProjectionMatrix() const noexcept {
+	return cameras->GetProjectionMatrix();
 }
 
 void Graphics::DrawTestTriangle(float angle) {
@@ -269,10 +289,68 @@ void Graphics::DrawTestTriangle(float angle) {
 	pPixelShader->Release();
 }
 
-void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept {
-	projection = proj;
+void Graphics::BindGlobal() const noexcept {
+	
+	//void BindDefault(Graphics & gfx) noexcept
+	//{
+	//	// 同时绑定到顶点着色器和像素着色器插槽0
+	//	this->AddBind(std::make_unique<CameraCbuf>(gfx), 0, 1);
+	//	// 绑定到像素着色器插槽1
+	//	this->AddBind(std::make_unique<LightCbuf>(gfx), 1, 1);
+	//}
 }
 
-DirectX::XMMATRIX Graphics::GetProjection() const noexcept {
-	return projection;
+void Graphics::Resize(int width, int height) noexcept {
+	// 1. 释放旧的资源
+	renderTargetView.Reset();
+	depthStencilView.Reset();
+	pDepthStencil.Reset();
+	backBuffer.Reset();
+
+	// 2. 调整交换链大小
+	swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
+
+	// 3. 重新获取后缓冲区并创建渲染目标视图
+	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+	device->CreateRenderTargetView(backBuffer.Get(), nullptr, &renderTargetView);
+
+	// 4. 创建深度缓冲区和视图
+	D3D11_TEXTURE2D_DESC descDepth = {};
+	descDepth.Width = width;
+	descDepth.Height = height;
+	descDepth.MipLevels = 1;
+	descDepth.ArraySize = 1;
+	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	descDepth.SampleDesc.Count = 1;
+	descDepth.SampleDesc.Quality = 0;
+	descDepth.Usage = D3D11_USAGE_DEFAULT;
+	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	device->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
+	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	descDSV.Texture2D.MipSlice = 0;
+	device->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &depthStencilView);
+
+	// 5. 设置渲染目标和深度缓冲
+	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
+
+	// 6. 更新视口
+	D3D11_VIEWPORT vp;
+	vp.Width = static_cast<float>(width);
+	vp.Height = static_cast<float>(height);
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	context->RSSetViewports(1, &vp);
+}
+
+ID3D11Device* Graphics::Device() noexcept {
+	return device.Get();
+}
+
+ID3D11DeviceContext* Graphics::Context() noexcept {
+	return context.Get();
 }

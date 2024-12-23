@@ -5,11 +5,10 @@
 class VertexShader : public Bindable
 {
 public:
-	~VertexShader();
 	VertexShader(Graphics& gfx, const std::wstring& path);
-	void Bind(Graphics& gfx) noexcept override;
+	void Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept override;
 	ID3DBlob* GetBytecode() const noexcept;
 protected:
-	ID3DBlob* pBytecodeBlob;
-	ID3D11VertexShader* pVertexShader;
+	Microsoft::WRL::ComPtr<ID3DBlob> pBytecodeBlob;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
 };

@@ -28,6 +28,30 @@
     <Filter Include="DrawUnitSource">
       <UniqueIdentifier>{d2e50f66-e406-4a7b-828b-fbd783dd7dcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Conf">
+      <UniqueIdentifier>{a2cec03c-2839-4c0c-a75c-45183ae24cf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{ac3ed1a3-3f6f-4f4b-9d36-7e654a513465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GeometrySource">
+      <UniqueIdentifier>{3684b16d-4342-47db-8bf2-6b574867a55f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="资源文件\TextureImg">
+      <UniqueIdentifier>{4338e800-e2e2-4337-82d3-f31d67fcbf96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TextureData">
+      <UniqueIdentifier>{c2f398b2-09fb-4c4d-9248-f0c6f584a062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TexDataSource">
+      <UniqueIdentifier>{4bce2ab9-9862-4cb0-b35b-776b5807adf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IMGUI">
+      <UniqueIdentifier>{c33876ea-16dd-478b-988a-8d1f2639998b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IMGUISOURRCE">
+      <UniqueIdentifier>{e5b67b36-afad-4729-a7d1-590571924b54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -75,7 +99,7 @@
     <ClInclude Include="TransformCbuf.h">
       <Filter>BindableHeader</Filter>
     </ClInclude>
-    <ClInclude Include="Shape3D.h">
+    <ClInclude Include="Shape3DBase.h">
       <Filter>DrawUnitHeader</Filter>
     </ClInclude>
     <ClInclude Include="VertexBuffer.h">
@@ -106,6 +130,99 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="BindableBase.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxTest.h">
+      <Filter>DrawUnitHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawUnitBase.h">
+      <Filter>DrawUnitHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Hexahedron.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageLoader.h">
+      <Filter>TextureData</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureGenerators.h">
+      <Filter>TextureData</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureData.h">
+      <Filter>TextureData</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureGeneratorBase.h">
+      <Filter>TextureData</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialCbuf.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="LightCbuf.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLightManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyCamera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyCameraManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraCbuf.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="MyKeyboard.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorCbuf.h">
+      <Filter>BindableHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape3D.h">
+      <Filter>DrawUnitHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="MyEnv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx11.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_win32.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imguiBase.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>DrawUnitHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
       <Filter>BindableHeader</Filter>
     </ClInclude>
   </ItemGroup>
@@ -167,6 +284,72 @@
     <ClCompile Include="SimpleDraw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="BoxTest.cpp">
+      <Filter>DrawUnitSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Transformable.cpp">
+      <Filter>DrawUnitSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>GeometrySource</Filter>
+    </ClCompile>
+    <ClCompile Include="Hexahedron.cpp">
+      <Filter>GeometrySource</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureGenerators.cpp">
+      <Filter>TexDataSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageLoader.cpp">
+      <Filter>TexDataSource</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialCbuf.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraCbuf.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="LightCbuf.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="MyKeyboard.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorCbuf.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="MyEnv.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>IMGUISOURRCE</Filter>
+    </ClCompile>
+    <ClCompile Include="MyCamera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>BindableSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXD.rc">
@@ -180,6 +363,9 @@
     <Image Include="DirectXD.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="TextureImg\test.png">
+      <Filter>资源文件\TextureImg</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
@@ -188,5 +374,43 @@
     <FxCompile Include="VertexShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="VertexShaderColor.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShaderColor.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SphereColor.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SphereVertex.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TexVertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TexPixelShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BoxVertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BoxPixelShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="LightPixelShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="LightVertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore">
+      <Filter>Conf</Filter>
+    </None>
+    <None Include="Light.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,7 +1,10 @@
 #pragma once
 
+#include "MyCameraManager.h"
+#include "MyLightManager.h"
 #include "DirectXD.h"
 #include <iostream>
+#include <wrl.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -13,26 +16,41 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+namespace wrl = Microsoft::WRL;
+
+class Window;
+
 class Graphics {
-	friend class Bindable;
 	friend class Shape3DBase;
 public:
-	Graphics(HWND hWnd);
-	~Graphics();
+	Graphics(HWND hWnd, int width, int height);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator = (const Graphics&) = delete;
+	void StartFrame();
 	void EndFrame();
+	void SetCamera(std::shared_ptr<CameraManager> camera) noexcept;
+	void SetLight(std::shared_ptr<LightManager> light) noexcept;
+	CameraBuffer GetCameraBuffer() noexcept;
+	std::vector<LightBuffer> GetLightBuffer() noexcept;
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void DrawIndexed(UINT count) noexcept;
-	void RenderObject();
+	DirectX::XMMATRIX GetCameraMatrix() const noexcept;
+	DirectX::XMMATRIX GetProjectionMatrix() const noexcept;
 	void DrawTestTriangle(float angle);		//  测试
-	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
-	DirectX::XMMATRIX GetProjection() const noexcept;
+	void BindGlobal() const noexcept;
+	void Resize(int width, int height) noexcept;
+	ID3D11Device* Device() noexcept;
+	ID3D11DeviceContext* Context() noexcept;
+
 private:
-	DirectX::XMMATRIX projection;
-	IDXGISwapChain* swapChain = nullptr;
-	ID3D11Device* device = nullptr;
-	ID3D11DeviceContext* context = nullptr;
-	ID3D11RenderTargetView* renderTargetView = nullptr;
-	ID3D11Texture2D* backBuffer = nullptr;
+	std::shared_ptr<CameraManager> cameras;          // 相机对象
+	std::shared_ptr<LightManager> lights;		// 灯光管理对象
+	wrl::ComPtr<IDXGISwapChain> swapChain;
+	wrl::ComPtr<ID3D11Device> device;
+	wrl::ComPtr<ID3D11DeviceContext> context;
+	wrl::ComPtr<ID3D11RenderTargetView> renderTargetView;
+	wrl::ComPtr<ID3D11DepthStencilView> depthStencilView;
+	wrl::ComPtr<ID3D11Resource> backBuffer;
+	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
+	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
 };

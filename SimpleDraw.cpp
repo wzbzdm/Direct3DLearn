@@ -1,9 +1,17 @@
 #include "SimpleDraw.h"
-#include "Hexahedron3D.h"
+#include "DrawUnitBase.h"
 
 SimpleDraw::SimpleDraw() : window(800, 600, L"Test") {
-	boxes.push_back(std::make_unique<Hexahedron3D>(window.Gfx()));
-	window.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f));
+	window.TestInit();
+
+	// 创建处理 HandlerEvent 的线程
+	eventThread = std::thread([this]() {
+		while (running) {
+			HandlerEvent();
+			std::this_thread::sleep_for(std::chrono::milliseconds(10)); // 防止空转占用 CPU
+		}
+		});
+	running = true;
 }
 
 int SimpleDraw::Draw() {
@@ -13,25 +21,53 @@ int SimpleDraw::Draw() {
 		{
 			return *ecode;
 		}
-		Update();
+		// 测试使用
+		//HandlerEvent();
 	}
 }
 
 SimpleDraw::~SimpleDraw() {
-
+	// 停止线程并等待退出
+	running = false;
+	if (eventThread.joinable()) {
+		eventThread.join();
+	}
 }
 
-void SimpleDraw::Update() {
-	auto dt = timer.Mark();
-<<<<<<< HEAD
-	window.Gfx().ClearBuffer(1.0f, 1.0f, 1.0f);
-=======
-	window.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
->>>>>>> origin/main
-	for (auto& b : boxes)
-	{
-		b->Update(dt);
-		b->Draw(window.Gfx());
+void SimpleDraw::HandlerEvent() {
+	std::optional<Mouse::Event> mevent = window.ReadMouseEvent();
+	if (mevent.has_value()) {
+		Mouse::Event meven = mevent.value();
+		switch (meven.GetType()) {
+		case Mouse::Event::Type::LClick:
+			window.LClick(meven);
+			break;
+		case Mouse::Event::Type::LDClick:
+			window.LDClick(meven);
+			break;
+		case Mouse::Event::Type::RClick:
+			window.RClick(meven);
+			break;
+		case Mouse::Event::Type::RDClick:
+			window.RDClick(meven);
+			break;
+		case Mouse::Event::Type::LPMove:
+			window.LPMove(meven);
+			break;
+		case Mouse::Event::Type::RPMove:
+			window.RPMove(meven);
+			break;
+		case Mouse::Event::Type::MPMove:
+			window.MPMove(meven);
+			break;
+		case Mouse::Event::Type::WheelDown:
+			window.WheelDown(meven);
+			break;
+		case Mouse::Event::Type::WheelUp:
+			window.WheelUp(meven);
+			break;
+		default:
+			break;
+		}
 	}
-	window.Gfx().EndFrame();
 }

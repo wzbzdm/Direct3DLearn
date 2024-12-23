@@ -30,9 +30,12 @@
 *.exe
 *.out
 *.app
+*.cso
+*.ini
+*.bin
 
 x64/
 .vs/
 .vscode/
 Direct3DDraw/
-.gitignore
+DirectXD/

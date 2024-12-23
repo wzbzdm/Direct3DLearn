@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Shape3D.h"
+#include "Shape3DBase.h"
 #include "ConstantBuffers.h"
 
 class TransformCbuf : public Bindable {
 public:
 	TransformCbuf(Graphics& gtx, const Shape3DBase& parent);
-	void Bind(Graphics& gtx) noexcept override;
+	void Bind(Graphics& gtx, unsigned int start, unsigned int len) noexcept override;
 protected:
-	VertexConstantBuffer<DirectX::XMMATRIX> vcbuf;
+	static std::unique_ptr<VertexConstantBuffer<DirectX::XMMATRIX>> vcbuf;
 	const Shape3DBase& parent;
 };
