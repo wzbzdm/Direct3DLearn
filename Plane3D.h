@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shape3D.h"
+#include "Plane.h"
 
 // 平面
 class Plane3D : public Shape3D<Plane3D>

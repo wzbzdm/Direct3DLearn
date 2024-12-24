@@ -98,6 +98,12 @@ public:
 		int GetOffY() const noexcept {
 			return offsetY;
 		}
+		int GetPrevX() const noexcept {
+			return x - offsetX;
+		}
+		int GetPrevY() const noexcept {
+			return y - offsetY;
+		}
 		bool LeftIsPressed() const noexcept {
 			return leftIsPressed;
 		}

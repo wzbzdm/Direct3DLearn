@@ -722,8 +722,6 @@ DirectX::XMFLOAT3 Window::GetCurrentOffInActiveShapePlane(POINT from, POINT to, 
 	return offset;
 }
 
-// 根据当前摄像头的位置控制物体?
-
 // 左键按下移动，控制当前选中物体移动
 void Window::LPMove(Mouse::Event& mevent) {
 	if (ActiveEnv()->HasSelect()) {
@@ -739,30 +737,88 @@ void Window::LPMove(Mouse::Event& mevent) {
 	}
 }
 
-// TODO: 改正逻辑
-// 右键按下移动，控制当前选中物体旋转
+DirectX::XMFLOAT3 QuaternionToEuler(const DirectX::XMVECTOR& quat) {
+	// 使用 DirectXMath 提供的函数将四元数转换为旋转矩阵
+	DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationQuaternion(quat);
+
+	// 初始化欧拉角
+	DirectX::XMFLOAT3 euler;
+
+	// 提取矩阵元素（DirectX 使用列主序）
+	float m00 = rotationMatrix.r[0].m128_f32[0];
+	float m01 = rotationMatrix.r[1].m128_f32[0];
+	float m02 = rotationMatrix.r[2].m128_f32[0];
+	float m10 = rotationMatrix.r[0].m128_f32[1];
+	float m11 = rotationMatrix.r[1].m128_f32[1];
+	float m12 = rotationMatrix.r[2].m128_f32[1];
+	float m20 = rotationMatrix.r[0].m128_f32[2];
+	float m21 = rotationMatrix.r[1].m128_f32[2];
+	float m22 = rotationMatrix.r[2].m128_f32[2];
+
+	// 提取 Roll (绕 X 轴)
+	euler.x = atan2(m21, m22);  // Roll
+
+	// 提取 Pitch (绕 Y 轴)
+	euler.y = asin(std::clamp(-m20, -1.0f, 1.0f));  // 使用 clamp 限制范围 [-1, 1]
+
+	// 提取 Yaw (绕 Z 轴)
+	euler.z = atan2(m10, m00);  // Yaw
+
+	return euler;
+}
+
 void Window::RPMove(Mouse::Event& mevent) {
 	if (ActiveEnv()->HasSelect()) {
-		std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
+		auto selected = ActiveEnv()->GetSelectedShape();
 		if (!selected.has_value()) return;
+
 		Shape3DBase* select = selected.value();
-		// 旋转
-		// 通过偏移和当前相机方向获取物体各个方向的旋转角度
-		DirectX::XMFLOAT3 cameraDir = ActiveEnv()->Camera().GetDirection();    // 相机视线方向
-		DirectX::XMFLOAT3 upVector = ActiveEnv()->Camera().GetUpVector();     // 相机的up向量
-		DirectX::XMFLOAT3 rightVector = ActiveEnv()->Camera().CrossProduct(upVector, cameraDir); // 相机的right向量
 
-		float rotationSpeed = 0.005f;
-		float rightO = rotationSpeed * mevent.GetOffX();
-		float upO = rotationSpeed * mevent.GetOffY();
+		auto& camera = ActiveEnv()->Camera();
 
-		DirectX::XMFLOAT3 offset = {
-			rightVector.x * rightO + upVector.x * upO,
-			rightVector.y * rightO + upVector.y * upO,
-			rightVector.z * rightO + upVector.z * upO,
-		};
+		// 获取鼠标按下时和当前的位置
+		POINT cp = { mevent.GetPrevX(), mevent.GetPrevY() };
+		POINT np = { mevent.GetPosX(), mevent.GetPosY() };
 
-		select->Rotate(offset);
+		// 计算鼠标在 X 和 Y 方向上的移动量
+		float deltaX = static_cast<float>(np.x - cp.x);
+		float deltaY = static_cast<float>(np.y - cp.y);
+
+		// 灵敏度调整
+		float sensitivity = 0.005f;
+		deltaX *= sensitivity;
+		deltaY *= sensitivity;
+
+		// 使用相机计算方向矢量
+		DirectX::XMFLOAT3 forwardVec = camera.GetDirection();  // 相机前方向
+		DirectX::XMFLOAT3 upVec = camera.GetUpVector();        // 相机上的方向
+		DirectX::XMFLOAT3 rightVec = camera.CrossProduct(forwardVec, upVec);  // 相机右方向
+
+		// 转换到 DirectX 矢量
+		DirectX::XMVECTOR upAxis = DirectX::XMLoadFloat3(&upVec);
+		DirectX::XMVECTOR rightAxis = DirectX::XMLoadFloat3(&rightVec);
+
+		upAxis = DirectX::XMVector3Normalize(upAxis);
+		rightAxis = DirectX::XMVector3Normalize(rightAxis);
+
+		// 获取物体当前旋转状态（作为四元数）
+		DirectX::XMFLOAT3 currentRot = select->GetRotation();
+		DirectX::XMVECTOR currentQuat = DirectX::XMQuaternionRotationRollPitchYaw(currentRot.x, currentRot.y, currentRot.z);
+
+		// 计算鼠标拖动引起的旋转
+		DirectX::XMVECTOR quatDeltaPitch = DirectX::XMQuaternionRotationAxis(rightAxis, -deltaY);  // 向上/向下（绕相机右轴）
+		DirectX::XMVECTOR quatDeltaYaw = DirectX::XMQuaternionRotationAxis(upAxis, deltaX);       // 向左/向右（绕相机上轴）
+
+		// 更新物体的旋转（累积旋转）
+		DirectX::XMVECTOR newQuat = DirectX::XMQuaternionMultiply(currentQuat, quatDeltaPitch);
+		newQuat = DirectX::XMQuaternionMultiply(newQuat, quatDeltaYaw);
+
+		// 将四元数转换为欧拉角
+		DirectX::XMFLOAT3 newRotation;
+		DirectX::XMStoreFloat3(&newRotation, newQuat);
+
+		// 设置新的旋转值
+		select->SetRotation(newRotation);
 	}
 }
 
