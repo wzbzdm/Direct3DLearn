@@ -72,6 +72,10 @@ public:
 		return tempcolors;  // 返回调整后的副本
 	}
 
+	const std::vector<DirectX::XMFLOAT4> GetRealColors() const noexcept {
+		return colors;
+	}
+
 	static void AdjustColors(std::vector<DirectX::XMFLOAT4>& colors, size_t sized = DEFAULTCOLORBUFSIZE) {
 		if (colors.size() < sized) {
 			// 初始化随机引擎

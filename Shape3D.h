@@ -22,9 +22,9 @@ private:
 		AddBind(std::make_unique<Sampler>(gfx, samplerConf));
 
 		// 纹理
-		TextureData data = ImageLoader::Load2D(TESTIMG);
+		/*TextureData data = ImageLoader::Load2D(TESTIMG);
 		auto pTexture = std::make_unique<Texture2D>(gfx, data);
-		AddStaticBind(std::move(pTexture));
+		AddStaticBind(std::move(pTexture));*/
 	}
 
 protected:

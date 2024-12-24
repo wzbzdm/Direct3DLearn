@@ -267,6 +267,17 @@ void Window::ShowMaterialEditor() {
 					selectedObject->SetRadius(radius);
 				}
 			}
+
+			// --- 颜色 ---
+			if (ImGui::CollapsingHeader("Colors", ImGuiTreeNodeFlags_DefaultOpen)) {
+				std::vector<DirectX::XMFLOAT4> colors = selectedObject->GetRealColors();
+				for (unsigned int i = 0; i < colors.size(); ++i) {
+					std::string color_label = "Color##" + std::to_string(i);
+					if (ImGui::ColorEdit4(color_label.c_str(), &colors[i].x)) {
+						selectedObject->SetColor(colors[i], i);
+					}
+				}
+			}
 		}
 
 		ImGui::End();  // 结束编辑窗口
@@ -451,6 +462,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_MOUSEWHEEL:
 	{
+		if (io.WantCaptureMouse) return true;
 		const POINT pt = { LOWORD(lParam), HIWORD(lParam) };
 		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
 		mouse.OnWheelDelta(pt.x, pt.y, delta);
@@ -764,7 +776,7 @@ void Window::MPMove(Mouse::Event& mevent) {
 	float speedTB = off.y * speedAngle;
 	ActiveEnv()->Camera().AdjustOrientation(speedTB, speedLR, 0);
 }
-
+   
 void Window::WheelDown(Mouse::Event& mevent) {
 	std::optional<Shape3DBase*> selected = ActiveEnv()->GetSelectedShape();
 	if (!selected.has_value()) return;
