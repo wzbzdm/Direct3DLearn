@@ -52,8 +52,8 @@ public:
     void Orbit(float deltaYaw, float deltaPitch);   // 相机围绕目标点进行绕行旋转
 
     // 移动函数
-    DirectX::XMFLOAT3 Normalize(const DirectX::XMFLOAT3& vec);
-    DirectX::XMFLOAT3 CrossProduct(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b);
+    static DirectX::XMFLOAT3 Normalize(const DirectX::XMFLOAT3& vec);
+    static DirectX::XMFLOAT3 CrossProduct(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b);
     void GetCameraAxes(DirectX::XMFLOAT3& forward, DirectX::XMFLOAT3& right, DirectX::XMFLOAT3& up);
     void AdjustOrientation(float pitch, float yaw, float roll);
     void Move(float forwardDelta, float rightDelta, float upDelta);
