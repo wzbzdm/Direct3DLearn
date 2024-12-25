@@ -40,11 +40,11 @@ protected:
 	static void BindStaticAll(Graphics& gfx, Geometry<DefaultVertice>& model) {
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"LightVertexShader.cso");
+		auto pvs = std::make_unique<VertexShader>(gfx, L"CSO\\LightVertexShader.cso");
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"LightPixelShader.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, L"CSO\\LightPixelShader.cso"));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
