@@ -225,6 +225,7 @@ void Window::ShowMaterialEditor() {
 		Shape3DBase* selectedObject = selected.value();
 		MaterialProperties material = selectedObject->GetMaterialProperties();  // 获取选中物体的材质信息
 		ShapeConfig conf = selectedObject->GetShapeConfig();  // 获取选中物体的配置信息
+		D3D11_SAMPLER_DESC samplec = selectedObject->GetSamplerConf();
 
 		// 获取变换信息
 		DirectX::XMFLOAT3 position = selectedObject->GetPosition();
@@ -315,6 +316,77 @@ void Window::ShowMaterialEditor() {
 
 					// 关闭对话框
 					ImGuiFileDialog::Instance()->Close();
+				}
+
+				// 纹理采样设置
+				if (ImGui::CollapsingHeader("纹理配置", ImGuiTreeNodeFlags_DefaultOpen)) {
+					// 设置UV缩放
+					if (ImGui::InputFloat2("纹理缩放", &conf.textureWeight.x)) {
+						selectedObject->SetShapeConfig(conf);
+					}
+
+					// 纹理偏移
+					if (ImGui::InputFloat2("纹理偏移", &conf.textureOff.x)) {
+						selectedObject->SetShapeConfig(conf);
+					}
+
+					// 纹理过滤方式字典
+					std::unordered_map<D3D11_FILTER, std::string> filter_dict = {
+						{D3D11_FILTER_MIN_MAG_MIP_POINT, "点过滤"},
+						{D3D11_FILTER_MIN_MAG_MIP_LINEAR, "线性过滤"},
+						{D3D11_FILTER_ANISOTROPIC, "各向异性过滤"},
+						{D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR, "最小点 + 线性 MIP 过滤"},
+						{D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR, "最小 + 线性点 MIP 过滤"},
+						{D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT, "最小线性 + 点 MIP 过滤"},
+						{D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT, "最小 + 线性 + 点 MIP 过滤"},
+						{D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR, "最小线性 + 点 + 线性 MIP 过滤"},
+						{D3D11_FILTER_COMPARISON_ANISOTROPIC, "比较各向异性过滤"},
+						{D3D11_FILTER_MAXIMUM_ANISOTROPIC, "最大各向异性过滤"},
+						{D3D11_FILTER_MINIMUM_ANISOTROPIC, "最小各向异性过滤"},
+						// Add more D3D11_FILTER values as needed
+					};
+
+					std::vector<const char*> filter_items;
+					for (const auto& filter : filter_dict) {
+						filter_items.push_back(filter.second.c_str());
+					}
+
+					int selectedFilterIndex = -1;
+
+					// 查找当前选择的过滤项的索引
+					for (int i = 0; i < filter_items.size(); i++) {
+						if (filter_dict.find(samplec.Filter) != filter_dict.end() && filter_dict.at(samplec.Filter) == filter_items[i]) {
+							selectedFilterIndex = i;
+							break;
+						}
+					}
+
+					// 显示过滤方式选择框
+					if (ImGui::Combo("选择纹理过滤方式", &selectedFilterIndex, filter_items.data(), filter_items.size())) {
+						// 当用户选择了新的过滤方式时，根据选择的索引来更新 samplec.Filter 的值
+						auto it = filter_dict.begin();
+						std::advance(it, selectedFilterIndex); // 通过索引获取对应的过滤方式
+						samplec.Filter = it->first;  // 更新 samplec.Filter
+					}
+
+					// 设置地址模式
+					const char* address_modes[] = {
+						"无",                            // 空字符串占位
+						"循环模式",                      // D3D11_TEXTURE_ADDRESS_WRAP
+						"镜像模式",                      // D3D11_TEXTURE_ADDRESS_MIRROR
+						"夹紧模式",                      // D3D11_TEXTURE_ADDRESS_CLAMP
+						"边界模式",                      // D3D11_TEXTURE_ADDRESS_BORDER
+						"单次镜像模式"                   // D3D11_TEXTURE_ADDRESS_MIRROR_ONCE
+					};
+					if (ImGui::Combo("地址模式", (int*)&samplec.AddressU, address_modes, IM_ARRAYSIZE(address_modes))) {
+						samplec.AddressV = samplec.AddressW = samplec.AddressU;
+					}
+
+					// 设置边界颜色（如果需要）
+					ImGui::ColorEdit4("边界颜色", samplec.BorderColor);
+
+					// 更新纹理配置
+					selectedObject->SetSamplerConf(samplec);
 				}
 			}
 		}

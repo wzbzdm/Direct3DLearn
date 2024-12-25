@@ -51,7 +51,7 @@ void Drawable::SetSamplerConf(const D3D11_SAMPLER_DESC& conf) noexcept {
 	NotifyObservers();
 }
 
-const D3D11_SAMPLER_DESC& Drawable::GetSamplerConf() const noexcept {
+D3D11_SAMPLER_DESC Drawable::GetSamplerConf() const noexcept {
 	return samplerConf;
 }
 

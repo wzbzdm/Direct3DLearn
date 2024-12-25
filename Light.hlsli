@@ -11,6 +11,8 @@ struct CameraBuffer
 // 配置结构体
 struct Config
 {
+    float2 textureWeight;   // 纹理权重
+    float2 textureOff;      // 纹理偏移
     bool useTexture; // 是否使用纹理
 };
 
