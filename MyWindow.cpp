@@ -6,6 +6,7 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 Window::Window(int width, int height, const wchar_t* name) : width(width), height(height), name(name) {
+	SetDllDirectory(L"DLL");
 	InitGdi();
 
 	// 创建窗口
