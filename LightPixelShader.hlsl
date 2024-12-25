@@ -5,17 +5,22 @@ cbuffer CameraData : register(b0)
     CameraBuffer camera; // 摄像头相关数据
 };
 
-cbuffer LightData : register(b1)
+cbuffer AllConfig : register(b1)
+{
+    Config config; // 配置数据
+};
+
+cbuffer LightData : register(b2)
 {
     Light lights[10]; // 光源数组
 };
 
-cbuffer MaterialData : register(b2)
+cbuffer MaterialData : register(b3)
 {
     Material material; // 材质数据
 };
 
-cbuffer ColorData : register(b3)
+cbuffer ColorData : register(b4)
 {
     ColorBuffer colors[20];  // 颜色数组
 };
@@ -61,7 +66,7 @@ float4 main(VertexOut pin) : SV_Target
     
     float4 texColor = diffuseTexture.Sample(defaultSampler, pin.texCoord);
     
-    if (texColor.a == 0.0f)
+    if (!config.useTexture)
     {
         texColor = colors[pin.index].color;
     }

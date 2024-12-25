@@ -8,8 +8,8 @@ Env::Env()
 void Env::RefreshBind() {
 	// 绑定到 插槽0
 	Env::cameraCbuf->Bind(*gfx, 0, 1);
-	// 绑定到 插槽1
-	Env::lightCbuf->Bind(*gfx, 1, 1);
+	// 绑定到 插槽2
+	Env::lightCbuf->Bind(*gfx, 2, 1);
 }
 
 void Env::Initialize(Graphics* gfx) {

@@ -3,8 +3,6 @@
 #include "TextureData.h"
 #include <string>
 
-#define TESTIMG L"TextureImg\\test.png"
-
 class ImageLoader {
 public:
     static TextureData Load1D(const std::wstring& filePath);

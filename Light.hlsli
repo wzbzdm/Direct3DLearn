@@ -8,6 +8,12 @@ struct CameraBuffer
     float3 cameraPosition; // 摄像头位置
 };
 
+// 配置结构体
+struct Config
+{
+    bool useTexture; // 是否使用纹理
+};
+
 // 光源结构体
 struct Light
 {

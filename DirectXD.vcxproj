@@ -135,6 +135,7 @@
     <ClInclude Include="CameraCbuf.h" />
     <ClInclude Include="ColorCbuf.h" />
     <ClInclude Include="imguiBase.h" />
+    <ClInclude Include="ImGuiFileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx11.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="Shape3DBase.h" />
     <ClInclude Include="Shape3D.h" />
+    <ClInclude Include="ShapeConf.h" />
     <ClInclude Include="SimpleDraw.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sphere3D.h" />
@@ -184,6 +186,7 @@
     <ClInclude Include="Transformable.h" />
     <ClInclude Include="TransformCbuf.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="UpdateNotifier.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
   </ItemGroup>
@@ -198,6 +201,7 @@
     <ClCompile Include="Hexahedron.cpp" />
     <ClCompile Include="Hexahedron3D.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
+    <ClCompile Include="ImGuiFileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -220,6 +224,7 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Plane3D.cpp" />
     <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="ShapeConf.cpp" />
     <ClCompile Include="SimpleDraw.cpp" />
     <ClCompile Include="Sphere3D.cpp" />
     <ClCompile Include="Texture.cpp" />

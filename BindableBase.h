@@ -14,3 +14,4 @@
 #include "LightCbuf.h"
 #include "ColorCbuf.h"
 #include "Sampler.h"
+#include "ShapeConf.h"

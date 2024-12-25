@@ -1,5 +1,6 @@
 #include "MyWindow.h"
 #include <gdiplus.h>
+#include "ImGuiFileDialog/ImGuiFileDialog.h"
 #pragma comment (lib,"Gdiplus.lib")
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -40,6 +41,11 @@ void Window::InitIMGUI() {
 	// 初始化 Win32 和 DirectX11 后端
 	ImGui_ImplWin32_Init(hWnd);
 	ImGui_ImplDX11_Init(Gfx().Device(), Gfx().Context());
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("source/simkai.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+	io.Fonts->Build(); // 构建字体纹理
+	ImGui_ImplDX11_CreateDeviceObjects();
 }
 
 void Window::ShowIMGUI() {
@@ -66,30 +72,30 @@ void Window::Show3DChoose() {
 	// *********************
 	// 工具栏 1：物体选择
 	// *********************
-	if (ImGui::Begin("Objects")) {  // 工具栏窗口的标题
-		ImGui::Text("Add 3D shape:");
+	if (ImGui::Begin("3D图形")) {  // 工具栏窗口的标题
+		ImGui::Text("添加图形:");
 
 		// 每个选项作为独立按钮
-		if (ImGui::Button("Sphere")) {
+		if (ImGui::Button("球体")) {
 			ActiveEnv()->AddShape(std::make_unique<Sphere3D>(Gfx()));
 		}
 		ImGui::SameLine();  // 使按钮位于同一行
 
-		if (ImGui::Button("Cube")) {
+		if (ImGui::Button("立方体")) {
 			ActiveEnv()->AddShape(std::make_unique<Hexahedron3D>(Gfx()));
 		}
 		ImGui::SameLine();
 
-		if (ImGui::Button("Plane")) {
+		if (ImGui::Button("平面")) {
 			ActiveEnv()->AddShape(std::make_unique<Plane3D>(Gfx()));
 		}
 		ImGui::SameLine();
 
-		if (ImGui::Button("Cylinder")) {
+		if (ImGui::Button("圆柱")) {
 			ActiveEnv()->AddShape(std::make_unique<Cylinder3D>(Gfx()));
 		}
 
-		if (ImGui::Button("Delete Cur Shape")) {
+		if (ImGui::Button("删除当前物体")) {
 			ActiveEnv()->DeleteCurShape();
 		}
 	}
@@ -97,7 +103,7 @@ void Window::Show3DChoose() {
 }
 
 void Window::ShowCameraConf() {
-	if (ImGui::Begin("Camera")) {
+	if (ImGui::Begin("相机")) {
 		CameraData camera = ActiveEnv()->Camera().GetCameraData();
 
 		// 计算相机的朝向向量
@@ -110,17 +116,17 @@ void Window::ShowCameraConf() {
 		DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&camera.upVector);           // 当前上向量
 		DirectX::XMVECTOR right = DirectX::XMVector3Cross(up, forward);          // 右向量：朝向和上向量的叉积
 
-		ImGui::Text("Position:");
+		ImGui::Text("位置:");
 		if (ImGui::InputFloat3("##Position", &camera.position.x)) {
 			ActiveEnv()->Camera().SetPosition(camera.position);
 		}
 
-		ImGui::Text("Target:");
+		ImGui::Text("目标:");
 		if (ImGui::InputFloat3("##Target", &camera.target.x)) {
 			ActiveEnv()->Camera().SetTarget(camera.target);
 		}
 
-		ImGui::Text("Up Vector:");
+		ImGui::Text("上向量:");
 		if (ImGui::InputFloat3("##Up Vector", &camera.upVector.x)) {
 			ActiveEnv()->Camera().SetUpV(camera.upVector);
 		}
@@ -144,7 +150,7 @@ void Window::ShowCameraConf() {
 		}
 
 		// FOV角度
-		std::string fov_label = "FOV##";
+		std::string fov_label = "FOV视角##";
 		float fov = camera.fieldOfView / DirectX::XM_PI * 360;
 		if (ImGui::SliderFloat(fov_label.c_str(), &fov, 10.0f, 300.0f)) {
 			float newF = fov / 360 * DirectX::XM_PI;
@@ -152,7 +158,7 @@ void Window::ShowCameraConf() {
 		}
 
 		// 远裁面
-		std::string far_label = "FarPlane##";
+		std::string far_label = "远裁面##";
 		if (ImGui::SliderFloat(far_label.c_str(), &camera.farPlane, 50.0f, 1000.0f)) {
 			ActiveEnv()->Camera().SetFarPlane(camera.farPlane);
 		}
@@ -164,9 +170,9 @@ void Window::ShowLightCof() {
 	// *********************
 	// 工具栏 3：光照配置
 	// *********************
-	if (ImGui::Begin("Light")) {
+	if (ImGui::Begin("光照")) {
 		auto lights = ActiveEnv()->Lights()->GetLightsData();  // 获取所有光源
-		ImGui::Text("Lights Count: %d", static_cast<int>(lights.size()));
+		ImGui::Text("灯光数量: %d", static_cast<int>(lights.size()));
 
 		// 遍历所有光照信息并显示
 		for (unsigned int i = 0; i < lights.size(); ++i) {
@@ -179,33 +185,33 @@ void Window::ShowLightCof() {
 			float& range = lights[i].range;
 
 			// 光照位置编辑
-			std::string pos_label = "Position##" + std::to_string(i);
+			std::string pos_label = "位置##" + std::to_string(i);
 			if (ImGui::InputFloat4(pos_label.c_str(), &position.x)) {
 				ActiveEnv()->Lights()->UpdateLight(lights[i], i);
 			}
 
 			// 光照颜色编辑
-			std::string color_label = "Color##" + std::to_string(i);
+			std::string color_label = "颜色##" + std::to_string(i);
 			if (ImGui::ColorEdit4(color_label.c_str(), &color.x)) {
 				ActiveEnv()->Lights()->UpdateLight(lights[i], i);
 			}
 
 			// 光照强度编辑
-			std::string intensity_label = "Intensity##" + std::to_string(i);
+			std::string intensity_label = "光照强度##" + std::to_string(i);
 			if (ImGui::SliderFloat(intensity_label.c_str(), &intensity, 0.0f, 10.0f)) {
 				ActiveEnv()->Lights()->UpdateLight(lights[i], i);
 			}
 
-			// 光照范围编辑
-			std::string range_label = "Range##" + std::to_string(i);
-			if (ImGui::SliderFloat(range_label.c_str(), &range, 0.0f, 1000.0f)) {
-				ActiveEnv()->Lights()->UpdateLight(lights[i], i);
-			}
+			//// 光照范围编辑
+			//std::string range_label = "Range##" + std::to_string(i);
+			//if (ImGui::SliderFloat(range_label.c_str(), &range, 0.0f, 1000.0f)) {
+			//	ActiveEnv()->Lights()->UpdateLight(lights[i], i);
+			//}
 		}
 
 		ImGui::Separator();  // 窗口分割线
 
-		if (ImGui::Button("Add Light")) {
+		if (ImGui::Button("添加新光照")) {
 			ActiveEnv()->Lights()->AddLight();
 		}
 	}
@@ -218,6 +224,7 @@ void Window::ShowMaterialEditor() {
 		if (!selected.has_value()) return;
 		Shape3DBase* selectedObject = selected.value();
 		MaterialProperties material = selectedObject->GetMaterialProperties();  // 获取选中物体的材质信息
+		ShapeConfig conf = selectedObject->GetShapeConfig();  // 获取选中物体的配置信息
 
 		// 获取变换信息
 		DirectX::XMFLOAT3 position = selectedObject->GetPosition();
@@ -226,9 +233,9 @@ void Window::ShowMaterialEditor() {
 
 		// 使用ImGui显示一个弹出窗口来编辑材质属性
 		// 使用ImGui显示一个弹出窗口来编辑属性
-		if (ImGui::Begin("Shape Info")) {
+		if (ImGui::Begin("当前物体信息")) {
 			// ---- 材质编辑 ----
-			if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen)) {
+			if (ImGui::CollapsingHeader("材质", ImGuiTreeNodeFlags_DefaultOpen)) {
 				// 环境光
 				if (ImGui::ColorEdit4("Ambient", &material.ambient.x)) {
 					selectedObject->SetMaterialProperties(material);
@@ -251,14 +258,14 @@ void Window::ShowMaterialEditor() {
 			}
 
 			// ---- 变换编辑 ----
-			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+			if (ImGui::CollapsingHeader("变换", ImGuiTreeNodeFlags_DefaultOpen)) {
 				// 位置编辑
 				if (ImGui::DragFloat3("Position", &position.x, 0.001f)) {
 					selectedObject->SetPosition(position);
 				}
 
 				// 旋转编辑
-				if (ImGui::DragFloat3("Rotation", &rotation.x, 0.001f, 0, DirectX::XM_2PI)) { 
+				if (ImGui::DragFloat3("Rotation", &rotation.x, 0.001f, 0, DirectX::XM_2PI)) {
 					selectedObject->SetRotation(rotation);
 				}
 
@@ -269,13 +276,45 @@ void Window::ShowMaterialEditor() {
 			}
 
 			// --- 颜色 ---
-			if (ImGui::CollapsingHeader("Colors", ImGuiTreeNodeFlags_DefaultOpen)) {
+			if (ImGui::CollapsingHeader("颜色", ImGuiTreeNodeFlags_DefaultOpen)) {
 				std::vector<DirectX::XMFLOAT4> colors = selectedObject->GetRealColors();
 				for (unsigned int i = 0; i < colors.size(); ++i) {
 					std::string color_label = "Color##" + std::to_string(i);
 					if (ImGui::ColorEdit4(color_label.c_str(), &colors[i].x)) {
 						selectedObject->SetColor(colors[i], i);
 					}
+				}
+			}
+
+			if (ImGui::CollapsingHeader("纹理", ImGuiTreeNodeFlags_DefaultOpen)) {
+				// 当前纹理
+				ImGui::Text("当前纹理:");
+				ImGui::Image((ImTextureID)selectedObject->GetTextureView(), ImVec2(100, 100));
+				// 纹理编辑
+				if (ImGui::Button("设置纹理")) {
+					IGFD::FileDialogConfig config;
+					config.path = ".";
+					ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "选择文件", ".png,.jpg", config);
+				}
+				
+				if (ImGui::Checkbox("打开纹理", &conf.useTexture)) {
+					selectedObject->SetShapeConfig(conf);
+				}
+				
+				// 显示
+				if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
+					if (ImGuiFileDialog::Instance()->IsOk()) { // 如果OK，进行操作
+						std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+						std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+						std::wstring wFilePathName(filePathName.begin(), filePathName.end());
+						std::wstring wFilePath(filePath.begin(), filePath.end());
+						// 执行操作
+						selectedObject->SetTexturePath(wFilePathName);
+					}
+
+					// 关闭对话框
+					ImGuiFileDialog::Instance()->Close();
 				}
 			}
 		}
@@ -296,6 +335,9 @@ void Window::InitGdi() {
 }
 
 HWND Window::CreateBaseWindow() {
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleCP(CP_UTF8);
+
 	RECT wr;
 	wr.left = 100;
 	wr.right = width + wr.left;
