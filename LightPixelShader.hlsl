@@ -64,6 +64,10 @@ float4 main(VertexOut pin) : SV_Target
         }
     }
     
+    pin.texCoord.x *= config.textureWeight.x; // 缩放 x 分量
+    pin.texCoord.y *= config.textureWeight.y; // 缩放 y 分量
+    pin.texCoord += config.textureOff; // 偏移纹理坐标
+
     float4 texColor = diffuseTexture.Sample(defaultSampler, pin.texCoord);
     
     if (!config.useTexture)

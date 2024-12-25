@@ -25,9 +25,10 @@ struct MaterialProperties {
 };
 
 // 定义配置结构
-struct ShapeConfig {
+struct alignas(16) ShapeConfig {
+	DirectX::XMFLOAT2 textureWeight = { 1.0f, 1.0f };	// 纹理缩放
+	DirectX::XMFLOAT2 textureOff = { 0.0f, 0.0f };		// 纹理偏移
 	bool useTexture = false; // 是否使用纹理
-	bool pad[15];            // 填充字节
 };
 
 #define DEFAULTCOLORBUFSIZE		20
@@ -53,7 +54,7 @@ public:
 	void SetTexturePath(std::wstring str) noexcept;
 	const std::wstring& GetTexturePath() const noexcept;
 	void SetSamplerConf(const D3D11_SAMPLER_DESC& conf) noexcept;
-	const D3D11_SAMPLER_DESC& GetSamplerConf() const noexcept;
+	D3D11_SAMPLER_DESC GetSamplerConf() const noexcept;
 	std::vector<DirectX::XMFLOAT4> GetColors() const noexcept;
 	const std::vector<DirectX::XMFLOAT4> GetRealColors() const noexcept;
 	static void AdjustColors(std::vector<DirectX::XMFLOAT4>& colors, size_t sized);
