@@ -12,19 +12,18 @@ class Shape3D : public Shape3DBase {
 private:
 	void BindCustom(Graphics& gfx) noexcept
 	{
+		// 配置, 插槽1
+		this->AddBind(std::make_unique<ShapeConf>(gfx, *this), 1, 1);
 		// 材质, 插槽2
-		AddBind(std::make_unique<MaterialCbuf>(gfx, *this), 2, 1);
+		this->AddBind(std::make_unique<MaterialCbuf>(gfx, *this), 3, 1);
 		// 颜色，插槽3
-		AddBind(std::make_unique<ColorCbuf>(gfx, *this), 3, 1);
+		this->AddBind(std::make_unique<ColorCbuf>(gfx, *this), 4, 1);
 		// 世界变换, 顶点插槽1
-		AddBind(std::make_unique<TransformCbuf>(gfx, *this), 1, 1);
+		this->AddBind(std::make_unique<TransformCbuf>(gfx, *this), 2, 1);
 		// 采样器
-		AddBind(std::make_unique<Sampler>(gfx, samplerConf));
-
+		this->AddBind(std::make_unique<Sampler>(gfx, *this));
 		// 纹理
-		/*TextureData data = ImageLoader::Load2D(TESTIMG);
-		auto pTexture = std::make_unique<Texture2D>(gfx, data);
-		AddStaticBind(std::move(pTexture));*/
+		this->AddBind(std::make_unique<Texture2D>(gfx, *this));
 	}
 
 protected:

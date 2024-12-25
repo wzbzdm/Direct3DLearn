@@ -1,10 +1,13 @@
 #pragma once
 
 #include "MyGraphics.h"
+#include "UpdateNotifier.h"
 #include <DirectXMath.h>
 #include <random>
 
 class Bindable;
+
+#define TESTIMG L"TextureImg\\test.png"
 
 struct BindableInfo {
 	std::unique_ptr<Bindable> bind;
@@ -21,6 +24,12 @@ struct MaterialProperties {
 	float pad[3];			   // 填充字节
 };
 
+// 定义配置结构
+struct ShapeConfig {
+	bool useTexture = false; // 是否使用纹理
+	bool pad[15];            // 填充字节
+};
+
 #define DEFAULTCOLORBUFSIZE		20
 
 class Drawable
@@ -33,75 +42,31 @@ public:
 	Drawable(const Drawable&) = delete;
 	void Draw(Graphics& gfx) const noexcept;
 	// 获取材质属性
-	MaterialProperties GetMaterialProperties() const noexcept {
-		return materialProperties;
-	}
-
+	MaterialProperties GetMaterialProperties() const noexcept;
 	// 设置材质属性
-	void SetMaterialProperties(const MaterialProperties& properties) noexcept {
-		materialProperties = properties;
-	}
+	void SetMaterialProperties(const MaterialProperties& properties) noexcept;
+	void SetColors(const std::vector<DirectX::XMFLOAT4>& colors) noexcept;
+	void SetColor(const DirectX::XMFLOAT4& color, int index);
+	void AddColor(const DirectX::XMFLOAT4& color) noexcept;
+	void AddColors(const std::vector<DirectX::XMFLOAT4>& colors) noexcept;
+	void AddColor(const DirectX::XMFLOAT4& color, int num);
+	void SetTexturePath(std::wstring str) noexcept;
+	const std::wstring& GetTexturePath() const noexcept;
+	void SetSamplerConf(const D3D11_SAMPLER_DESC& conf) noexcept;
+	const D3D11_SAMPLER_DESC& GetSamplerConf() const noexcept;
+	std::vector<DirectX::XMFLOAT4> GetColors() const noexcept;
+	const std::vector<DirectX::XMFLOAT4> GetRealColors() const noexcept;
+	static void AdjustColors(std::vector<DirectX::XMFLOAT4>& colors, size_t sized);
+	void AddObserver(UpdateNotifier* observer);
+	ID3D11ShaderResourceView* GetTextureView() const noexcept;
 
-	void SetColors(const std::vector<DirectX::XMFLOAT4>& colors) noexcept {
-		this->colors = colors;
-	}
-
-	void SetColor(const DirectX::XMFLOAT4& color, int index) {
-		if (index >= 0 && index < colors.size()) {
-			colors[index] = color;
-		}
-	}
-
-	void AddColor(const DirectX::XMFLOAT4& color) noexcept {
-		colors.push_back(color);
-	}
-
-	void AddColors(const std::vector<DirectX::XMFLOAT4>& colors) noexcept {
-		this->colors.insert(this->colors.end(), colors.begin(), colors.end());
-	}
-
-	void AddColor(const DirectX::XMFLOAT4& color, int num) {
-		for (int i = 0; i < num; i++) {
-			colors.push_back(color);
-		}
-	}
-
-	std::vector<DirectX::XMFLOAT4> GetColors() const noexcept {
-		std::vector<DirectX::XMFLOAT4> tempcolors(colors);  // 创建副本
-		Drawable::AdjustColors(tempcolors, DEFAULTCOLORBUFSIZE);  // 调整副本
-		return tempcolors;  // 返回调整后的副本
-	}
-
-	const std::vector<DirectX::XMFLOAT4> GetRealColors() const noexcept {
-		return colors;
-	}
-
-	static void AdjustColors(std::vector<DirectX::XMFLOAT4>& colors, size_t sized = DEFAULTCOLORBUFSIZE) {
-		if (colors.size() < sized) {
-			// 初始化随机引擎
-			std::random_device rd;
-			std::mt19937 gen(rd());
-			std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-
-			// 填充随机颜色
-			while (colors.size() < sized) {
-				DirectX::XMFLOAT4 randomColor = {
-					dist(gen), // R
-					dist(gen), // G
-					dist(gen), // B
-					1.0f       // A (默认不透明)
-				};
-				colors.push_back(randomColor);
-			}
-		}
-		else if (colors.size() > sized) {
-			// 移除多余的颜色
-			colors.resize(sized);
-		}
-	}
+	// 配置相关
+	ShapeConfig GetShapeConfig() const noexcept;
+	void SetShapeConfig(const ShapeConfig& conf) noexcept;
 
 	virtual ~Drawable() = default;
 protected:
+	void NotifyObservers();
 	void AddBind(std::unique_ptr<Bindable> bind) noexcept;
 	void AddBind(std::unique_ptr<Bindable> bind, unsigned int start, unsigned int len) noexcept;
 	void AddIndexBuffer(std::unique_ptr<class IndexBuffer> ibuf) noexcept;
@@ -109,6 +74,9 @@ private:
 	virtual const std::vector<std::unique_ptr<BindableInfo>>& GetStaticBinds() const noexcept = 0;
 protected:
 	const class IndexBuffer* pIndexBuffer = nullptr;
+	std::wstring texturePath = TESTIMG;
+	ShapeConfig conf;
+	std::vector<UpdateNotifier*> observers;
 	std::vector<std::unique_ptr<BindableInfo>> binds;
 	// 采样器配置
 	D3D11_SAMPLER_DESC samplerConf = {

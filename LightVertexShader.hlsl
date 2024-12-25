@@ -5,7 +5,12 @@ cbuffer CameraData : register(b0)
     CameraBuffer camera; // 摄像头相关数据
 };
 
-cbuffer TransformData : register(b1)
+cbuffer AllConfig : register(b1)
+{
+    Config config; // 配置数据
+};
+
+cbuffer TransformData : register(b2)
 {
    TransformBuffer transform; // 变换数据
 };

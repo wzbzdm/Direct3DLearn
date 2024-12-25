@@ -2,6 +2,8 @@
 
 #include "Bindable.h"
 #include "TextureData.h"
+#include "Shape3DBase.h"
+#include "UpdateNotifier.h"
 
 class TextureBase : public Bindable {
 protected:
@@ -18,10 +20,17 @@ public:
     void Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept override;
 };
 
-class Texture2D : public TextureBase {
+class Texture2D : public TextureBase, public UpdateNotifier {
+private:
+    Shape3DBase& parent;
+	Graphics& gfx;
+    void InitializeTexture(const std::wstring& path);
 public:
-    Texture2D(Graphics& gfx, const TextureData& textureData);
+    // Texture2D(Graphics& gfx, const TextureData& textureData);
+    Texture2D(Graphics& gfx, Shape3DBase& parent);
     void Bind(Graphics& gfx, unsigned int start, unsigned int len) noexcept override;
+	void OnUpdate() override;
+    ID3D11ShaderResourceView* GetTextureView() const noexcept;
 };
 
 class Texture3D : public TextureBase {
