@@ -2,6 +2,8 @@
 #include "Sphere3D.h"
 #include "BindableBase.h"
 
+constexpr wchar_t EARTHPATH[] = L"TextureImg\\earth.png";
+
 Sphere3D::Sphere3D(Graphics& gfx)
 {
     InitColor();
@@ -19,6 +21,7 @@ Sphere3D::Sphere3D(Graphics& gfx)
     this->BindAll(gfx);
 
     SetMaterialProperties(MATERIAL_METAL);
+    SetTexturePath(EARTHPATH);
 }
 
 void Sphere3D::SetConf(int numC, int numH)

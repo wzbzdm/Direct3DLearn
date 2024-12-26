@@ -84,21 +84,28 @@ public:
 		for (int i = 0; i <= numH; i++) {
 			float z = h / 2.0f - h * i / numH;
 			float r = topR + (baseR - topR) * i / numH;
-			// 每个环有numC个顶点
-			for (int j = 0; j < numC; j++) {
-				float angle = 2.0f * DirectX::XM_PI * j / numC;
+			// 每个环有numC+1个顶点
+			for (int j = 0; j <= numC; j++) {
+				float angle = DirectX::XM_2PI * j / numC;
 				float x = r * std::cos(angle);
 				float y = r * std::sin(angle);
-				vertices.push_back({ { x, y, z }, {x, y, 0}, {0.0f, 0.0f}, 2 });
+
+				// 修改纹理坐标：水平映射为角度 / 360度，垂直映射为高度 / h
+				DirectX::XMFLOAT2 texCoord = {
+					static_cast<float>(j) / numC,        // 水平纹理坐标，角度映射
+					static_cast<float>(i) / numH        // 垂直纹理坐标，高度映射
+				};
+
+				vertices.push_back({ { x, y, z }, {x, y, 0}, texCoord, 2 });
 			}
 
 			// 生成 中间 索引
 			if (i != 0) {
 				for (int j = 0; j < numC; j++) {
-					int i0 = (i - 1) * numC + j;
-					int i1 = (i - 1) * numC + (j + 1) % numC;
-					int i2 = i * numC + (j + 1) % numC;
-					int i3 = i * numC + j;
+					int i0 = (i - 1) * (numC+1) + j;
+					int i1 = (i - 1) * (numC+1) + j + 1;
+					int i2 = i * (numC+1) + j + 1;
+					int i3 = i * (numC+1) + j;
 					indices.push_back(i0);
 					indices.push_back(i2);
 					indices.push_back(i1);
@@ -112,27 +119,30 @@ public:
 		unsigned short baseTop = static_cast<unsigned short>(vertices.size());
 
 		// 顶部
-		for (int i = 0; i < numC; i++) {
-			float angle = 2.0f * DirectX::XM_PI * i / numC;
+		for (int i = 0; i <= numC; i++) {
+			float angle = DirectX::XM_2PI * i / numC;
 			float x = topR * std::cos(angle);
 			float y = topR * std::sin(angle);
-			vertices.push_back({ { x, y, h / 2.0f }, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, 0 });
+			DirectX::XMFLOAT2 texCoord = { static_cast<float>(i) / numC, 0.0f };
+			vertices.push_back({ { x, y, h / 2.0f }, {0.0f, 0.0f, 1.0f}, texCoord, 0 });
 		}
 
 		unsigned short baseBot = static_cast<unsigned short>(vertices.size());	
 
 		// 底部
-		for (int i = 0; i < numC; i++) {
-			float angle = 2.0f * DirectX::XM_PI * i / numC;
+		for (int i = 0; i <= numC; i++) {
+			float angle = DirectX::XM_2PI * i / numC;
 			float x = baseR * std::cos(angle);
 			float y = baseR * std::sin(angle);
-			vertices.push_back({ { x, y, -h / 2.0f }, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}, 1 });
+			// 底部的纹理坐标可以设置为 (i / numC, 1)，表示纹理的结束部分
+			DirectX::XMFLOAT2 texCoord = { static_cast<float>(i) / numC, 1.0f };
+			vertices.push_back({ { x, y, -h / 2.0f }, {0.0f, 0.0f, -1.0f}, texCoord, 1 });
 		}
 
 		DirectX::XMFLOAT3 centerTop = { 0.0f, 0.0f, h / 2.0f };
 		DirectX::XMFLOAT3 centerBase = { 0.0f, 0.0f, -h / 2.0f };
-		vertices.push_back({ centerTop, { 0.0f, 0.0f, 1.0f }, {0.0f, 0.0f}, 0 });
-		vertices.push_back({ centerBase, { 0.0f, 0.0f, -1.0f }, {0.0f, 0.0f}, 1 });
+		vertices.push_back({ centerTop, { 0.0f, 0.0f, 1.0f }, {0.5f, 0.0f}, 0 });
+		vertices.push_back({ centerBase, { 0.0f, 0.0f, -1.0f }, {0.5f, 1.0f}, 1 });
 
 		unsigned short top = static_cast<unsigned short>(vertices.size() - 2);
 		unsigned short base = static_cast<unsigned short>(vertices.size() - 1);
@@ -141,21 +151,11 @@ public:
 			// 顶部三角形
 			indices.push_back(top);
 			indices.push_back(baseTop + i);
-			if (i == numC - 1) {
-				indices.push_back(baseTop);
-			}
-			else {
-				indices.push_back(baseTop + i + 1);
-			}
+			indices.push_back(baseTop + i + 1);
 			
 			// 底部三角形
 			indices.push_back(base);
-			if (i == numC - 1) {
-				indices.push_back(baseBot);
-			}
-			else {
-				indices.push_back(baseBot + i + 1);
-			}
+			indices.push_back(baseBot + i + 1);
 			indices.push_back(baseBot + i);
 		}
 

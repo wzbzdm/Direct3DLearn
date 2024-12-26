@@ -92,7 +92,7 @@ public:
 		return Create<T>(1.0f, numC, numH);
 	}
 
-    Geometry<DefaultVertice> CreateD(float r = 1.0f, int numC = 24, int numH = 24) {
+    Geometry<DefaultVertice> CreateD(float r = 1.0f, int numC = 50, int numH = 50) {
         std::vector<DefaultVertice> vertices;
         std::vector<unsigned short> indices;
 
@@ -105,13 +105,13 @@ public:
         std::uniform_int_distribution<> dis(0, 2);
 
         // 创建中间顶点
-        for (int i = 1; i < numH; i++) { // 从第一个环到最后一个环
+        for (int i = 0; i <= numH; i++) { // 从第一个环到最后一个环
             float theta = DirectX::XM_PI * i / numH; // 纬度角
             float sinTheta = std::sin(theta);
             float cosTheta = std::cos(theta);
 
-            for (int j = 0; j < numC; j++) { // 每个环上的顶点
-                float phi = 2.0f * DirectX::XM_PI * j / numC; // 经度角
+            for (int j = 0; j <= numC; j++) { // 每个环上的顶点
+                float phi = DirectX::XM_2PI * j / numC; // 经度角
                 float sinPhi = std::sin(phi);
                 float cosPhi = std::cos(phi);
 
@@ -132,7 +132,7 @@ public:
                 // 计算纹理坐标
                 DirectX::XMFLOAT2 texCoord = {
                     static_cast<float>(j) / numC,     // 经度映射到[0,1]
-                    static_cast<float>(i) / (numH - 1) // 纬度映射到[0,1]
+                    static_cast<float>(i) / numH    // 纬度映射到[0,1]
                 };
 
                 // 索引
@@ -143,17 +143,11 @@ public:
             }
         }
 
-        // 添加北极点和南极点
-        int northPoleIdx = (int)vertices.size();
-        vertices.push_back({ { 0.0f, 0.0f, r }, { 0.0f, 0.0f, 1.0f }, { 0.5f, 0.5f }, 0 }); // 北极点
-        int southPoleIdx = (int)vertices.size();
-        vertices.push_back({ { 0.0f, 0.0f, -r }, { 0.0f, 0.0f, -1.0f }, { 0.5f, 0.5f }, 0 }); // 南极点
-
         // 生成中间部分的索引
-        auto calcIdx = [numC](int iH, int iC) { return iH * numC + iC; };
-        for (int i = 0; i < numH - 2; i++) {
+        auto calcIdx = [numC](int iH, int iC) { return iH * (numC+1) + iC; };
+        for (int i = 0; i < numH ; i++) {
             for (int j = 0; j < numC; j++) {
-                int nextJ = (j + 1) % numC;
+                int nextJ = j + 1;
 
                 // 两个三角形构成一个矩形
                 indices.push_back(calcIdx(i, j));
@@ -166,22 +160,6 @@ public:
             }
         }
 
-        // 为北极和南极点生成索引
-        for (int j = 0; j < numC; j++) {
-            int nextJ = (j + 1) % numC;
-
-            // 北极点扇形
-            indices.push_back(northPoleIdx);
-            indices.push_back(calcIdx(0, j));
-            indices.push_back(calcIdx(0, nextJ));
-
-            // 南极点扇形
-            indices.push_back(southPoleIdx);
-            indices.push_back(calcIdx(numH - 2, nextJ));
-            indices.push_back(calcIdx(numH - 2, j));
-        }
-
         return { std::move(vertices), std::move(indices) };
     }
-
 };
