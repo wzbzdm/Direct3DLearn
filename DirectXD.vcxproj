@@ -135,6 +135,7 @@
     <ClInclude Include="CameraCbuf.h" />
     <ClInclude Include="ColorCbuf.h" />
     <ClInclude Include="Diamond.h" />
+    <ClInclude Include="Diamond3D.h" />
     <ClInclude Include="imguiBase.h" />
     <ClInclude Include="ImGuiFileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="CameraCbuf.cpp" />
     <ClCompile Include="ColorCbuf.cpp" />
     <ClCompile Include="Cylinder3D.cpp" />
+    <ClCompile Include="Diamond3D.cpp" />
     <ClCompile Include="DirectXD.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="Hexahedron.cpp" />

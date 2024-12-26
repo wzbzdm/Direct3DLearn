@@ -237,6 +237,9 @@
     <ClInclude Include="Diamond.h">
       <Filter>Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Diamond3D.h">
+      <Filter>DrawUnitHeader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXD.cpp">
@@ -367,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="ShapeConf.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Diamond3D.cpp">
+      <Filter>DrawUnitSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
