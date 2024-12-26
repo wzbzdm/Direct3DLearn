@@ -56,17 +56,28 @@ void Window::ShowIMGUI() {
 	ImGui::NewFrame();
 
 	io = ImGui::GetIO();
+
+	ShowSystemConf();
 	Show3DChoose();
-
 	ShowCameraConf();
-	
 	ShowLightCof();
-
 	ShowMaterialEditor();
 
 	// 渲染 IMGUI 界面
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Window::ShowSystemConf() {
+	DirectX::XMFLOAT3 bgColor = this->bgcolor;
+	if (ImGui::Begin("系统配置")) {
+		ImGui::Text("窗口大小: %d X %d", width, height);
+
+		if (ImGui::ColorEdit3("背景颜色##", &bgColor.x)) {
+			SetBGColor(bgColor);
+		}
+	}
+	ImGui::End();
 }
 
 void Window::Show3DChoose() {
@@ -634,7 +645,7 @@ void Window::TestInit() {
 	std::uniform_real_distribution<float> ddist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> odist{ 1.0f,PI * 0.5f };
 	std::uniform_real_distribution<float> rdist{ 3.0f,6.0f };
-	ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
+	// ActiveEnv()->AddShape(std::make_unique<Box>(Gfx(), rng, adist, ddist, odist, rdist));
 	// ActiveEnv()->AddShape(std::make_unique<Sphere3D>(Gfx()));
 	// ActiveEnv()->AddShape(std::make_unique<Hexahedron3D>(Gfx()));
 	std::unique_ptr<Sphere3D> ts = std::make_unique<Sphere3D>(Gfx());
@@ -722,7 +733,7 @@ void Window::Draw() {
 	if (!HasArea()) return;
 	Gfx().StartFrame();
 
-	Gfx().ClearBuffer(1.0f, 0.5f, 0.5f);
+	Gfx().ClearBuffer(bgcolor.x, bgcolor.y, bgcolor.z);
 	ActiveEnv()->DrawAll();
 	ShowIMGUI();
 
@@ -928,6 +939,10 @@ void Window::WheelUp(Mouse::Event& mevent) {
 	Shape3DBase* selectedObject = selected.value();
 	float speed = 0.1f;
 	selectedObject->Zoom(1 + speed);
+}
+
+void Window::SetBGColor(DirectX::XMFLOAT3 color) {
+	this->bgcolor = color;
 }
 
 Window::WindowClass Window::WindowClass::wndClass;

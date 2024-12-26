@@ -48,6 +48,7 @@ public:
 	void InitIMGUI();
 	void ShowIMGUI();
 	
+	void ShowSystemConf();
 	void Show3DChoose();
 	void ShowCameraConf();
 	void ShowLightCof();
@@ -86,7 +87,7 @@ public:
 	void WheelUp(Mouse::Event& mevent);
 
 	// 其他
-
+	void SetBGColor(DirectX::XMFLOAT3 color);
 
 public:
 	Mouse mouse;
@@ -100,6 +101,7 @@ private:
 	const wchar_t* name;
 	Timer timer;
 	bool showActiveWindow = false;
+	DirectX::XMFLOAT3 bgcolor = { 1.0f, 0.5f, 0.5f };
 
 	std::unique_ptr<Graphics> pGfx = nullptr;
 	ImGuiIO io;
