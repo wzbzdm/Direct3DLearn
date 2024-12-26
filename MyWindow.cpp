@@ -702,6 +702,11 @@ void Window::KeyEventHandler() noexcept {
  			ActiveEnv()->Camera().AdjustOrientation(0, 0, speedAngle);
 		}
 	}
+
+	// 删除
+	if (kbd.KeyIsPressed(VK_DELETE) || kbd.KeyIsPressed(VK_BACK)) {
+		ActiveEnv()->DeleteCurShape();
+	}
 }
 
 void Window::Update() {
