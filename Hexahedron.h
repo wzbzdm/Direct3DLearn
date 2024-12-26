@@ -3,7 +3,7 @@
 #include "Geometry.h"
 
 class Hexahedron {
-	static std::vector<unsigned short> defaultIndices;
+	static std::vector<unsigned int> defaultIndices;
 public:
 	template <class T>
 	Geometry<T> Create(float l, float w, float h) {
@@ -75,7 +75,7 @@ public:
         };
 
         // 生成索引，确保每个面被分成两个三角形
-        std::vector<unsigned short> indices = {
+        std::vector<unsigned int> indices = {
             0, 1, 2, 0, 2, 3,
             6, 5, 4, 7, 6, 4,
             10, 9, 8, 11, 10, 8,
@@ -132,7 +132,7 @@ public:
         };
 
         // 生成索引，确保每个面被分成两个三角形
-        std::vector<unsigned short> indices = {
+        std::vector<unsigned int> indices = {
             0, 1, 2, 0, 2, 3,
             6, 5, 4, 7, 6, 4,
             10, 9, 8, 11, 10, 8,

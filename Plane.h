@@ -3,7 +3,7 @@
 #include "Geometry.h"
 
 class Plane {
-	static std::vector<unsigned short> defaultIndices;
+	static std::vector<unsigned int> defaultIndices;
 public:
 
 	template <class T>
@@ -53,7 +53,7 @@ public:
 			{ { -width / 2.0f, -height / 2.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}, 1}, // 左下角
 		};
 
-		std::vector<unsigned short> indices = {
+		std::vector<unsigned int> indices = {
 			0, 1, 2, 0, 2, 3,   // 正面
 			4, 5, 6, 4, 6, 7,    // 反面
 		};

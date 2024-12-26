@@ -8,7 +8,7 @@ public:
 	template <class T>
 	static Geometry<T> Create(float topR = 1.0f, float baseR = 1.0f, float h = 2.0f, int numC = 36, int numH = 18) {
 		std::vector<DirectX::XMFLOAT3> vertices;
-		std::vector<unsigned short> indices;
+		std::vector<unsigned int> indices;
 
 		// 从顶部到底部， numH + 1个环
 		for (int i = 0; i <= numH; i++) {
@@ -44,8 +44,8 @@ public:
 		vertices.push_back(centerTop);
 		vertices.push_back(centerBase);
 
-		unsigned short top = static_cast<unsigned short>(vertices.size() - 2);
-		unsigned short base = static_cast<unsigned short>(vertices.size() - 1);
+		unsigned int top = static_cast<unsigned int>(vertices.size() - 2);
+		unsigned int base = static_cast<unsigned int>(vertices.size() - 1);
 		// 生成顶部索引, 底部索引
 		for (int i = 0; i < numC; i++) {
 			// 顶部三角形
@@ -78,7 +78,7 @@ public:
 
 	Geometry<DefaultVertice> CreateD(float topR = 1.0f, float baseR = 1.0f, float h = 2.0f, int numC = 36, int numH = 18) {
 		std::vector<DefaultVertice> vertices;
-		std::vector<unsigned short> indices;
+		std::vector<unsigned int> indices;
 
 		// 从顶部到底部， numH + 1个环
 		for (int i = 0; i <= numH; i++) {
@@ -116,7 +116,7 @@ public:
 			}
 		}
 
-		unsigned short baseTop = static_cast<unsigned short>(vertices.size());
+		unsigned int baseTop = static_cast<unsigned int>(vertices.size());
 
 		// 顶部
 		for (int i = 0; i <= numC; i++) {
@@ -127,7 +127,7 @@ public:
 			vertices.push_back({ { x, y, h / 2.0f }, {0.0f, 0.0f, 1.0f}, texCoord, 0 });
 		}
 
-		unsigned short baseBot = static_cast<unsigned short>(vertices.size());	
+		unsigned int baseBot = static_cast<unsigned int>(vertices.size());	
 
 		// 底部
 		for (int i = 0; i <= numC; i++) {
@@ -144,8 +144,8 @@ public:
 		vertices.push_back({ centerTop, { 0.0f, 0.0f, 1.0f }, {0.5f, 0.0f}, 0 });
 		vertices.push_back({ centerBase, { 0.0f, 0.0f, -1.0f }, {0.5f, 1.0f}, 1 });
 
-		unsigned short top = static_cast<unsigned short>(vertices.size() - 2);
-		unsigned short base = static_cast<unsigned short>(vertices.size() - 1);
+		unsigned int top = static_cast<unsigned int>(vertices.size() - 2);
+		unsigned int base = static_cast<unsigned int>(vertices.size() - 1);
 		// 生成顶部索引, 底部索引
 		for (int i = 0; i < numC; i++) {
 			// 顶部三角形

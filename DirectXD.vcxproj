@@ -134,6 +134,7 @@
     <ClInclude Include="BoxTest.h" />
     <ClInclude Include="CameraCbuf.h" />
     <ClInclude Include="ColorCbuf.h" />
+    <ClInclude Include="Diamond.h" />
     <ClInclude Include="imguiBase.h" />
     <ClInclude Include="ImGuiFileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="imgui\imconfig.h" />

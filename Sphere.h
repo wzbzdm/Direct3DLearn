@@ -11,7 +11,7 @@ public:
     template <class T>
     static Geometry<T> Create(float r, int numC, int numH) {
         std::vector<DirectX::XMFLOAT3> vertices;
-        std::vector<unsigned short> indices;
+        std::vector<unsigned int> indices;
 
         // 断言输入有效性
         assert(numC >= 3 && numH >= 3);
@@ -94,7 +94,7 @@ public:
 
     Geometry<DefaultVertice> CreateD(float r = 1.0f, int numC = 50, int numH = 50) {
         std::vector<DefaultVertice> vertices;
-        std::vector<unsigned short> indices;
+        std::vector<unsigned int> indices;
 
         // 断言输入有效性
         assert(numC >= 3 && numH >= 3);

@@ -1,6 +1,6 @@
 #include "Hexahedron.h"
 
-std::vector<unsigned short> Hexahedron::defaultIndices = {
+std::vector<unsigned int> Hexahedron::defaultIndices = {
     0,2,1, 2,3,1,
     1,3,5, 3,7,5,
     2,6,3, 3,6,7,

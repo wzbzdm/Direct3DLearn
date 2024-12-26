@@ -7,7 +7,7 @@ public:
 	template <class T>
 	static Geometry<T> Create() noexcept {
 		std::vector<DirectX::XMFLOAT3> vertices;
-		std::vector<unsigned short> indices;
+		std::vector<unsigned int> indices;
 
 		vertices.push_back({ 0.0f, 0.5f, 0.0f });
 		vertices.push_back({ 0.5f, -0.5f, 0.0f });
