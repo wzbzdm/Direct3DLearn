@@ -79,6 +79,6 @@ float4 main(VertexOut pin) : SV_Target
     finalColor.a = texColor.a * material.diffuseColor.a;
     
     // Gamma 校正
-    finalColor.rgb = pow(finalColor.rgb, 1.0f / 2.2f);
+    finalColor.rgb = pow(abs(finalColor.rgb), 1.0f / 2.2f);
     return finalColor;
 }
