@@ -16,7 +16,7 @@ public:
     bool RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept override;
     void InitColor() noexcept;
 private:
-    DirectX::XMFLOAT3 size = { 1, 1, 2.0 }; // 顶部半径、底部半径、高度的缩放比例
+    DirectX::XMFLOAT3 size = { 1.0f, 1.0f, 2.0f }; // 顶部半径、底部半径、高度的缩放比例
     int numC = 36;
     int numH = 36;
 };
