@@ -8,7 +8,7 @@ SimpleDraw::SimpleDraw() : window(800, 600, L"Test") {
 	eventThread = std::thread([this]() {
 		while (running) {
 			HandlerEvent();
-			std::this_thread::sleep_for(std::chrono::milliseconds(10)); // 防止空转占用 CPU
+			std::this_thread::sleep_for(std::chrono::milliseconds(1)); // 防止空转占用 CPU
 		}
 		});
 	running = true;

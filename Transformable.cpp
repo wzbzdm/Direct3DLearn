@@ -19,6 +19,9 @@ void Transformable::Translate(const DirectX::XMFLOAT3& offset)
 void Transformable::SetRotation(const DirectX::XMFLOAT3& rotation)
 {
 	this->rotation = rotation;
+	// 使用欧拉角更新四元数
+	DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+	DirectX::XMStoreFloat4(&this->rotationQuaternion, quat);
 }
 
 const DirectX::XMFLOAT3& Transformable::GetRotation() const noexcept {
@@ -30,6 +33,45 @@ void Transformable::Rotate(const DirectX::XMFLOAT3& delta)
 	rotation.x += delta.x;
 	rotation.y += delta.y;
 	rotation.z += delta.z;
+}
+
+DirectX::XMFLOAT3 QuaternionToEuler(const DirectX::XMFLOAT4& quaternion)
+{
+	float qx = quaternion.x;
+	float qy = quaternion.y;
+	float qz = quaternion.z;
+	float qw = quaternion.w;
+
+	// 计算欧拉角
+	float sinr_cosp = 2 * (qw * qx + qy * qz);
+	float cosr_cosp = 1 - 2 * (qx * qx + qy * qy);
+	float roll = std::atan2(sinr_cosp, cosr_cosp);
+
+	float sinp = 2 * (qw * qy - qz * qx);
+	float pitch;
+	if (std::abs(sinp) >= 1)
+		pitch = std::copysign(DirectX::XM_PI / 2, sinp); // 防止越界
+	else
+		pitch = std::asin(sinp);
+
+	float siny_cosp = 2 * (qw * qz + qx * qy);
+	float cosy_cosp = 1 - 2 * (qy * qy + qz * qz);
+	float yaw = std::atan2(siny_cosp, cosy_cosp);
+
+	return { pitch, yaw, roll };
+}
+
+void Transformable::SetRotationQuaternion(DirectX::XMFLOAT4 quaternion) noexcept
+{
+	rotationQuaternion = quaternion;
+
+	// 从四元数更新欧拉角
+	rotation = QuaternionToEuler(rotationQuaternion);
+}
+
+DirectX::XMFLOAT4 Transformable::GetRotationQuaternion() const noexcept
+{
+	return rotationQuaternion;
 }
 
 float Transformable::GetRadius() const noexcept {
