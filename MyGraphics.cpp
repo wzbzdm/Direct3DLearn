@@ -122,11 +122,7 @@ DirectX::XMMATRIX Graphics::GetProjectionMatrix() const noexcept {
 }
 
 void Graphics::DrawTestTriangle(float angle) {
-<<<<<<< HEAD
-	struct Vertex {
-=======
     struct Vertex {
->>>>>>> origin/main
 		struct {
 			float x;
 			float y;
@@ -137,17 +133,10 @@ void Graphics::DrawTestTriangle(float angle) {
 			float b;
 			float a;
 		} color;
-<<<<<<< HEAD
-	};
-
-	// 顶点缓冲区
-	const Vertex vertices[] = {
-=======
     };
 
 	// 顶点缓冲区
     const Vertex vertices[] = {
->>>>>>> origin/main
 		{ 0.0f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f },
 		{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f },
 		{ -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f },
@@ -208,11 +197,7 @@ void Graphics::DrawTestTriangle(float angle) {
 		{
 			{
 				(3.0f / 4.0f) * std::cos(angle), std::sin(angle), 0.0f, 0.0f,
-<<<<<<< HEAD
-				(3.0f / 4.0f) * -std::sin(angle), std::cos(angle), 0.0f, 0.0f,
-=======
 				(3.0f / 4.0f) * - std::sin(angle), std::cos(angle), 0.0f, 0.0f,
->>>>>>> origin/main
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 			}
@@ -273,11 +258,7 @@ void Graphics::DrawTestTriangle(float angle) {
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-<<<<<<< HEAD
 	context->RSSetViewports(1u, &vp);
-=======
-	context->RSSetViewports(1u, &vp);	
->>>>>>> origin/main
 
 	context->DrawIndexed((UINT)std::size(indexs), 0u, 0u);
 

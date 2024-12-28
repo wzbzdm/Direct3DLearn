@@ -11,12 +11,9 @@ public:
 	void SetSize(const DirectX::XMFLOAT3& size);
 	void Zoom(const DirectX::XMFLOAT3& scale);
 	void Update(float dt) noexcept;
-<<<<<<< HEAD
-=======
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept override;
 	bool RayIntersect(const Ray& ray, DirectX::XMFLOAT3& intersectionPoint) const noexcept override;
 	void InitColor() noexcept;
->>>>>>> main
 private:
 	DirectX::XMFLOAT3 size = { 1.0, 1.0, 1.0 };
 };
