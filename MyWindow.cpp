@@ -709,11 +709,11 @@ void Window::KeyEventHandler() noexcept {
 	if (kbd.KeyIsPressed(VK_SPACE)) {
 		// 逆时针
 		if (kbd.KeyIsPressed(VK_SHIFT)) {
-			ActiveEnv()->Camera().AdjustOrientation(0, 0, -speedAngle);
+			ActiveEnv()->Camera().AdjustOrientation(0, 0, -speedAngle * 3);
 		}
 		// 顺时针
 		else {
- 			ActiveEnv()->Camera().AdjustOrientation(0, 0, speedAngle);
+ 			ActiveEnv()->Camera().AdjustOrientation(0, 0, speedAngle * 3);
 		}
 	}
 
@@ -869,6 +869,10 @@ void Window::LPMove(Mouse::Event& mevent) {
 		DirectX::XMFLOAT3 off = GetCurrentOffInActiveShapePlane(lastp, nowp, select->GetPosition());
 		select->Translate(off);
 	}
+	else {
+		// 选中物体
+		LClick(mevent);
+	}
 }
 
 void Window::RPMove(Mouse::Event& mevent) {
@@ -914,6 +918,10 @@ void Window::RPMove(Mouse::Event& mevent) {
 
 		// 更新物体的旋转
 		select->SetRotationQuaternion(newQuat);
+	}
+	else {
+		// 选中物体
+		LClick(mevent);
 	}
 }
 
