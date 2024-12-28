@@ -33,6 +33,7 @@ void Env::DeleteCurShape() noexcept {
 void Env::UpdateAll(float dt) {
 	for (int i = 0; i < shapes.size(); i++) {
 		if (i == activeShape) continue;
+		if (!shapes[i]->CanUpdate()) continue;
 		shapes[i]->Update(dt);
 	}
 }

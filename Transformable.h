@@ -18,6 +18,9 @@ public:
     DirectX::XMFLOAT4 GetRotationQuaternion() const noexcept;
     void SetRotationQuaternion(DirectX::XMFLOAT4) noexcept;
 
+    bool CanUpdate() const noexcept;
+	void SetUpdateState(bool state) noexcept;
+
     // 缩放
     float GetRadius()const noexcept;
     void SetRadius(float r);
@@ -33,4 +36,5 @@ protected:
 	DirectX::XMFLOAT3 rotation = { 0.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT4 rotationQuaternion = { 0.0f, 0.0f, 0.0f, 1.0f }; // 四元数
     float radius = 1.0f;
+    bool canUpdate = false;
 };

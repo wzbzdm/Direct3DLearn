@@ -238,7 +238,7 @@ void Window::ShowMaterialEditor() {
 		MaterialProperties material = selectedObject->GetMaterialProperties();  // 获取选中物体的材质信息
 		ShapeConfig conf = selectedObject->GetShapeConfig();  // 获取选中物体的配置信息
 		D3D11_SAMPLER_DESC samplec = selectedObject->GetSamplerConf();
-
+		bool updateState = selectedObject->CanUpdate();
 		// 获取变换信息
 		DirectX::XMFLOAT3 position = selectedObject->GetPosition();
 		DirectX::XMFLOAT3 rotation = selectedObject->GetRotation();
@@ -272,6 +272,9 @@ void Window::ShowMaterialEditor() {
 
 			// ---- 变换编辑 ----
 			if (ImGui::CollapsingHeader("变换", ImGuiTreeNodeFlags_DefaultOpen)) {
+				if (ImGui::Checkbox("自动旋转", &updateState)) {
+					selectedObject->SetUpdateState(updateState);
+				}
 				// 位置编辑
 				if (ImGui::DragFloat3("Position", &position.x, 0.001f)) {
 					selectedObject->SetPosition(position);

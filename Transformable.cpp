@@ -74,6 +74,14 @@ DirectX::XMFLOAT4 Transformable::GetRotationQuaternion() const noexcept
 	return rotationQuaternion;
 }
 
+bool Transformable::CanUpdate() const noexcept {
+	return this->canUpdate;
+}
+
+void Transformable::SetUpdateState(bool state) noexcept {
+	this->canUpdate = state;
+}
+
 float Transformable::GetRadius() const noexcept {
 	return this->radius;
 }
